@@ -35,7 +35,8 @@
 #ifndef SICK_SAFETYSCANNERS_COLA2_COMMAND_H
 #define SICK_SAFETYSCANNERS_COLA2_COMMAND_H
 
-#include <ros/ros.h>
+//#include <ros/ros.h>
+#include <sick_safetyscanners/logging/logging_wrapper.h>
 
 #include <vector>
 

@@ -20,7 +20,11 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 ###########
 ## Build ##
 ###########
+option(WITHOUT_ROS_LOGGING "Disabel ROS Logging and use printf instead" ON)
 
+if(WITHOUT_ROS_LOGGING)
+  add_definitions(-DNO_ROS_LOGGING=1)
+endif()
 
 ## Declare a cpp library
 add_library(sicksafetyscanners
