@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(sick_safetyscanners)
+project(libsicksafetyscanners LANGUAGES CXX)
 
 ## Use C++11
 #add_definitions(-std=c++11)
@@ -8,79 +8,12 @@ project(sick_safetyscanners)
 add_definitions(-std=c++11 -Wall)
 #add_definitions(-std=c++11 -Wall -Werror)
 
-## Find catkin macros and libraries
-find_package(catkin REQUIRED
-  COMPONENTS
-    dynamic_reconfigure
-    message_generation
-    roscpp
-    sensor_msgs
-    std_msgs
-)
 
 ## Find system libraries
 #find_package(Eigen3 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system thread)
 
-generate_dynamic_reconfigure_options(
-  config/SickSafetyscannersConfiguration.cfg
-)
 
-
-add_message_files(
-  FILES
-  ApplicationDataMsg.msg
-  ApplicationInputsMsg.msg
-  ApplicationOutputsMsg.msg
-  DataHeaderMsg.msg
-  DerivedValuesMsg.msg
-  ExtendedLaserScanMsg.msg
-  FieldMsg.msg
-  GeneralSystemStateMsg.msg
-  IntrusionDataMsg.msg
-  IntrusionDatumMsg.msg
-  MeasurementDataMsg.msg
-  MonitoringCaseMsg.msg
-  OutputPathsMsg.msg
-  RawMicroScanDataMsg.msg
-  ScanPointMsg.msg
-)
-
-add_service_files(
-  FILES
-  FieldData.srv
-)
-
-generate_messages(
-  DEPENDENCIES
-  sensor_msgs
-  std_msgs
-)
-
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if your package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-  INCLUDE_DIRS
-    include
-#    ${EIGEN3_INCLUDE_DIR}
-  LIBRARIES
-    ${PROJECT_NAME}_core
-  CATKIN_DEPENDS
-    dynamic_reconfigure
-    message_runtime
-    roscpp
-    sensor_msgs
-    std_msgs
-  DEPENDS
-    Boost
-)
 
 
 
@@ -89,17 +22,8 @@ catkin_package(
 ###########
 
 
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-#  ${EIGEN3_INCLUDE_DIR}
-  ${Boost_INCLUDE_DIRS}
-)
-
 ## Declare a cpp library
-add_library(${PROJECT_NAME}_core
+add_library(sicksafetyscanners
   src/SickSafetyscanners.cpp
   src/cola2/ApplicationNameVariableCommand.cpp
   src/cola2/ChangeCommSettingsCommand.cpp
@@ -193,32 +117,22 @@ add_library(${PROJECT_NAME}_core
   src/datastructure/UserName.cpp
 )
 
-## Declare cpp executables
-add_executable(${PROJECT_NAME}_node
-  nodes/${PROJECT_NAME}_node.cpp
-  src/SickSafetyscannersRos.cpp
+target_compile_options(sicksafetyscanners PUBLIC ${CXX11_FLAG})
+
+target_include_directories(sicksafetyscanners PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+target_include_directories(sicksafetyscanners PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  ${Boost_INCLUDE_DIR}
+  )
+
+
+target_link_libraries(sicksafetyscanners PUBLIC ${Boost_LIBRARIES}
 )
 
-## Add dependencies to exported targets, like ROS msgs or srvs
-add_dependencies(${PROJECT_NAME}_core
-  ${${PROJECT_NAME}_EXPORTED_TARGETS}
-  ${catkin_EXPORTED_TARGETS}
-)
-
-add_dependencies(${PROJECT_NAME}_node
-  ${${PROJECT_NAME}_EXPORTED_TARGETS}
-  ${catkin_EXPORTED_TARGETS}
-)
-
-## Specify libraries to link executable targets against
-target_link_libraries(${PROJECT_NAME}_core
-  ${catkin_LIBRARIES}
-)
-
-target_link_libraries(${PROJECT_NAME}_node
-  ${PROJECT_NAME}_core
-  ${catkin_LIBRARIES}
-)
+add_library(SickSafetyscanners::sicksafetyscanners ALIAS sicksafetyscanners)
 
 #############
 ## Install ##
@@ -227,44 +141,44 @@ target_link_libraries(${PROJECT_NAME}_node
 # Mark executables and/or libraries for installation
 
 install(
-  TARGETS ${PROJECT_NAME}_core
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  TARGETS sicksafetyscanners EXPORT sicksafetyscanners_targets
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
 )
 
 install(
-  TARGETS ${PROJECT_NAME}_node
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+  EXPORT sicksafetyscanners_targets
+  DESTINATION lib/cmake/sicksafetyscanners
+  FILE sicksafetyscannersTargets.cmake
+  NAMESPACE sicksafetyscanners::
+  )
 
 # Mark cpp header files for installation
 install(
   DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include
   FILES_MATCHING PATTERN "*.h"
 )
 
-# Mark other files for installation
-install(
-  DIRECTORY docs launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(sicksafetyscannersConfigVersion.cmake VERSION 1.0.0
+  COMPATIBILITY SameMajorVersion)
 
-#############
-## Testing ##
-#############
+install(FILES sicksafetyscannersConfig.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/sicksafetyscannersConfigVersion.cmake
+  DESTINATION lib/cmake/sicksafetyscanners)
 
-#if(CATKIN_ENABLE_TESTING)
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-## Add gtest based cpp test target and link libraries
-#catkin_add_gtest(${PROJECT_NAME}-test
-#  test/test_ros_package_template.cpp
-#  test/AlgorithmTest.cpp)
-#endif()
 
-#if(TARGET ${PROJECT_NAME}-test)
-#  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME}_core)
-#  endif()
+##############################################
+## Exporting from the build tree
+##############################################
+
+export(EXPORT sicksafetyscanners_targets FILE
+  ${CMAKE_CURRENT_BINARY_DIR}/sicksafetyscannersTargets.cmake NAMESPACE sicksafetyscanners::)
+
+#Register package in user's package registry
+export(PACKAGE sicksafetyscanners)
+
+
