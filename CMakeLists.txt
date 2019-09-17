@@ -136,7 +136,7 @@ target_include_directories(sick_safetyscanners PUBLIC
 target_link_libraries(sick_safetyscanners PUBLIC ${Boost_LIBRARIES}
 )
 
-add_library(SickSafetyscanners::sicksafetyscanners ALIAS sick_safetyscanners)
+add_library(sick_safetyscanners::sick_safetyscanners ALIAS sick_safetyscanners)
 
 #############
 ## Install ##
@@ -145,7 +145,7 @@ add_library(SickSafetyscanners::sicksafetyscanners ALIAS sick_safetyscanners)
 # Mark executables and/or libraries for installation
 
 install(
-  TARGETS sick_safetyscanners EXPORT sicksafetyscanners_targets
+  TARGETS sick_safetyscanners EXPORT sick_safetyscanners_targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -153,25 +153,27 @@ install(
 )
 
 install(
-  EXPORT sicksafetyscanners_targets
+  EXPORT sick_safetyscanners_targets
   DESTINATION lib/cmake/sick_safetyscanners
-  FILE sicksafetyscannersTargets.cmake
+  FILE sick_safetyscannersTargets.cmake
   NAMESPACE sick_safetyscanners::
   )
 
 # Mark cpp header files for installation
 install(
   DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION include
-  FILES_MATCHING PATTERN "*.h"
+  DESTINATION include/${PROJECT_NAME}
+  FILES_MATCHING 
+  PATTERN "*.h"
+  PATTERN "*.hpp"
 )
 
 include(CMakePackageConfigHelpers)
-write_basic_package_version_file(sicksafetyscannersConfigVersion.cmake VERSION 1.0.0
+write_basic_package_version_file(sick_safetyscannersConfigVersion.cmake VERSION 1.0.0
   COMPATIBILITY SameMajorVersion)
 
-install(FILES sicksafetyscannersConfig.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/sicksafetyscannersConfigVersion.cmake
+install(FILES sick_safetyscannersConfig.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/sick_safetyscannersConfigVersion.cmake
   DESTINATION lib/cmake/sick_safetyscanners)
 
 
@@ -179,8 +181,8 @@ install(FILES sicksafetyscannersConfig.cmake
 ## Exporting from the build tree
 ##############################################
 
-export(EXPORT sicksafetyscanners_targets FILE
-  ${CMAKE_CURRENT_BINARY_DIR}/sicksafetyscannersTargets.cmake NAMESPACE sick_safetyscanners::)
+export(EXPORT sick_safetyscanners_targets FILE
+  ${CMAKE_CURRENT_BINARY_DIR}/sick_safetyscannersTargets.cmake NAMESPACE sick_safetyscanners::)
 
 #Register package in user's package registry
 export(PACKAGE sick_safetyscanners)
