@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 2.8.3) #TODO CHECK min VErsion Number
 project(sick_safetyscanners LANGUAGES CXX)
 
 ## Use C++11
@@ -131,18 +131,11 @@ if(WITHOUT_ROS_LOGGING)
     PRIVATE NO_ROS_LOGGING=1)
 endif()
 
-# include add definitions c11 from above and no ros compile
-#add_definitions(-std=c++11 -Wall)
-
-target_include_directories(sick_safetyscanners PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}/src)
-
 target_include_directories(sick_safetyscanners PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
   ${Boost_INCLUDE_DIR}
   )
-
 
 target_link_libraries(sick_safetyscanners PUBLIC ${Boost_LIBRARIES}
 )
@@ -192,10 +185,10 @@ install(FILES sick_safetyscannersConfig.cmake
 ## Exporting from the build tree
 ##############################################
 
-export(EXPORT sick_safetyscanners_targets FILE
-  ${CMAKE_CURRENT_BINARY_DIR}/sick_safetyscannersTargets.cmake NAMESPACE sick_safetyscanners::)
+#export(EXPORT sick_safetyscanners_targets FILE
+  #${CMAKE_CURRENT_BINARY_DIR}/sick_safetyscannersTargets.cmake NAMESPACE sick_safetyscanners::)
 
-#Register package in user's package registry
-export(PACKAGE sick_safetyscanners)
+##Register package in user's package registry
+#export(PACKAGE sick_safetyscanners)
 
 
