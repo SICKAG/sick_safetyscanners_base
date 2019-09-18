@@ -5,7 +5,6 @@ project(sick_safetyscanners LANGUAGES CXX)
 #add_definitions(-std=c++11)
 ## By adding -Wall and -Werror, the compiler does not ignore warnings anymore,
 ## enforcing cleaner code.
-add_definitions(-std=c++11 -Wall)
 #add_definitions(-std=c++11 -Wall -Werror)
 
 
@@ -20,7 +19,7 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 ###########
 ## Build ##
 ###########
-option(WITHOUT_ROS_LOGGING "Disabel ROS Logging and use printf instead" ON)
+option(WITHOUT_ROS_LOGGING "Disable ROS Logging and use printf instead" ON)
 
 if(WITHOUT_ROS_LOGGING)
   add_definitions(-DNO_ROS_LOGGING=1)
@@ -121,7 +120,19 @@ add_library(sick_safetyscanners
   src/datastructure/UserName.cpp
 )
 
-target_compile_options(sick_safetyscanners PUBLIC ${CXX11_FLAG})
+target_compile_options(sick_safetyscanners
+  PUBLIC ${CXX11_FLAG}
+  PRIVATE -Wall)
+
+option(WITHOUT_ROS_LOGGING "Disable ROS Logging and use printf instead" ON)
+
+if(WITHOUT_ROS_LOGGING)
+  target_compile_definitions(sick_safetyscanners
+    PRIVATE NO_ROS_LOGGING=1)
+endif()
+
+# include add definitions c11 from above and no ros compile
+#add_definitions(-std=c++11 -Wall)
 
 target_include_directories(sick_safetyscanners PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src)
