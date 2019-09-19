@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 2.8.3) #TODO CHECK min VErsion Number
-project(sick_safetyscanners LANGUAGES CXX)
+cmake_minimum_required(VERSION 2.8.12) 
+project(sick_safetyscanners CXX)
 
 ## Use C++11
 #add_definitions(-std=c++11)
