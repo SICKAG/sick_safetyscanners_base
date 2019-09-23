@@ -1,2 +1,0 @@
-ApplicationInputsMsg inputs
-ApplicationOutputsMsg outputs

@@ -1,6 +1,0 @@
-uint16 multiplication_factor
-uint16 number_of_beams
-uint16 scan_time
-float32 start_angle
-float32 angular_beam_resolution
-uint32 interbeam_period

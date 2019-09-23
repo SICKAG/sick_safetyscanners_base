@@ -1,9 +1,0 @@
-float32 angle
-uint16 distance
-uint8 reflectivity
-bool valid
-bool infinite
-bool glare
-bool reflector
-bool contamination
-bool contamination_warning
