@@ -1,17 +1,17 @@
-# Sick_Safetyscanners ROS Driver
+# Sick_Safetyscanners CPP Driver
 
 ## Table of contents
 
 - [Supported Hardware](#supported-hardware)
 - [Getting started](#getting-started)
-- [ROS API](#ros-api)
+- [API](#api)
 - [Creators](#creators)
 
-A ROS Driver which reads the raw data from the SICK Safety Scanners and publishes the data as a laser_scan msg.
+A CPP standalone Driver which reads the raw data from the SICK Safety Scanners and takes custom functions to publish the data.
 
 ## Supported Hardware
 
-![ ](docs/images/mS3-ROS-logo.PNG  "Sick microScan3")
+![ ](docs/images/mS3-logo.PNG  "Sick microScan3")
 
 | Product Family  | Product Type | Description |
 | ---------------------- | -------------------- | ------------- |
@@ -40,119 +40,104 @@ A ROS Driver which reads the raw data from the SICK Safety Scanners and publishe
 
 ## Getting started
 
-The ROS driver will be released as a debian package, and therefore can be installed from binaries or from source.
+The driver will be released on this github repository, and can then be installed from source.
 
 ### Prerequisites
 
 * Linux
-* Working ROS-Distro
 * Correctly setup SICK Safety Scanner
 * Connected SICK Safety Scanner and a correctly setup ethernet network. Both the host and the sensor have to be in the same network.
 
 ### Installation
 
-In the following instructions, replace `<rosdistro>` with the name of your ROS distro (e.g., `kinetic`).
-
-#### From Binaries
-
-The driver is released at longer intervals as a binary package. 
-
-`sudo apt-get install ros-<rosdistro>-sick_safetyscanners`
-
-
-#### From Source
+For installation this github repository has to be cloned and afterwards installed. If a custom install directory is wanted use the -DCMAKE_INSTALL_PREFIX option to specify a path.
 
 ```bash
-source /opt/ros/<rosdistro>/setup.bash
-mkdir -p ~/catkin_ws/src/
-cd ~/catkin_ws/src/
-git clone https://github.com/SICKAG/sick_safetyscanners.git
-cd ..
-catkin_make install
-source ~/catkin_ws/install/setup.bash
+git clone https://github.com/SICKAG/sick_safetyscanners_base.git
+cd sick_safetyscanners_base
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=<path to install folder> ..
+make -j9
+make install
 ```
 
-### Starting
+### Usage
 
-To start the driver the launch file has to be started. For the driver to work correctly, the sensor ip and host ip have to be defined. These parameters can be passed to the sensor as arguments via launch file.
-
-```
-roslaunch sick_safetyscanners sick_safetyscanners.launch sensor_ip:=192.168.1.10 host_ip:=192.168.1.9
-```
-
-This will start the driver and the dynamic reconfigure node. In this you can set different parameters on runtime, especially the angles and the data the sensor should publish. If these parameters should be set on startup they can be loaded to the parameter server beforehand.
-
-To visualize the data start rviz and subscribe to the ~/laser_scan topic.
+To use the library in a driver the path of the installation has to be added to the cmake prefix path of your application. You can achieve this by using, bevor invoking cmake on your application.
 
 ```
-rosrun rviz rviz 
+export CMAKE_PREFIX_PATH=<path to install folder>
 ```
+
+Afterwards the driver and the settings for the driver can be included with:
+```
+#include <sick_safetyscanners/SickSafetyscanners.h> 
+#include <sick_safetyscanners/datastructure/CommSettings.h>
+```
+
+To setup the driver one has to invoke the constructor and pass a function and the settings for communication.
+
+```
+sick::datastructure::CommSettings m_communication_settings;
+
+#Set the correct parameters for the communication settings, otherwise the default parameters will be used. 
+#For example:
+m_communication_settings.setHostIp("192.168.1.100");
+"TODO write defaults or API!!!"
+
+std::shared_ptr<sick::SickSafetyscanners> m_device;
+m_device = std::make_shared<sick::SickSafetyscanners>(boost::bind(&your_class::your_function, this, _1), &m_communication_settings);
+m_device->run();  
+```
+
+With the passed function having the following declaration:
+
+```
+void your_function(const sick::datastructure::Data& data) ;
+```
+
+An Example can be found in the sick_safetyscanners ROS Driver: https://github.com/SICKAG/sick_safetyscanners/blob/master/src/SickSafetyscannersRos.cpp
+
+## API
+
+### Default Parameters of Communication Settings
+
+The parameters can be set using the setters of the CommSettings class. To set for example to host_ip the following function can be called.
+
+```
+sick::datastructure::CommSettings m_communication_settings;
+m_communication_settings.setHostIp("192.168.1.100");
+```
+
+| Parameter Name        | API | Default  | Information |
+| -------------                         | ------|------- | ------------- |
+| sensor_ip                    | void setSensorIp(const std::string& sensor_ip); | 192.168.1.11  |Sensor IP address. Can be passed as an argument to the launch file. |
+| host_ip                        |   void setHostIp(const std::string& host_ip);  | 192.168.1.9  | Host IP address.  Can be passed as an argument to the launch file.  |
+| host_udp_port             | void setHostUdpPort(const uint16_t& host_udp_port);  | 0 | Host UDP Port.  Can be passed as an argument to the launch file.  Zero allows system chosen port. |
+| frame_id  | String | scan | The frame name of the sensor message  |
+| skip    | Integer | 0 | The number of scans to skip between each measured scan.  For a 25Hz laser, setting 'skip' to 0 makes it publish at 25Hz, 'skip' to 1 makes it publish at 12.5Hz. |
+| angle_start              | Double |  0.0 | Start angle of scan in radians, if both start and end angle are equal, all angels are regarded.  0° is at the front of the scanner. |
+| angle_end                | Double | 0.0 | End angle of scan in radians, if both start and end angle are equal, all angels are regarded.  0° is at the front of the scanner. |
+| channel_enabled     | void setEnabled(bool enabled); | true | If the channel should be enabled  |
+| general_system_state  | Boolean | true | If the general system state should be published  |
+| derived_settings      | Boolean | true | If the derived settings should be published  |
+| measurement_data  | Boolean | true | If the measurement data should be published  |
+| intrusion_data          | Boolean | true | If the intrusion data should be published  |
+| application_io_data  | Boolean | true | If the application IO data should be published  |
+| use_persistent_config | Boolean |  false | If this flag is set, the configured angles from the sensor are loaded and used and the ROS parameters *angle_start* and *angle_end* are disregarded|
+
+
+### Functions
 
 ### Troubleshooting
 
 * Check if the sensor has power and is connected to the host.
 * Check if both sensor and host are in the same subnet e.g. 192.168.1
-* Check if the launch file is called with the correct parameters for IP-addresses and ports.
-
-## ROS API
 
 
 
-### Advertised ROS Topics
 
-
-`
-~/laser_scan (type: sensor_msgs/LaserScan)
-`
-
-Publishes a scan from the laserscanner
-
-`
-~/extended_laser_scan (type: sick_safetyscanners/ExtendedLaserScanMsg)
-`
-
-Extends the basic laser scan message by reflector data and intrusion data.
-
-`
-~/output_paths (type: sick_safetyscanners/OutputPathMsg)
-`
-
-Gives feedback of the current status of the output paths.
-
-
-`
-~/raw_data (type: sick_safetyscanners/RawMicroScanDataMsg)
-`
-
-Publishes the raw data from the sensor as a ROS message.
-
-### Advertised ROS Services
-
-`
-~/field_data
-`
-
-Returns all configured protective and warning fields for the sensor
-
-
-### ROS parameters
-
-| Parameter Name        | Type | Default |Required on startup | Information |
-| -------------                   |  ------|------- | ------------| ------------- |
-| sensor_ip                    | String | 192.168.1.11 | ✔ |Sensor IP address. Can be passed as an argument to the launch file. |
-| host_ip                        |   String  | 192.168.1.9 | ✔ | Host IP address.  Can be passed as an argument to the launch file.  |
-| host_udp_port             | Integer | 0 | | Host UDP Port.  Can be passed as an argument to the launch file.  Zero allows system chosen port. |
-| frame_id  | String | scan | | The frame name of the sensor message  |
-| skip    | Integer | 0 | | The number of scans to skip between each measured scan.  For a 25Hz laser, setting 'skip' to 0 makes it publish at 25Hz, 'skip' to 1 makes it publish at 12.5Hz. |
-| angle_start              | Double |  0.0| | Start angle of scan in radians, if both start and end angle are equal, all angels are regarded.  0° is at the front of the scanner. |
-| angle_end                | Double | 0.0 | | End angle of scan in radians, if both start and end angle are equal, all angels are regarded.  0° is at the front of the scanner. |
-| channel_enabled     | Boolean | true | | If the channel should be enabled  |
-| general_system_state  | Boolean | true | | If the general system state should be published  |
-| derived_settings      | Boolean | true | | If the derived settings should be published  |
-| measurement_data  | Boolean | true | | If the measurement data should be published  |
-| intrusion_data          | Boolean | true | | If the intrusion data should be published  |
-| application_io_data  | Boolean | true | | If the application IO data should be published  |
-| use_persistent_config | Boolean |  false | | If this flag is set, the configured angles from the sensor are loaded and used and the ROS parameters *angle_start* and *angle_end* are disregarded|
 
 ## Creators
 
