@@ -76,7 +76,7 @@ Afterwards the driver and the settings for the driver can be included with:
 #include <sick_safetyscanners/datastructure/CommSettings.h>
 ```
 
-To setup the driver one has to invoke the constructor and pass a function and the settings for communication.
+To setup the driver one has to invoke the constructor and pass a function and the settings for communication. The function then will be executed everytime a new scan from the sensor arrives and gives access to the data.
 
 ```
 sick::datastructure::CommSettings m_communication_settings;
@@ -84,7 +84,6 @@ sick::datastructure::CommSettings m_communication_settings;
 #Set the correct parameters for the communication settings, otherwise the default parameters will be used. 
 #For example:
 m_communication_settings.setHostIp("192.168.1.100");
-"TODO write defaults or API!!!"
 
 std::shared_ptr<sick::SickSafetyscanners> m_device;
 m_device = std::make_shared<sick::SickSafetyscanners>(boost::bind(&your_class::your_function, this, _1), &m_communication_settings);
@@ -101,7 +100,7 @@ An Example can be found in the sick_safetyscanners ROS Driver: https://github.co
 
 ## API
 
-### Default Parameters of Communication Settings
+### Parameters of Communication Settings
 
 The parameters can be set using the setters of the CommSettings class. To set for example to host_ip the following function can be called.
 
@@ -115,25 +114,44 @@ m_communication_settings.setHostIp("192.168.1.100");
 | sensor_ip                    | void setSensorIp(const std::string& sensor_ip); | 192.168.1.11  |Sensor IP address. Can be passed as an argument to the launch file. |
 | host_ip                        |   void setHostIp(const std::string& host_ip);  | 192.168.1.9  | Host IP address.  Can be passed as an argument to the launch file.  |
 | host_udp_port             | void setHostUdpPort(const uint16_t& host_udp_port);  | 0 | Host UDP Port.  Can be passed as an argument to the launch file.  Zero allows system chosen port. |
-| frame_id  | String | scan | The frame name of the sensor message  |
-| skip    | Integer | 0 | The number of scans to skip between each measured scan.  For a 25Hz laser, setting 'skip' to 0 makes it publish at 25Hz, 'skip' to 1 makes it publish at 12.5Hz. |
-| angle_start              | Double |  0.0 | Start angle of scan in radians, if both start and end angle are equal, all angels are regarded.  0° is at the front of the scanner. |
-| angle_end                | Double | 0.0 | End angle of scan in radians, if both start and end angle are equal, all angels are regarded.  0° is at the front of the scanner. |
+| publishing_frequency    | void setPublishingFrequency(const uint16_t& publishing_frequency) | 1 | Publish every n_th scan, where n is the publishing frequency.  For a 25Hz laser, setting  to 1 makes it publish at 25Hz, to 2 makes it publish at 12.5Hz. |
+| start_angle              | void setStartAngle(const uint32_t& start_angle) |  0.0 | Start angle of scan in radians, if both start and end angle are equal, all angels are regarded.  0° is at the front of the scanner. |
+| end_angle                | void setEndAngle(const uint32_t& start_angle) | 0.0 | End angle of scan in radians, if both start and end angle are equal, all angels are regarded.  0° is at the front of the scanner. |
 | channel_enabled     | void setEnabled(bool enabled); | true | If the channel should be enabled  |
-| general_system_state  | Boolean | true | If the general system state should be published  |
-| derived_settings      | Boolean | true | If the derived settings should be published  |
-| measurement_data  | Boolean | true | If the measurement data should be published  |
-| intrusion_data          | Boolean | true | If the intrusion data should be published  |
-| application_io_data  | Boolean | true | If the application IO data should be published  |
-| use_persistent_config | Boolean |  false | If this flag is set, the configured angles from the sensor are loaded and used and the ROS parameters *angle_start* and *angle_end* are disregarded|
+|e_interface_type | void setEInterfaceType(const uint8_t& e_interface_type) | 0 | Sets the interface type of the sensor <br>0: EFI-pro <br>1:  EtherNet/IP <br>3:  Profinet<br>4: Non-safe Ethernet
+| features | void CommSettings::setFeatures<br>(<br> bool general_system_state,<br> bool derived_settings, <br> bool measurement_data, <br> bool intrusion_data, <br> bool application_data<br>) | all true | Enables the individual data outputs. |
 
 
 ### Functions
+
+Thd Library allows to access variables of the sensor and invoke methods to change settings using the cola2 protocol. The following methods can be called:
+
+|  Function | Information |
+|-------------|-----------------|
+| void changeSensorSettings<br>(const sick::datastructure::CommSettings& settings) | Updates the sensor settigns to the passed configuration |
+| void findSensor<br>(const sick::datastructure::CommSettings& settings, <br>uint16_t blink_time); | Lets the sensor flash the display for the specified time. |
+| void requestApplicationName<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::ApplicationName& application_name); | Returns the name of the current application  |
+| void requestConfigMetadata<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::ConfigMetadata& config_metadata); | Returns the metadata of the current configuration of the sensor |
+| void requestDeviceName<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::DeviceName& device_name);  | Returns the device name |
+| void requestDeviceStatus<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::DeviceStatus& device_status); | Returns the device status |
+| void requestFieldData<br>(const sick::datastructure::CommSettings& settings,  <br>std::vector<sick::datastructure::FieldData>& field_data); | Returns the field data of the warning and safety fields |
+| void requestFirmwareVersion<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::FirmwareVersion& firmware_version); | Returns the firmware version |
+| void requestMonitoringCases<br>(const sick::datastructure::CommSettings& settings, <br>std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases); | Returns the data of the  Monitoring Cases|
+ | void requestOrderNumber<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::OrderNumber& order_number); | Returns the order Number|
+ | void requestPersistentConfig<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::ConfigData& config_data);  | Returns the Persistent configuration of the sensor, which was set in the Safety Designer|
+ | void requestProjectName<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::ProjectName& project_name); |  Returns the project name|
+ | void requestRequiredUserAction<br>(const sick::datastructure::CommSettings& settings,  <br>sick::datastructure::RequiredUserAction& required_user_action); | Returns the required user actions as specified in the cola 2 manual.|
+| void requestSerialNumber<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::SerialNumber& serial_number); | Returns the serial number of the sensor |
+| void requestStatusOverview<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::StatusOverview& status_overview);  | Returns the status overview  |
+| void requestTypeCode<br>(const sick::datastructure::CommSettings& settings,        <br>sick::datastructure::TypeCode& type_code) | Returns the type code of the sensor |
+| void requestUserName<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::UserName& user_name);  | Returns the user name |
 
 ### Troubleshooting
 
 * Check if the sensor has power and is connected to the host.
 * Check if both sensor and host are in the same subnet e.g. 192.168.1
+* Are the correct IPs configured for the application?
+* Is the correct Interface Type configured?
 
 
 
