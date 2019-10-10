@@ -93,11 +93,11 @@ void SickSafetyscanners::changeSensorSettings(const datastructure::CommSettings&
   stopTCPConnection();
 }
 
-void SickSafetyscanners::FindSensor(const datastructure::CommSettings& settings,
+void SickSafetyscanners::findSensor(const datastructure::CommSettings& settings,
                                     uint16_t blink_time)
 {
   startTCPConnection(settings);
-  FindSensorInColaSession(blink_time);
+  findSensorInColaSession(blink_time);
   stopTCPConnection();
 }
 
@@ -313,7 +313,7 @@ void SickSafetyscanners::requestMonitoringCaseDataInColaSession(
   }
 }
 
-void SickSafetyscanners::FindSensorInColaSession(uint16_t blink_time)
+void SickSafetyscanners::findSensorInColaSession(uint16_t blink_time)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
     std::make_shared<sick::cola2::FindMeCommand>(boost::ref(*m_session_ptr), blink_time);

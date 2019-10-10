@@ -144,7 +144,7 @@ public:
                            datastructure::DeviceStatus& device_status);
   void requestRequiredUserAction(const datastructure::CommSettings& settings,
                                  datastructure::RequiredUserAction& required_user_action);
-  void FindSensor(const datastructure::CommSettings& settings, uint16_t blink_time);
+  void findSensor(const datastructure::CommSettings& settings, uint16_t blink_time);
   /*!
    * \brief Requests data of the protective and warning fields from the sensor.
    *
@@ -218,7 +218,7 @@ private:
     sick::datastructure::RequiredUserAction& required_user_action);
   void requestMonitoringCaseDataInColaSession(
     std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases);
-  void FindSensorInColaSession(uint16_t blink_time);
+  void findSensorInColaSession(uint16_t blink_time);
 };
 
 } // namespace sick
