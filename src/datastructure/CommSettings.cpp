@@ -37,26 +37,25 @@
 namespace sick {
 namespace datastructure {
 
-CommSettings::CommSettings() 
+CommSettings::CommSettings()
 {
-  //Defaults, could be moved to an external config xml
-  m_sensor_ip = boost::asio::ip::address_v4::from_string("192.168.1.11");
-  m_host_ip = boost::asio::ip::address_v4::from_string("192.168.1.9");
-  m_host_udp_port = 0;
+  // Defaults, could be moved to an external config xml
+  m_sensor_ip            = boost::asio::ip::address_v4::from_string("192.168.1.11");
+  m_host_ip              = boost::asio::ip::address_v4::from_string("192.168.1.9");
+  m_host_udp_port        = 0;
   m_publishing_frequency = 1;
-  m_start_angle = 0.0;
-  m_end_angle = 0.0;
-  m_channel = 0;
-  m_enabled = true;
-  m_e_interface_type = 0;
+  m_start_angle          = 0.0;
+  m_end_angle            = 0.0;
+  m_channel              = 0;
+  m_enabled              = true;
+  m_e_interface_type     = 0;
 
   m_features = 0;
-  m_features += 1 << 0; //enable general system state
-  m_features += 1 << 1; //enable derived settings
-  m_features += 1 << 2; //enable measurement data
-  m_features += 1 << 3; //enable intursion data
+  m_features += 1 << 0; // enable general system state
+  m_features += 1 << 1; // enable derived settings
+  m_features += 1 << 2; // enable measurement data
+  m_features += 1 << 3; // enable intursion data
   m_features += 1 << 4; // enable application data
-  
 }
 
 boost::asio::ip::address_v4 CommSettings::getHostIp() const
