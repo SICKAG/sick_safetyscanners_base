@@ -1,4 +1,4 @@
-# Sick_SafetyScanners_Base CPP Driver
+# Sick_Safetyscanners_Base CPP Driver
 
 ## Table of contents
 
@@ -134,9 +134,9 @@ Thd Library allows to access variables of the sensor and invoke methods to chang
 | void requestConfigMetadata<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::ConfigMetadata& config_metadata); | Returns the metadata of the current configuration of the sensor |
 | void requestDeviceName<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::DeviceName& device_name);  | Returns the device name |
 | void requestDeviceStatus<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::DeviceStatus& device_status); | Returns the device status |
-| void requestFieldData<br>(const sick::datastructure::CommSettings& settings,  <br>std::vector<sick::datastructure::FieldData>& field_data); | Returns the field data of the warning and safety fields |
+| void requestFieldData<br>(const sick::datastructure::CommSettings& settings,  <br>std::vector< sick::datastructure::FieldData>& field_data); | Returns the field data of the warning and safety fields |
 | void requestFirmwareVersion<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::FirmwareVersion& firmware_version); | Returns the firmware version |
-| void requestMonitoringCases<br>(const sick::datastructure::CommSettings& settings, <br>std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases); | Returns the data of the  Monitoring Cases|
+| void requestMonitoringCases<br>(const sick::datastructure::CommSettings& settings, <br>std::vector< sick::datastructure::MonitoringCaseData>& monitoring_cases); | Returns the data of the  Monitoring Cases|
  | void requestOrderNumber<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::OrderNumber& order_number); | Returns the order Number|
  | void requestPersistentConfig<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::ConfigData& config_data);  | Returns the Persistent configuration of the sensor, which was set in the Safety Designer|
  | void requestProjectName<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::ProjectName& project_name); |  Returns the project name|
