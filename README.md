@@ -72,8 +72,8 @@ export CMAKE_PREFIX_PATH=<path to install folder>
 
 Afterwards the driver and the settings for the driver can be included with:
 ```
-#include <sick_safetyscanners/SickSafetyScannersBase.h> 
-#include <sick_safetyscanners/datastructure/CommSettings.h>
+#include <sick_safetyscanners_base/SickSafetyscannersBase.h> 
+#include <sick_safetyscanners_base/datastructure/CommSettings.h>
 ```
 
 To setup the driver one has to invoke the constructor and pass a function and the settings for communication. The function then will be executed everytime a new scan from the sensor arrives and gives access to the data.
@@ -85,8 +85,8 @@ sick::datastructure::CommSettings m_communication_settings;
 #For example:
 m_communication_settings.setHostIp("192.168.1.100");
 
-std::shared_ptr<sick::SickSafetyScannersBase> m_device;
-m_device = std::make_shared<sick::SickSafetyScannersBase>(boost::bind(&your_class::your_function, this, _1), &m_communication_settings);
+std::shared_ptr<sick::SickSafetyscannersBase> m_device;
+m_device = std::make_shared<sick::SickSafetyscannersBase>(boost::bind(&your_class::your_function, this, _1), &m_communication_settings);
 m_device->run();  
 ```
 
