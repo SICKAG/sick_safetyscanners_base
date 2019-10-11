@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATASTRUCTURE_ORDERNUMBER_H
-#define SICK_SAFETYSCANNERS_DATASTRUCTURE_ORDERNUMBER_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_ORDERNUMBER_H
+#define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_ORDERNUMBER_H
 
 #include <iostream>
 
@@ -73,4 +73,4 @@ private:
 } // namespace datastructure
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATASTRUCTURE_ORDERNUMBER_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_ORDERNUMBER_H

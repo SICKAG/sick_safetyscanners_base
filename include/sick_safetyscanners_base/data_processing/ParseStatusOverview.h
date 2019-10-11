@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATA_PROCESSING_PARSESTATUSOVERVIEW_H
-#define SICK_SAFETYSCANNERS_DATA_PROCESSING_PARSESTATUSOVERVIEW_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSESTATUSOVERVIEW_H
+#define SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSESTATUSOVERVIEW_H
 
 #include <sick_safetyscanners/datastructure/Data.h>
 #include <sick_safetyscanners/datastructure/PacketBuffer.h>
@@ -87,4 +87,4 @@ private:
 } // namespace data_processing
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATA_PROCESSING_PARSESTATUSOVERVIEW_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSESTATUSOVERVIEW_H

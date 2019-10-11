@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_COLA2_VARIABLECOMMAND_H
-#define SICK_SAFETYSCANNERS_COLA2_VARIABLECOMMAND_H
+#ifndef SICK_SAFETYSCANNERS_BASE_COLA2_VARIABLECOMMAND_H
+#define SICK_SAFETYSCANNERS_BASE_COLA2_VARIABLECOMMAND_H
 
 #include <sick_safetyscanners/cola2/Command.h>
 
@@ -87,4 +87,4 @@ private:
 } // namespace cola2
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_COLA2_VARIABLECOMMAND_H
+#endif // SICK_SAFETYSCANNERS_BASE_COLA2_VARIABLECOMMAND_H

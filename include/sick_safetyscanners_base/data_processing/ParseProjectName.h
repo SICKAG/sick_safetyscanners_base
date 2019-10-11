@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATA_PROCESSING_PARSEPROJECTNAME_H
-#define SICK_SAFETYSCANNERS_DATA_PROCESSING_PARSEPROJECTNAME_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEPROJECTNAME_H
+#define SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEPROJECTNAME_H
 
 #include <sick_safetyscanners/datastructure/Data.h>
 #include <sick_safetyscanners/datastructure/PacketBuffer.h>
@@ -76,4 +76,4 @@ public:
 } // namespace data_processing
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATA_PROCESSING_PARSEPROJECTNAME_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEPROJECTNAME_H

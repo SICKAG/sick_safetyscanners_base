@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATA_PROCESSING_PARSEINTRUSIONDATA_H
-#define SICK_SAFETYSCANNERS_DATA_PROCESSING_PARSEINTRUSIONDATA_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEINTRUSIONDATA_H
+#define SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEINTRUSIONDATA_H
 
 #include <sick_safetyscanners/datastructure/Data.h>
 #include <sick_safetyscanners/datastructure/DerivedValues.h>
@@ -92,4 +92,4 @@ private:
 } // namespace data_processing
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATA_PROCESSING_PARSEINTRUSIONDATA_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEINTRUSIONDATA_H

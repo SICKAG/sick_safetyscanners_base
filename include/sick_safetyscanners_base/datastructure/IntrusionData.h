@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATASTRUCTURE_INTRUSIONDATA_H
-#define SICK_SAFETYSCANNERS_DATASTRUCTURE_INTRUSIONDATA_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_INTRUSIONDATA_H
+#define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_INTRUSIONDATA_H
 
 #include <sick_safetyscanners/datastructure/IntrusionDatum.h>
 
@@ -85,4 +85,4 @@ private:
 } // namespace datastructure
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATASTRUCTURE_INTRUSIONDATA_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_INTRUSIONDATA_H

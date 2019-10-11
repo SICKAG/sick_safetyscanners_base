@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_COLA2_COMMAND_H
-#define SICK_SAFETYSCANNERS_COLA2_COMMAND_H
+#ifndef SICK_SAFETYSCANNERS_BASE_COLA2_COMMAND_H
+#define SICK_SAFETYSCANNERS_BASE_COLA2_COMMAND_H
 
 //#include <ros/ros.h>
 #include <sick_safetyscanners/logging/logging_wrapper.h>
@@ -233,4 +233,4 @@ private:
 } // namespace sick
 
 
-#endif // SICK_SAFETYSCANNERS_COLA2_COMMAND_H
+#endif // SICK_SAFETYSCANNERS_BASE_COLA2_COMMAND_H

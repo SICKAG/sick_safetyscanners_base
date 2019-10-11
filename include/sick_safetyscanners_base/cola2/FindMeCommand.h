@@ -33,8 +33,8 @@
 //----------------------------------------------------------------------
 
 
-#ifndef SICK_SAFETYSCANNERS_COLA2_FINDMECOMMAND_H
-#define SICK_SAFETYSCANNERS_COLA2_FINDMECOMMAND_H
+#ifndef SICK_SAFETYSCANNERS_BASE_COLA2_FINDMECOMMAND_H
+#define SICK_SAFETYSCANNERS_BASE_COLA2_FINDMECOMMAND_H
 
 
 #include <sick_safetyscanners/cola2/MethodCommand.h>
@@ -100,4 +100,4 @@ private:
 } // namespace cola2
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_COLA2_FINDMECOMMAND_H
+#endif // SICK_SAFETYSCANNERS_BASE_COLA2_FINDMECOMMAND_H

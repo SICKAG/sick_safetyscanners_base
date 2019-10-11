@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATASTRUCTURE_APPLICATIONDATA_H
-#define SICK_SAFETYSCANNERS_DATASTRUCTURE_APPLICATIONDATA_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_APPLICATIONDATA_H
+#define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_APPLICATIONDATA_H
 
 #include <sick_safetyscanners/datastructure/ApplicationInputs.h>
 #include <sick_safetyscanners/datastructure/ApplicationOutputs.h>
@@ -102,4 +102,4 @@ private:
 } // namespace datastructure
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATASTRUCTURE_APPLICATIONDATA_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_APPLICATIONDATA_H

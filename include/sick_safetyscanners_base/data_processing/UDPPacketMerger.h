@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATA_PROCESSING_UDPPACKETMERGER_H
-#define SICK_SAFETYSCANNERS_DATA_PROCESSING_UDPPACKETMERGER_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_UDPPACKETMERGER_H
+#define SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_UDPPACKETMERGER_H
 
 #include <sick_safetyscanners/datastructure/PacketBuffer.h>
 #include <sick_safetyscanners/datastructure/ParsedPacketBuffer.h>
@@ -103,4 +103,4 @@ private:
 } // namespace data_processing
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATA_PROCESSING_UDPPACKETMERGER_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_UDPPACKETMERGER_H

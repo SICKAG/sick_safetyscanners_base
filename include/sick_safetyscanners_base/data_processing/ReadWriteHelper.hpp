@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATA_PROCESSING_READWRITEHELPER_HPP
-#define SICK_SAFETYSCANNERS_DATA_PROCESSING_READWRITEHELPER_HPP
+#ifndef SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_READWRITEHELPER_HPP
+#define SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_READWRITEHELPER_HPP
 
 #include <stdint.h>
 
@@ -358,4 +358,4 @@ inline int32_t readInt32LittleEndian(std::vector<uint8_t>::const_iterator it)
 } // namespace read_write_helper
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATA_PROCESSING_READWRITEHELPER_HPP
+#endif // SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_READWRITEHELPER_HPP

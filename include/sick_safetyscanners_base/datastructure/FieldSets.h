@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATASTRUCTURE_FIELDSETS_H
-#define SICK_SAFETYSCANNERS_DATASTRUCTURE_FIELDSETS_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_FIELDSETS_H
+#define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_FIELDSETS_H
 
 #include <iostream>
 #include <vector>
@@ -155,4 +155,4 @@ private:
 } // namespace datastructure
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATASTRUCTURE_FIELDSETS_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_FIELDSETS_H

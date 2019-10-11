@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATASTRUCTURE_CONFIGDATA_H
-#define SICK_SAFETYSCANNERS_DATASTRUCTURE_CONFIGDATA_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_CONFIGDATA_H
+#define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_CONFIGDATA_H
 
 #include <boost/asio/ip/address_v4.hpp>
 #include <iostream>
@@ -367,4 +367,4 @@ private:
 } // namespace datastructure
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATASTRUCTURE_CONFIGDATA_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_CONFIGDATA_H

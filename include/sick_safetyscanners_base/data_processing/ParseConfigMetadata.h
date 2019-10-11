@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATA_PROCESSING_PARSECONFIGMETADATADATA_H
-#define SICK_SAFETYSCANNERS_DATA_PROCESSING_PARSECONFIGMETADATADATA_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSECONFIGMETADATADATA_H
+#define SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSECONFIGMETADATADATA_H
 
 #include <sick_safetyscanners/datastructure/ConfigMetadata.h>
 #include <sick_safetyscanners/datastructure/Data.h>
@@ -85,4 +85,4 @@ private:
 } // namespace data_processing
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATA_PROCESSING_PARSECONFIGMETADATADATA_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSECONFIGMETADATADATA_H

@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATASTRUCTURE_PACKETBUFFER_H
-#define SICK_SAFETYSCANNERS_DATASTRUCTURE_PACKETBUFFER_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_PACKETBUFFER_H
+#define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_PACKETBUFFER_H
 
 #include <iostream>
 #include <stdint.h>
@@ -126,4 +126,4 @@ private:
 } // namespace datastructure
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATASTRUCTURE_PACKETBUFFER_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_PACKETBUFFER_H

@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATASTRUCTURE_DATA_H
-#define SICK_SAFETYSCANNERS_DATASTRUCTURE_DATA_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_DATA_H
+#define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_DATA_H
 
 #include <memory>
 

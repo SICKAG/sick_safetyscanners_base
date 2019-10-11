@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_SICKSAFETYSCANNERS_H
-#define SICK_SAFETYSCANNERS_SICKSAFETYSCANNERS_H
+#ifndef SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H
+#define SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H
 
 //#include <ros/ros.h>
 #include <sick_safetyscanners/logging/logging_wrapper.h>
@@ -224,4 +224,4 @@ private:
 } // namespace sick
 
 
-#endif // SICK_SAFETYSCANNERS_SICKSAFETYSCANNERS_H
+#endif // SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H

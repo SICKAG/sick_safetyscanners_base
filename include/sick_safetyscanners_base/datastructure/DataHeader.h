@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATASTRUCTURE_DATAHEADER_H
-#define SICK_SAFETYSCANNERS_DATASTRUCTURE_DATAHEADER_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_DATAHEADER_H
+#define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_DATAHEADER_H
 
 #include <stdint.h>
 
@@ -414,4 +414,4 @@ private:
 } // namespace datastructure
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATASTRUCTURE_DATAHEADER_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_DATAHEADER_H

@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATASTRUCTURE_INTRUSIONDATUM_H
-#define SICK_SAFETYSCANNERS_DATASTRUCTURE_INTRUSIONDATUM_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_INTRUSIONDATUM_H
+#define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_INTRUSIONDATUM_H
 
 #include <stdint.h>
 #include <vector>
@@ -84,4 +84,4 @@ private:
 } // namespace datastructure
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATASTRUCTURE_INTRUSIONDATUM_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_INTRUSIONDATUM_H

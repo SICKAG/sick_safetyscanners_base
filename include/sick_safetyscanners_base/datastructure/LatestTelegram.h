@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATASTRUCTURE_LATESTTELEGRAM_H
-#define SICK_SAFETYSCANNERS_DATASTRUCTURE_LATESTTELEGRAM_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_LATESTTELEGRAM_H
+#define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_LATESTTELEGRAM_H
 
 #include <iostream>
 #include <memory>
@@ -75,4 +75,4 @@ private:
 } // namespace datastructure
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATASTRUCTURE_LATESTTELEGRAM_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_LATESTTELEGRAM_H

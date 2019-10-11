@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_COLA2_COLA2SESSION_H
-#define SICK_SAFETYSCANNERS_COLA2_COLA2SESSION_H
+#ifndef SICK_SAFETYSCANNERS_BASE_COLA2_COLA2SESSION_H
+#define SICK_SAFETYSCANNERS_BASE_COLA2_COLA2SESSION_H
 
 #include <sick_safetyscanners/datastructure/PacketBuffer.h>
 
@@ -169,4 +169,4 @@ private:
 } // namespace cola2
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_COLA2_COLA2SESSION_H
+#endif // SICK_SAFETYSCANNERS_BASE_COLA2_COLA2SESSION_H

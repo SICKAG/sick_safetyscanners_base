@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_COMMUNICATION_ASYNCUDPCLIENT_H
-#define SICK_SAFETYSCANNERS_COMMUNICATION_ASYNCUDPCLIENT_H
+#ifndef SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCUDPCLIENT_H
+#define SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCUDPCLIENT_H
 
 //#include <ros/ros.h>
 #include <sick_safetyscanners/logging/logging_wrapper.h>
@@ -109,4 +109,4 @@ private:
 } // namespace communication
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_COMMUNICATION_ASYNCUDPCLIENT_H
+#endif // SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCUDPCLIENT_H

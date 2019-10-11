@@ -32,8 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_DATASTRUCTURE_SCANPOINT_H
-#define SICK_SAFETYSCANNERS_DATASTRUCTURE_SCANPOINT_H
+#ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_SCANPOINT_H
+#define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_SCANPOINT_H
 
 #include <stdint.h>
 
@@ -141,4 +141,4 @@ private:
 } // namespace datastructure
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_DATASTRUCTURE_SCANPOINT_H
+#endif // SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_SCANPOINT_H
