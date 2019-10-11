@@ -27,7 +27,7 @@ endif()
 
 ## Declare a cpp library
 add_library(sick_safetyscanners_base
-  src/SickSafetyScannersBase.cpp
+  src/SickSafetyscannersBase.cpp
   src/cola2/ApplicationNameVariableCommand.cpp
   src/cola2/ChangeCommSettingsCommand.cpp
   src/cola2/CloseSession.cpp

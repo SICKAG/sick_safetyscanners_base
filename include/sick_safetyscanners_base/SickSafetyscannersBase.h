@@ -25,7 +25,7 @@
 
 //----------------------------------------------------------------------
 /*!
- * \file SickSafetyScannersBase.h
+ * \file SickSafetyscannersBase.h
  *
  * \author  Lennart Puck <puck@fzi.de>
  * \date    2018-09-24
@@ -81,7 +81,7 @@ namespace sick {
 /*!
  * \brief Class managing the algorithmic part of the package.
  */
-class SickSafetyScannersBase
+class SickSafetyscannersBase
 {
 public:
   /*!
@@ -91,18 +91,18 @@ public:
   typedef boost::function<void(const sick::datastructure::Data&)> packetReceivedCallbackFunction;
 
   /*!
-   * \brief Constructor of the SickSafetyScannersBase class.
+   * \brief Constructor of the SickSafetyscannersBase class.
    * \param newPacketReceivedCallbackFunction Function from the calling class, which will be
    * called when a new packet is received.
    * \param settings Current settings for the sensor.
    */
-  SickSafetyScannersBase(const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
+  SickSafetyscannersBase(const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
                      sick::datastructure::CommSettings* settings);
 
   /*!
    * \brief Destructor
    */
-  virtual ~SickSafetyScannersBase();
+  virtual ~SickSafetyscannersBase();
 
   /*!
    * \brief Start the connection to the sensor and enables output.
