@@ -94,7 +94,7 @@ void SickSafetyscannersBase::changeSensorSettings(const datastructure::CommSetti
 }
 
 void SickSafetyscannersBase::findSensor(const datastructure::CommSettings& settings,
-                                    uint16_t blink_time)
+                                        uint16_t blink_time)
 {
   startTCPConnection(settings);
   findSensorInColaSession(blink_time);
@@ -102,7 +102,7 @@ void SickSafetyscannersBase::findSensor(const datastructure::CommSettings& setti
 }
 
 void SickSafetyscannersBase::requestTypeCode(const datastructure::CommSettings& settings,
-                                         sick::datastructure::TypeCode& type_code)
+                                             sick::datastructure::TypeCode& type_code)
 {
   startTCPConnection(settings);
   requestTypeCodeInColaSession(type_code);
@@ -117,8 +117,9 @@ void SickSafetyscannersBase::requestApplicationName(
   requestApplicationNameInColaSession(application_name);
   stopTCPConnection();
 }
-void SickSafetyscannersBase::requestFieldData(const datastructure::CommSettings& settings,
-                                          std::vector<sick::datastructure::FieldData>& field_data)
+void SickSafetyscannersBase::requestFieldData(
+  const datastructure::CommSettings& settings,
+  std::vector<sick::datastructure::FieldData>& field_data)
 {
   startTCPConnection(settings);
   requestFieldDataInColaSession(field_data);
@@ -135,7 +136,7 @@ void SickSafetyscannersBase::requestMonitoringCases(
 }
 
 void SickSafetyscannersBase::requestDeviceName(const datastructure::CommSettings& settings,
-                                           datastructure::DeviceName& device_name)
+                                               datastructure::DeviceName& device_name)
 {
   startTCPConnection(settings);
   requestDeviceNameInColaSession(device_name);
@@ -143,7 +144,7 @@ void SickSafetyscannersBase::requestDeviceName(const datastructure::CommSettings
 }
 
 void SickSafetyscannersBase::requestSerialNumber(const datastructure::CommSettings& settings,
-                                             datastructure::SerialNumber& serial_number)
+                                                 datastructure::SerialNumber& serial_number)
 {
   startTCPConnection(settings);
   requestSerialNumberInColaSession(serial_number);
@@ -151,7 +152,7 @@ void SickSafetyscannersBase::requestSerialNumber(const datastructure::CommSettin
 }
 
 void SickSafetyscannersBase::requestOrderNumber(const datastructure::CommSettings& settings,
-                                            datastructure::OrderNumber& order_number)
+                                                datastructure::OrderNumber& order_number)
 {
   startTCPConnection(settings);
   requestOrderNumberInColaSession(order_number);
@@ -159,7 +160,7 @@ void SickSafetyscannersBase::requestOrderNumber(const datastructure::CommSetting
 }
 
 void SickSafetyscannersBase::requestProjectName(const datastructure::CommSettings& settings,
-                                            datastructure::ProjectName& project_name)
+                                                datastructure::ProjectName& project_name)
 {
   startTCPConnection(settings);
   requestProjectNameInColaSession(project_name);
@@ -167,14 +168,14 @@ void SickSafetyscannersBase::requestProjectName(const datastructure::CommSetting
 }
 
 void SickSafetyscannersBase::requestUserName(const datastructure::CommSettings& settings,
-                                         datastructure::UserName& user_name)
+                                             datastructure::UserName& user_name)
 {
   startTCPConnection(settings);
   requestUserNameInColaSession(user_name);
   stopTCPConnection();
 }
-void SickSafetyscannersBase::requestFirmwareVersion(const datastructure::CommSettings& settings,
-                                                datastructure::FirmwareVersion& firmware_version)
+void SickSafetyscannersBase::requestFirmwareVersion(
+  const datastructure::CommSettings& settings, datastructure::FirmwareVersion& firmware_version)
 {
   startTCPConnection(settings);
   requestFirmwareVersionInColaSession(firmware_version);
@@ -182,23 +183,23 @@ void SickSafetyscannersBase::requestFirmwareVersion(const datastructure::CommSet
 }
 
 void SickSafetyscannersBase::requestPersistentConfig(const datastructure::CommSettings& settings,
-                                                 sick::datastructure::ConfigData& config_data)
+                                                     sick::datastructure::ConfigData& config_data)
 {
   startTCPConnection(settings);
   requestPersistentConfigInColaSession(config_data);
   stopTCPConnection();
 }
 
-void SickSafetyscannersBase::requestConfigMetadata(const datastructure::CommSettings& settings,
-                                               sick::datastructure::ConfigMetadata& config_metadata)
+void SickSafetyscannersBase::requestConfigMetadata(
+  const datastructure::CommSettings& settings, sick::datastructure::ConfigMetadata& config_metadata)
 {
   startTCPConnection(settings);
   requestConfigMetadataInColaSession(config_metadata);
   stopTCPConnection();
 }
 
-void SickSafetyscannersBase::requestStatusOverview(const datastructure::CommSettings& settings,
-                                               sick::datastructure::StatusOverview& status_overview)
+void SickSafetyscannersBase::requestStatusOverview(
+  const datastructure::CommSettings& settings, sick::datastructure::StatusOverview& status_overview)
 {
   startTCPConnection(settings);
   requestStatusOverviewInColaSession(status_overview);
@@ -206,7 +207,7 @@ void SickSafetyscannersBase::requestStatusOverview(const datastructure::CommSett
 }
 
 void SickSafetyscannersBase::requestDeviceStatus(const datastructure::CommSettings& settings,
-                                             sick::datastructure::DeviceStatus& device_status)
+                                                 sick::datastructure::DeviceStatus& device_status)
 {
   startTCPConnection(settings);
   requestDeviceStatusInColaSession(device_status);
