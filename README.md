@@ -96,7 +96,7 @@ With the passed function having the following declaration:
 void your_function(const sick::datastructure::Data& data) ;
 ```
 
-An Example can be found in the sick_safetyscanners ROS Driver: https://github.com/SICKAG/sick_safetyscanners/blob/master/src/SickSafetyScannersBaseRos.cpp
+An Example can be found in the sick_safetyscanners ROS Driver: https://github.com/SICKAG/sick_safetyscanners/blob/master/src/SickSafetyscannersRos.cpp
 
 ## API
 
