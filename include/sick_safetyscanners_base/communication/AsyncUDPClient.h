@@ -36,7 +36,7 @@
 #define SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCUDPCLIENT_H
 
 //#include <ros/ros.h>
-#include <sick_safetyscanners/logging/logging_wrapper.h>
+#include <sick_safetyscanners_base/logging/logging_wrapper.h>
 
 #include <functional>
 #include <iostream>
@@ -46,7 +46,7 @@
 #include <boost/cstdint.hpp>
 #include <boost/function.hpp>
 
-#include <sick_safetyscanners/datastructure/PacketBuffer.h>
+#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
 
 
 namespace sick {

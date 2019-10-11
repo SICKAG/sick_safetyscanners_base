@@ -1,4 +1,4 @@
-# Sick_Safetyscanners CPP Driver
+# Sick_SafetyScanners_Base CPP Driver
 
 ## Table of contents
 
@@ -72,7 +72,7 @@ export CMAKE_PREFIX_PATH=<path to install folder>
 
 Afterwards the driver and the settings for the driver can be included with:
 ```
-#include <sick_safetyscanners/SickSafetyscanners.h> 
+#include <sick_safetyscanners/SickSafetyScannersBase.h> 
 #include <sick_safetyscanners/datastructure/CommSettings.h>
 ```
 
@@ -85,8 +85,8 @@ sick::datastructure::CommSettings m_communication_settings;
 #For example:
 m_communication_settings.setHostIp("192.168.1.100");
 
-std::shared_ptr<sick::SickSafetyscanners> m_device;
-m_device = std::make_shared<sick::SickSafetyscanners>(boost::bind(&your_class::your_function, this, _1), &m_communication_settings);
+std::shared_ptr<sick::SickSafetyScannersBase> m_device;
+m_device = std::make_shared<sick::SickSafetyScannersBase>(boost::bind(&your_class::your_function, this, _1), &m_communication_settings);
 m_device->run();  
 ```
 
@@ -96,7 +96,7 @@ With the passed function having the following declaration:
 void your_function(const sick::datastructure::Data& data) ;
 ```
 
-An Example can be found in the sick_safetyscanners ROS Driver: https://github.com/SICKAG/sick_safetyscanners/blob/master/src/SickSafetyscannersRos.cpp
+An Example can be found in the sick_safetyscanners ROS Driver: https://github.com/SICKAG/sick_safetyscanners/blob/master/src/SickSafetyScannersBaseRos.cpp
 
 ## API
 

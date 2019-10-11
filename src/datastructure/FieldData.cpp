@@ -32,7 +32,7 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners/datastructure/FieldData.h>
+#include <sick_safetyscanners_base/datastructure/FieldData.h>
 
 namespace sick {
 namespace datastructure {

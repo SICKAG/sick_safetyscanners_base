@@ -32,7 +32,7 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners/datastructure/SerialNumber.h>
+#include <sick_safetyscanners_base/datastructure/SerialNumber.h>
 
 namespace sick {
 namespace datastructure {

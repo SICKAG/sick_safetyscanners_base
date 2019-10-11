@@ -37,7 +37,7 @@
 
 #include <iostream>
 #include <memory>
-#include <sick_safetyscanners/datastructure/MeasurementData.h>
+#include <sick_safetyscanners_base/datastructure/MeasurementData.h>
 
 
 namespace sick {

@@ -36,14 +36,14 @@
 #define SICK_SAFETYSCANNERS_BASE_COLA2_COMMAND_H
 
 //#include <ros/ros.h>
-#include <sick_safetyscanners/logging/logging_wrapper.h>
+#include <sick_safetyscanners_base/logging/logging_wrapper.h>
 
 #include <vector>
 
-#include <sick_safetyscanners/datastructure/PacketBuffer.h>
+#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
 
-#include <sick_safetyscanners/data_processing/ParseTCPPacket.h>
-#include <sick_safetyscanners/data_processing/ReadWriteHelper.hpp>
+#include <sick_safetyscanners_base/data_processing/ParseTCPPacket.h>
+#include <sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp>
 
 #include <boost/thread/mutex.hpp>
 

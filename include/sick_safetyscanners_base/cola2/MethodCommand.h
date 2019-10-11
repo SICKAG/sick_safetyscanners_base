@@ -35,7 +35,7 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_COLA2_METHODCOMMAND_H
 #define SICK_SAFETYSCANNERS_BASE_COLA2_METHODCOMMAND_H
 
-#include <sick_safetyscanners/cola2/Command.h>
+#include <sick_safetyscanners_base/cola2/Command.h>
 
 namespace sick {
 namespace cola2 {

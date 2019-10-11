@@ -32,7 +32,7 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners/data_processing/UDPPacketMerger.h>
+#include <sick_safetyscanners_base/data_processing/UDPPacketMerger.h>
 
 namespace sick {
 namespace data_processing {

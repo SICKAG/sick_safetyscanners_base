@@ -37,7 +37,7 @@
 
 #include <boost/asio/ip/address_v4.hpp>
 #include <iostream>
-#include <sick_safetyscanners/datastructure/DerivedValues.h>
+#include <sick_safetyscanners_base/datastructure/DerivedValues.h>
 #include <vector>
 
 namespace sick {

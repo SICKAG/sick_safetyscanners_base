@@ -32,7 +32,7 @@
  */
 //----------------------------------------------------------------------
 
-#include "sick_safetyscanners/datastructure/PacketBuffer.h"
+#include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 
 namespace sick {
 namespace datastructure {

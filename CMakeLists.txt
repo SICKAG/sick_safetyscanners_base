@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12) 
-project(sick_safetyscanners CXX)
+project(sick_safetyscanners_base CXX)
 
 ## Use C++11
 add_definitions(-std=c++11)
@@ -26,8 +26,8 @@ if(WITHOUT_ROS_LOGGING)
 endif()
 
 ## Declare a cpp library
-add_library(sick_safetyscanners
-  src/SickSafetyscanners.cpp
+add_library(sick_safetyscanners_base
+  src/SickSafetyScannersBase.cpp
   src/cola2/ApplicationNameVariableCommand.cpp
   src/cola2/ChangeCommSettingsCommand.cpp
   src/cola2/CloseSession.cpp
@@ -120,27 +120,27 @@ add_library(sick_safetyscanners
   src/datastructure/UserName.cpp
 )
 
-target_compile_options(sick_safetyscanners
+target_compile_options(sick_safetyscanners_base
   PUBLIC ${CXX11_FLAG}
   PRIVATE -Wall)
 
 option(WITHOUT_ROS_LOGGING "Disable ROS Logging and use printf instead" ON)
 
 if(WITHOUT_ROS_LOGGING)
-  target_compile_definitions(sick_safetyscanners
+  target_compile_definitions(sick_safetyscanners_base
     PRIVATE NO_ROS_LOGGING=1)
 endif()
 
-target_include_directories(sick_safetyscanners PUBLIC
+target_include_directories(sick_safetyscanners_base PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
   ${Boost_INCLUDE_DIR}
   )
 
-target_link_libraries(sick_safetyscanners PUBLIC ${Boost_LIBRARIES}
+target_link_libraries(sick_safetyscanners_base PUBLIC ${Boost_LIBRARIES}
 )
 
-add_library(sick_safetyscanners::sick_safetyscanners ALIAS sick_safetyscanners)
+add_library(sick_safetyscanners_base::sick_safetyscanners_base ALIAS sick_safetyscanners_base)
 
 #############
 ## Install ##
@@ -149,7 +149,7 @@ add_library(sick_safetyscanners::sick_safetyscanners ALIAS sick_safetyscanners)
 # Mark executables and/or libraries for installation
 
 install(
-  TARGETS sick_safetyscanners EXPORT sick_safetyscanners_targets
+  TARGETS sick_safetyscanners_base EXPORT sick_safetyscanners_base_targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -157,10 +157,10 @@ install(
 )
 
 install(
-  EXPORT sick_safetyscanners_targets
-  DESTINATION lib/cmake/sick_safetyscanners
-  FILE sick_safetyscannersTargets.cmake
-  NAMESPACE sick_safetyscanners::
+  EXPORT sick_safetyscanners_base_targets
+  DESTINATION lib/cmake/sick_safetyscanners_base
+  FILE sick_safetyscanners_baseTargets.cmake
+  NAMESPACE sick_safetyscanners_base::
   )
 
 # Mark cpp header files for installation
@@ -173,22 +173,22 @@ install(
 )
 
 include(CMakePackageConfigHelpers)
-write_basic_package_version_file(sick_safetyscannersConfigVersion.cmake VERSION 1.0.0
+write_basic_package_version_file(sick_safetyscanners_baseConfigVersion.cmake VERSION 1.0.0
   COMPATIBILITY SameMajorVersion)
 
-install(FILES sick_safetyscannersConfig.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/sick_safetyscannersConfigVersion.cmake
-  DESTINATION lib/cmake/sick_safetyscanners)
+install(FILES sick_safetyscanners_baseConfig.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/sick_safetyscanners_baseConfigVersion.cmake
+  DESTINATION lib/cmake/sick_safetyscanners_base)
 
 
 ##############################################
 ## Exporting from the build tree
 ##############################################
 
-#export(EXPORT sick_safetyscanners_targets FILE
-  #${CMAKE_CURRENT_BINARY_DIR}/sick_safetyscannersTargets.cmake NAMESPACE sick_safetyscanners::)
+#export(EXPORT sick_safetyscanners_base_targets FILE
+  #${CMAKE_CURRENT_BINARY_DIR}/sick_safetyscanners_baseTargets.cmake NAMESPACE sick_safetyscanners_base::)
 
 ##Register package in user's package registry
-#export(PACKAGE sick_safetyscanners)
+#export(PACKAGE sick_safetyscanners_base)
 
 

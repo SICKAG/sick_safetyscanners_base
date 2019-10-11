@@ -36,7 +36,7 @@
 #define SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCTCPCLIENT_H
 
 //#include <ros/ros.h>
-#include <sick_safetyscanners/logging/logging_wrapper.h>
+#include <sick_safetyscanners_base/logging/logging_wrapper.h>
 
 #include <functional>
 #include <iostream>
@@ -49,7 +49,7 @@
 #include <boost/thread/condition.hpp>
 #include <boost/thread/mutex.hpp>
 
-#include <sick_safetyscanners/datastructure/PacketBuffer.h>
+#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
 
 namespace sick {
 namespace communication {

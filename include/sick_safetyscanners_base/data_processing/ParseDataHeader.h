@@ -36,11 +36,11 @@
 #define SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEDATAHEADER_H
 
 
-#include <sick_safetyscanners/datastructure/Data.h>
-#include <sick_safetyscanners/datastructure/DataHeader.h>
-#include <sick_safetyscanners/datastructure/PacketBuffer.h>
+#include <sick_safetyscanners_base/datastructure/Data.h>
+#include <sick_safetyscanners_base/datastructure/DataHeader.h>
+#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
 
-#include <sick_safetyscanners/data_processing/ReadWriteHelper.hpp>
+#include <sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp>
 
 namespace sick {
 namespace data_processing {

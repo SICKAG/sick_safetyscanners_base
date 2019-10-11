@@ -43,8 +43,8 @@
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 
-#include <sick_safetyscanners/datastructure/DatagramHeader.h>
-#include <sick_safetyscanners/datastructure/PacketBuffer.h>
+#include <sick_safetyscanners_base/datastructure/DatagramHeader.h>
+#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
 
 
 namespace sick {

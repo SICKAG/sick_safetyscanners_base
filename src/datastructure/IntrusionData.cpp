@@ -32,7 +32,7 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners/datastructure/IntrusionData.h>
+#include <sick_safetyscanners_base/datastructure/IntrusionData.h>
 
 namespace sick {
 namespace datastructure {

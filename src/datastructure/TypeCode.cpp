@@ -32,7 +32,7 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners/datastructure/TypeCode.h>
+#include <sick_safetyscanners_base/datastructure/TypeCode.h>
 
 namespace sick {
 namespace datastructure {

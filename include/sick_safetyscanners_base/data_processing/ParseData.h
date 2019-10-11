@@ -35,16 +35,16 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEDATA_H
 #define SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEDATA_H
 
-#include <sick_safetyscanners/datastructure/Data.h>
-#include <sick_safetyscanners/datastructure/PacketBuffer.h>
+#include <sick_safetyscanners_base/datastructure/Data.h>
+#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
 
-#include <sick_safetyscanners/data_processing/ParseApplicationData.h>
-#include <sick_safetyscanners/data_processing/ParseDataHeader.h>
-#include <sick_safetyscanners/data_processing/ParseDerivedValues.h>
-#include <sick_safetyscanners/data_processing/ParseGeneralSystemState.h>
-#include <sick_safetyscanners/data_processing/ParseIntrusionData.h>
-#include <sick_safetyscanners/data_processing/ParseMeasurementData.h>
-#include <sick_safetyscanners/data_processing/ReadWriteHelper.hpp>
+#include <sick_safetyscanners_base/data_processing/ParseApplicationData.h>
+#include <sick_safetyscanners_base/data_processing/ParseDataHeader.h>
+#include <sick_safetyscanners_base/data_processing/ParseDerivedValues.h>
+#include <sick_safetyscanners_base/data_processing/ParseGeneralSystemState.h>
+#include <sick_safetyscanners_base/data_processing/ParseIntrusionData.h>
+#include <sick_safetyscanners_base/data_processing/ParseMeasurementData.h>
+#include <sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp>
 
 
 namespace sick {

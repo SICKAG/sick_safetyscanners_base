@@ -35,16 +35,16 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_COLA2_COLA2SESSION_H
 #define SICK_SAFETYSCANNERS_BASE_COLA2_COLA2SESSION_H
 
-#include <sick_safetyscanners/datastructure/PacketBuffer.h>
+#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
 
-#include <sick_safetyscanners/communication/AsyncTCPClient.h>
+#include <sick_safetyscanners_base/communication/AsyncTCPClient.h>
 
-#include <sick_safetyscanners/cola2/CloseSession.h>
-#include <sick_safetyscanners/cola2/Command.h>
-#include <sick_safetyscanners/cola2/CreateSession.h>
+#include <sick_safetyscanners_base/cola2/CloseSession.h>
+#include <sick_safetyscanners_base/cola2/Command.h>
+#include <sick_safetyscanners_base/cola2/CreateSession.h>
 
-#include <sick_safetyscanners/data_processing/ParseTCPPacket.h>
-#include <sick_safetyscanners/data_processing/TCPPacketMerger.h>
+#include <sick_safetyscanners_base/data_processing/ParseTCPPacket.h>
+#include <sick_safetyscanners_base/data_processing/TCPPacketMerger.h>
 
 #include <boost/bind.hpp>
 #include <limits>

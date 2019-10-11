@@ -33,7 +33,7 @@
 //----------------------------------------------------------------------
 
 
-#include <sick_safetyscanners/communication/AsyncUDPClient.h>
+#include <sick_safetyscanners_base/communication/AsyncUDPClient.h>
 
 namespace sick {
 namespace communication {

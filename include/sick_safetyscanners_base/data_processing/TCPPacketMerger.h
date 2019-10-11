@@ -35,9 +35,9 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_TCPPACKETMERGER_H
 #define SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_TCPPACKETMERGER_H
 
-#include <sick_safetyscanners/datastructure/PacketBuffer.h>
+#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
 
-#include <sick_safetyscanners/data_processing/ParseDatagramHeader.h>
+#include <sick_safetyscanners_base/data_processing/ParseDatagramHeader.h>
 
 #include <mutex>
 #include <vector>

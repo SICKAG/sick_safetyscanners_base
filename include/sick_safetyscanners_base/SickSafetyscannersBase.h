@@ -25,7 +25,7 @@
 
 //----------------------------------------------------------------------
 /*!
- * \file SickSafetyscanners.h
+ * \file SickSafetyScannersBase.h
  *
  * \author  Lennart Puck <puck@fzi.de>
  * \date    2018-09-24
@@ -36,7 +36,7 @@
 #define SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H
 
 //#include <ros/ros.h>
-#include <sick_safetyscanners/logging/logging_wrapper.h>
+#include <sick_safetyscanners_base/logging/logging_wrapper.h>
 
 #include <boost/function.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -46,42 +46,42 @@
 #include <string>
 #include <vector>
 
-#include <sick_safetyscanners/communication/AsyncTCPClient.h>
-#include <sick_safetyscanners/communication/AsyncUDPClient.h>
-#include <sick_safetyscanners/data_processing/ParseData.h>
-#include <sick_safetyscanners/data_processing/UDPPacketMerger.h>
-#include <sick_safetyscanners/datastructure/CommSettings.h>
-#include <sick_safetyscanners/datastructure/ConfigData.h>
-#include <sick_safetyscanners/datastructure/PacketBuffer.h>
+#include <sick_safetyscanners_base/communication/AsyncTCPClient.h>
+#include <sick_safetyscanners_base/communication/AsyncUDPClient.h>
+#include <sick_safetyscanners_base/data_processing/ParseData.h>
+#include <sick_safetyscanners_base/data_processing/UDPPacketMerger.h>
+#include <sick_safetyscanners_base/datastructure/CommSettings.h>
+#include <sick_safetyscanners_base/datastructure/ConfigData.h>
+#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
 
-#include <sick_safetyscanners/cola2/ApplicationNameVariableCommand.h>
-#include <sick_safetyscanners/cola2/ChangeCommSettingsCommand.h>
-#include <sick_safetyscanners/cola2/Cola2Session.h>
-#include <sick_safetyscanners/cola2/ConfigMetadataVariableCommand.h>
-#include <sick_safetyscanners/cola2/DeviceNameVariableCommand.h>
-#include <sick_safetyscanners/cola2/DeviceStatusVariableCommand.h>
-#include <sick_safetyscanners/cola2/FieldGeometryVariableCommand.h>
-#include <sick_safetyscanners/cola2/FieldHeaderVariableCommand.h>
-#include <sick_safetyscanners/cola2/FindMeCommand.h>
-#include <sick_safetyscanners/cola2/FirmwareVersionVariableCommand.h>
-#include <sick_safetyscanners/cola2/MeasurementCurrentConfigVariableCommand.h>
-#include <sick_safetyscanners/cola2/MeasurementPersistentConfigVariableCommand.h>
-#include <sick_safetyscanners/cola2/MonitoringCaseTableHeaderVariableCommand.h>
-#include <sick_safetyscanners/cola2/MonitoringCaseVariableCommand.h>
-#include <sick_safetyscanners/cola2/OrderNumberVariableCommand.h>
-#include <sick_safetyscanners/cola2/ProjectNameVariableCommand.h>
-#include <sick_safetyscanners/cola2/RequiredUserActionVariableCommand.h>
-#include <sick_safetyscanners/cola2/SerialNumberVariableCommand.h>
-#include <sick_safetyscanners/cola2/StatusOverviewVariableCommand.h>
-#include <sick_safetyscanners/cola2/TypeCodeVariableCommand.h>
-#include <sick_safetyscanners/cola2/UserNameVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/ApplicationNameVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/ChangeCommSettingsCommand.h>
+#include <sick_safetyscanners_base/cola2/Cola2Session.h>
+#include <sick_safetyscanners_base/cola2/ConfigMetadataVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/DeviceNameVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/DeviceStatusVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/FieldGeometryVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/FieldHeaderVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/FindMeCommand.h>
+#include <sick_safetyscanners_base/cola2/FirmwareVersionVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/MeasurementCurrentConfigVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/MeasurementPersistentConfigVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/MonitoringCaseTableHeaderVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/MonitoringCaseVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/OrderNumberVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/ProjectNameVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/RequiredUserActionVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/SerialNumberVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/StatusOverviewVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/TypeCodeVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/UserNameVariableCommand.h>
 
 namespace sick {
 
 /*!
  * \brief Class managing the algorithmic part of the package.
  */
-class SickSafetyscanners
+class SickSafetyScannersBase
 {
 public:
   /*!
@@ -91,18 +91,18 @@ public:
   typedef boost::function<void(const sick::datastructure::Data&)> packetReceivedCallbackFunction;
 
   /*!
-   * \brief Constructor of the SickSafetyscanners class.
+   * \brief Constructor of the SickSafetyScannersBase class.
    * \param newPacketReceivedCallbackFunction Function from the calling class, which will be
    * called when a new packet is received.
    * \param settings Current settings for the sensor.
    */
-  SickSafetyscanners(const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
+  SickSafetyScannersBase(const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
                      sick::datastructure::CommSettings* settings);
 
   /*!
    * \brief Destructor
    */
-  virtual ~SickSafetyscanners();
+  virtual ~SickSafetyScannersBase();
 
   /*!
    * \brief Start the connection to the sensor and enables output.

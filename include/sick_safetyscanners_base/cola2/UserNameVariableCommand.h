@@ -36,9 +36,9 @@
 #define SICK_SAFETYSCANNERS_BASE_COLA2_USERNAMEVARIABLECOMMAND_H
 
 
-#include <sick_safetyscanners/cola2/VariableCommand.h>
-#include <sick_safetyscanners/data_processing/ParseUserNameData.h>
-#include <sick_safetyscanners/datastructure/CommSettings.h>
+#include <sick_safetyscanners_base/cola2/VariableCommand.h>
+#include <sick_safetyscanners_base/data_processing/ParseUserNameData.h>
+#include <sick_safetyscanners_base/datastructure/CommSettings.h>
 
 namespace sick {
 namespace cola2 {

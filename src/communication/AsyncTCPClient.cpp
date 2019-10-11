@@ -32,7 +32,7 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners/communication/AsyncTCPClient.h>
+#include <sick_safetyscanners_base/communication/AsyncTCPClient.h>
 
 namespace sick {
 namespace communication {

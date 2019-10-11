@@ -25,7 +25,7 @@
 
 //----------------------------------------------------------------------
 /*!
- * \file SickSafetyscanners.cpp
+ * \file SickSafetyScannersBase.cpp
  *
  * \author  Lennart Puck <puck@fzi.de>
  * \date    2018-09-24
@@ -33,45 +33,45 @@
 //----------------------------------------------------------------------
 
 
-#include "sick_safetyscanners/SickSafetyscanners.h"
+#include "sick_safetyscanners_base/SickSafetyScannersBase.h"
 
 namespace sick {
 
-SickSafetyscanners::SickSafetyscanners(
+SickSafetyScannersBase::SickSafetyScannersBase(
   const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
   sick::datastructure::CommSettings* settings)
   : m_newPacketReceivedCallbackFunction(newPacketReceivedCallbackFunction)
 {
-  ROS_INFO("Starting SickSafetyscanners");
+  ROS_INFO("Starting SickSafetyScannersBase");
   m_io_service_ptr       = std::make_shared<boost::asio::io_service>();
   m_async_udp_client_ptr = std::make_shared<sick::communication::AsyncUDPClient>(
-    boost::bind(&SickSafetyscanners::processUDPPacket, this, _1),
+    boost::bind(&SickSafetyScannersBase::processUDPPacket, this, _1),
     boost::ref(*m_io_service_ptr),
     settings->getHostUdpPort());
   settings->setHostUdpPort(
     m_async_udp_client_ptr
       ->getLocalPort()); // Store which port was used, needed for data request from the laser
   m_packet_merger_ptr = std::make_shared<sick::data_processing::UDPPacketMerger>();
-  ROS_INFO("Started SickSafetyscanners");
+  ROS_INFO("Started SickSafetyScannersBase");
 }
 
-SickSafetyscanners::~SickSafetyscanners()
+SickSafetyScannersBase::~SickSafetyScannersBase()
 {
   m_io_service_ptr->stop();
   m_udp_client_thread_ptr->join();
   m_udp_client_thread_ptr.reset();
 }
 
-bool SickSafetyscanners::run()
+bool SickSafetyScannersBase::run()
 {
   m_udp_client_thread_ptr.reset(
-    new boost::thread(boost::bind(&SickSafetyscanners::udpClientThread, this)));
+    new boost::thread(boost::bind(&SickSafetyScannersBase::udpClientThread, this)));
 
   m_async_udp_client_ptr->runService();
   return true;
 }
 
-bool SickSafetyscanners::udpClientThread()
+bool SickSafetyScannersBase::udpClientThread()
 {
   ROS_INFO("Enter io thread");
   m_io_work_ptr = std::make_shared<boost::asio::io_service::work>(boost::ref(*m_io_service_ptr));
@@ -81,19 +81,19 @@ bool SickSafetyscanners::udpClientThread()
 }
 
 
-void SickSafetyscanners::processTCPPacket(const sick::datastructure::PacketBuffer& buffer)
+void SickSafetyScannersBase::processTCPPacket(const sick::datastructure::PacketBuffer& buffer)
 {
   // Not needed for current functionality, inplace for possible future developments
 }
 
-void SickSafetyscanners::changeSensorSettings(const datastructure::CommSettings& settings)
+void SickSafetyScannersBase::changeSensorSettings(const datastructure::CommSettings& settings)
 {
   startTCPConnection(settings);
   changeCommSettingsInColaSession(settings);
   stopTCPConnection();
 }
 
-void SickSafetyscanners::findSensor(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::findSensor(const datastructure::CommSettings& settings,
                                     uint16_t blink_time)
 {
   startTCPConnection(settings);
@@ -101,7 +101,7 @@ void SickSafetyscanners::findSensor(const datastructure::CommSettings& settings,
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestTypeCode(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::requestTypeCode(const datastructure::CommSettings& settings,
                                          sick::datastructure::TypeCode& type_code)
 {
   startTCPConnection(settings);
@@ -109,7 +109,7 @@ void SickSafetyscanners::requestTypeCode(const datastructure::CommSettings& sett
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestApplicationName(
+void SickSafetyScannersBase::requestApplicationName(
   const datastructure::CommSettings& settings,
   sick::datastructure::ApplicationName& application_name)
 {
@@ -117,7 +117,7 @@ void SickSafetyscanners::requestApplicationName(
   requestApplicationNameInColaSession(application_name);
   stopTCPConnection();
 }
-void SickSafetyscanners::requestFieldData(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::requestFieldData(const datastructure::CommSettings& settings,
                                           std::vector<sick::datastructure::FieldData>& field_data)
 {
   startTCPConnection(settings);
@@ -125,7 +125,7 @@ void SickSafetyscanners::requestFieldData(const datastructure::CommSettings& set
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestMonitoringCases(
+void SickSafetyScannersBase::requestMonitoringCases(
   const datastructure::CommSettings& settings,
   std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases)
 {
@@ -134,7 +134,7 @@ void SickSafetyscanners::requestMonitoringCases(
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestDeviceName(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::requestDeviceName(const datastructure::CommSettings& settings,
                                            datastructure::DeviceName& device_name)
 {
   startTCPConnection(settings);
@@ -142,7 +142,7 @@ void SickSafetyscanners::requestDeviceName(const datastructure::CommSettings& se
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestSerialNumber(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::requestSerialNumber(const datastructure::CommSettings& settings,
                                              datastructure::SerialNumber& serial_number)
 {
   startTCPConnection(settings);
@@ -150,7 +150,7 @@ void SickSafetyscanners::requestSerialNumber(const datastructure::CommSettings& 
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestOrderNumber(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::requestOrderNumber(const datastructure::CommSettings& settings,
                                             datastructure::OrderNumber& order_number)
 {
   startTCPConnection(settings);
@@ -158,7 +158,7 @@ void SickSafetyscanners::requestOrderNumber(const datastructure::CommSettings& s
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestProjectName(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::requestProjectName(const datastructure::CommSettings& settings,
                                             datastructure::ProjectName& project_name)
 {
   startTCPConnection(settings);
@@ -166,14 +166,14 @@ void SickSafetyscanners::requestProjectName(const datastructure::CommSettings& s
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestUserName(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::requestUserName(const datastructure::CommSettings& settings,
                                          datastructure::UserName& user_name)
 {
   startTCPConnection(settings);
   requestUserNameInColaSession(user_name);
   stopTCPConnection();
 }
-void SickSafetyscanners::requestFirmwareVersion(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::requestFirmwareVersion(const datastructure::CommSettings& settings,
                                                 datastructure::FirmwareVersion& firmware_version)
 {
   startTCPConnection(settings);
@@ -181,7 +181,7 @@ void SickSafetyscanners::requestFirmwareVersion(const datastructure::CommSetting
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestPersistentConfig(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::requestPersistentConfig(const datastructure::CommSettings& settings,
                                                  sick::datastructure::ConfigData& config_data)
 {
   startTCPConnection(settings);
@@ -189,7 +189,7 @@ void SickSafetyscanners::requestPersistentConfig(const datastructure::CommSettin
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestConfigMetadata(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::requestConfigMetadata(const datastructure::CommSettings& settings,
                                                sick::datastructure::ConfigMetadata& config_metadata)
 {
   startTCPConnection(settings);
@@ -197,7 +197,7 @@ void SickSafetyscanners::requestConfigMetadata(const datastructure::CommSettings
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestStatusOverview(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::requestStatusOverview(const datastructure::CommSettings& settings,
                                                sick::datastructure::StatusOverview& status_overview)
 {
   startTCPConnection(settings);
@@ -205,7 +205,7 @@ void SickSafetyscanners::requestStatusOverview(const datastructure::CommSettings
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestDeviceStatus(const datastructure::CommSettings& settings,
+void SickSafetyScannersBase::requestDeviceStatus(const datastructure::CommSettings& settings,
                                              sick::datastructure::DeviceStatus& device_status)
 {
   startTCPConnection(settings);
@@ -213,7 +213,7 @@ void SickSafetyscanners::requestDeviceStatus(const datastructure::CommSettings& 
   stopTCPConnection();
 }
 
-void SickSafetyscanners::requestRequiredUserAction(
+void SickSafetyScannersBase::requestRequiredUserAction(
   const datastructure::CommSettings& settings,
   sick::datastructure::RequiredUserAction& required_user_action)
 {
@@ -222,11 +222,11 @@ void SickSafetyscanners::requestRequiredUserAction(
   stopTCPConnection();
 }
 
-void SickSafetyscanners::startTCPConnection(const sick::datastructure::CommSettings& settings)
+void SickSafetyScannersBase::startTCPConnection(const sick::datastructure::CommSettings& settings)
 {
   std::shared_ptr<sick::communication::AsyncTCPClient> async_tcp_client =
     std::make_shared<sick::communication::AsyncTCPClient>(
-      boost::bind(&SickSafetyscanners::processTCPPacket, this, _1),
+      boost::bind(&SickSafetyScannersBase::processTCPPacket, this, _1),
       boost::ref(*m_io_service_ptr),
       settings.getSensorIp(),
       settings.getSensorTcpPort());
@@ -238,7 +238,7 @@ void SickSafetyscanners::startTCPConnection(const sick::datastructure::CommSetti
   m_session_ptr->open();
 }
 
-void SickSafetyscanners::changeCommSettingsInColaSession(
+void SickSafetyScannersBase::changeCommSettingsInColaSession(
   const datastructure::CommSettings& settings)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
@@ -246,7 +246,7 @@ void SickSafetyscanners::changeCommSettingsInColaSession(
   m_session_ptr->executeCommand(command_ptr);
 }
 
-void SickSafetyscanners::requestFieldDataInColaSession(
+void SickSafetyScannersBase::requestFieldDataInColaSession(
   std::vector<sick::datastructure::FieldData>& fields)
 {
   sick::datastructure::ConfigData config_data;
@@ -291,7 +291,7 @@ void SickSafetyscanners::requestFieldDataInColaSession(
   }
 }
 
-void SickSafetyscanners::requestMonitoringCaseDataInColaSession(
+void SickSafetyScannersBase::requestMonitoringCaseDataInColaSession(
   std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr;
@@ -313,14 +313,14 @@ void SickSafetyscanners::requestMonitoringCaseDataInColaSession(
   }
 }
 
-void SickSafetyscanners::findSensorInColaSession(uint16_t blink_time)
+void SickSafetyScannersBase::findSensorInColaSession(uint16_t blink_time)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
     std::make_shared<sick::cola2::FindMeCommand>(boost::ref(*m_session_ptr), blink_time);
   m_session_ptr->executeCommand(command_ptr);
 }
 
-void SickSafetyscanners::requestDeviceNameInColaSession(datastructure::DeviceName& device_name)
+void SickSafetyScannersBase::requestDeviceNameInColaSession(datastructure::DeviceName& device_name)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
     std::make_shared<sick::cola2::DeviceNameVariableCommand>(boost::ref(*m_session_ptr),
@@ -330,7 +330,7 @@ void SickSafetyscanners::requestDeviceNameInColaSession(datastructure::DeviceNam
 }
 
 
-void SickSafetyscanners::requestApplicationNameInColaSession(
+void SickSafetyScannersBase::requestApplicationNameInColaSession(
   datastructure::ApplicationName& application_name)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
@@ -340,7 +340,7 @@ void SickSafetyscanners::requestApplicationNameInColaSession(
   ROS_INFO("Application name: %s", application_name.getApplicationName().c_str());
 }
 
-void SickSafetyscanners::requestSerialNumberInColaSession(
+void SickSafetyScannersBase::requestSerialNumberInColaSession(
   datastructure::SerialNumber& serial_number)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
@@ -350,7 +350,7 @@ void SickSafetyscanners::requestSerialNumberInColaSession(
   ROS_INFO("Serial Number: %s", serial_number.getSerialNumber().c_str());
 }
 
-void SickSafetyscanners::requestFirmwareVersionInColaSession(
+void SickSafetyScannersBase::requestFirmwareVersionInColaSession(
   datastructure::FirmwareVersion& firmware_version)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
@@ -360,7 +360,7 @@ void SickSafetyscanners::requestFirmwareVersionInColaSession(
   ROS_INFO("Firmware Version: %s", firmware_version.getFirmwareVersion().c_str());
 }
 
-void SickSafetyscanners::requestTypeCodeInColaSession(sick::datastructure::TypeCode& type_code)
+void SickSafetyScannersBase::requestTypeCodeInColaSession(sick::datastructure::TypeCode& type_code)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
     std::make_shared<sick::cola2::TypeCodeVariableCommand>(boost::ref(*m_session_ptr), type_code);
@@ -368,7 +368,7 @@ void SickSafetyscanners::requestTypeCodeInColaSession(sick::datastructure::TypeC
   ROS_INFO("Type Code: %s", type_code.getTypeCode().c_str());
 }
 
-void SickSafetyscanners::requestOrderNumberInColaSession(
+void SickSafetyScannersBase::requestOrderNumberInColaSession(
   sick::datastructure::OrderNumber& order_number)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
@@ -378,7 +378,7 @@ void SickSafetyscanners::requestOrderNumberInColaSession(
   ROS_INFO("Order Number: %s", order_number.getOrderNumber().c_str());
 }
 
-void SickSafetyscanners::requestProjectNameInColaSession(
+void SickSafetyScannersBase::requestProjectNameInColaSession(
   sick::datastructure::ProjectName& project_name)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
@@ -388,7 +388,7 @@ void SickSafetyscanners::requestProjectNameInColaSession(
   ROS_INFO("Project Name: %s", project_name.getProjectName().c_str());
 }
 
-void SickSafetyscanners::requestUserNameInColaSession(sick::datastructure::UserName& user_name)
+void SickSafetyScannersBase::requestUserNameInColaSession(sick::datastructure::UserName& user_name)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
     std::make_shared<sick::cola2::UserNameVariableCommand>(boost::ref(*m_session_ptr), user_name);
@@ -396,7 +396,7 @@ void SickSafetyscanners::requestUserNameInColaSession(sick::datastructure::UserN
   ROS_INFO("User Name: %s", user_name.getUserName().c_str());
 }
 
-void SickSafetyscanners::requestConfigMetadataInColaSession(
+void SickSafetyScannersBase::requestConfigMetadataInColaSession(
   sick::datastructure::ConfigMetadata& config_metadata)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
@@ -405,7 +405,7 @@ void SickSafetyscanners::requestConfigMetadataInColaSession(
   m_session_ptr->executeCommand(command_ptr);
 }
 
-void SickSafetyscanners::requestStatusOverviewInColaSession(
+void SickSafetyScannersBase::requestStatusOverviewInColaSession(
   sick::datastructure::StatusOverview& status_overview)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
@@ -414,7 +414,7 @@ void SickSafetyscanners::requestStatusOverviewInColaSession(
   m_session_ptr->executeCommand(command_ptr);
 }
 
-void SickSafetyscanners::requestDeviceStatusInColaSession(
+void SickSafetyScannersBase::requestDeviceStatusInColaSession(
   sick::datastructure::DeviceStatus& device_status)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
@@ -423,7 +423,7 @@ void SickSafetyscanners::requestDeviceStatusInColaSession(
   m_session_ptr->executeCommand(command_ptr);
 }
 
-void SickSafetyscanners::requestRequiredUserActionInColaSession(
+void SickSafetyScannersBase::requestRequiredUserActionInColaSession(
   sick::datastructure::RequiredUserAction& required_user_action)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
@@ -432,7 +432,7 @@ void SickSafetyscanners::requestRequiredUserActionInColaSession(
   m_session_ptr->executeCommand(command_ptr);
 }
 
-void SickSafetyscanners::requestPersistentConfigInColaSession(
+void SickSafetyScannersBase::requestPersistentConfigInColaSession(
   sick::datastructure::ConfigData& config_data)
 {
   sick::cola2::Cola2Session::CommandPtr command_ptr =
@@ -441,14 +441,14 @@ void SickSafetyscanners::requestPersistentConfigInColaSession(
   m_session_ptr->executeCommand(command_ptr);
 }
 
-void SickSafetyscanners::stopTCPConnection()
+void SickSafetyScannersBase::stopTCPConnection()
 {
   m_session_ptr->close();
   m_session_ptr->doDisconnect();
 }
 
 
-void SickSafetyscanners::processUDPPacket(const sick::datastructure::PacketBuffer& buffer)
+void SickSafetyScannersBase::processUDPPacket(const sick::datastructure::PacketBuffer& buffer)
 {
   if (m_packet_merger_ptr->addUDPPacket(buffer))
   {

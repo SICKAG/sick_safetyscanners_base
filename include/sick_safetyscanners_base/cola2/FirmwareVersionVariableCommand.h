@@ -37,10 +37,10 @@
 
 #include <string>
 
-#include <sick_safetyscanners/cola2/VariableCommand.h>
-#include <sick_safetyscanners/data_processing/ParseFirmwareVersion.h>
-#include <sick_safetyscanners/datastructure/CommSettings.h>
-#include <sick_safetyscanners/datastructure/FirmwareVersion.h>
+#include <sick_safetyscanners_base/cola2/VariableCommand.h>
+#include <sick_safetyscanners_base/data_processing/ParseFirmwareVersion.h>
+#include <sick_safetyscanners_base/datastructure/CommSettings.h>
+#include <sick_safetyscanners_base/datastructure/FirmwareVersion.h>
 
 namespace sick {
 namespace cola2 {
