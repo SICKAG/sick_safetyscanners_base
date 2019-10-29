@@ -51,12 +51,13 @@ namespace data_processing {
  */
 class ParseIntrusionData
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseIntrusionData();
 
+public:
   /*!
    * \brief Parse a udp sequence to read the intrusion data if enabled.
    *
@@ -65,28 +66,27 @@ public:
    *
    * \returns The parsed intrusion data.
    */
-  datastructure::IntrusionData parseUDPSequence(const datastructure::PacketBuffer& buffer,
-                                                datastructure::Data& data);
-  uint16_t getNumScanPoints() const;
-  void setNumScanPoints(const uint16_t& num_scan_points);
+  static datastructure::IntrusionData parseUDPSequence(const datastructure::PacketBuffer& buffer,
+                                                       datastructure::Data& data);
 
 private:
-  uint16_t m_num_scan_points;
-
-  void setDataInIntrusionData(std::vector<uint8_t>::const_iterator data_ptr,
-                              datastructure::IntrusionData& intrusion_data) const;
-  void setDataInIntrusionDatums(
-    std::vector<uint8_t>::const_iterator data_ptr,
-    std::vector<sick::datastructure::IntrusionDatum>& intrusion_datums) const;
-  uint16_t setSizeInIntrusionDatum(const uint16_t& offset,
-                                   std::vector<uint8_t>::const_iterator data_ptr,
-                                   sick::datastructure::IntrusionDatum& datum) const;
-  uint16_t setFlagsInIntrusionDatum(const uint16_t& offset,
-                                    std::vector<uint8_t>::const_iterator data_ptr,
-                                    sick::datastructure::IntrusionDatum& datum) const;
-  bool checkIfPreconditionsAreMet(const datastructure::Data& data) const;
-  bool checkIfIntrusionDataIsPublished(const datastructure::Data& data) const;
-  bool checkIfDataContainsNeededParsedBlocks(const datastructure::Data& data) const;
+  static void setDataInIntrusionData(const uint16_t num_scan_points,
+                                     std::vector<uint8_t>::const_iterator data_ptr,
+                                     datastructure::IntrusionData& intrusion_data);
+  static void setDataInIntrusionDatums(
+      uint16_t num_scan_points,
+      std::vector<uint8_t>::const_iterator data_ptr,
+      std::vector<sick::datastructure::IntrusionDatum>& intrusion_datums);
+  static uint16_t setSizeInIntrusionDatum(const uint16_t& offset,
+                                          std::vector<uint8_t>::const_iterator data_ptr,
+                                          sick::datastructure::IntrusionDatum& datum);
+  static uint16_t setFlagsInIntrusionDatum(const uint16_t offset,
+                                           const uint16_t num_scan_points,
+                                           std::vector<uint8_t>::const_iterator data_ptr,
+                                           sick::datastructure::IntrusionDatum& datum);
+  static bool checkIfPreconditionsAreMet(const datastructure::Data& data);
+  static bool checkIfIntrusionDataIsPublished(const datastructure::Data& data);
+  static bool checkIfDataContainsNeededParsedBlocks(const datastructure::Data& data);
 };
 
 } // namespace data_processing

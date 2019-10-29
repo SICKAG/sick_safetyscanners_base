@@ -79,8 +79,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseProjectName> m_project_name_parser_ptr;
-
   datastructure::ProjectName& m_project_name;
 };
 

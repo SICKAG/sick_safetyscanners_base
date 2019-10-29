@@ -43,7 +43,7 @@ ParseMeasurementPersistentConfigData::ParseMeasurementPersistentConfigData() {}
 
 
 bool ParseMeasurementPersistentConfigData::parseTCPSequence(
-  const datastructure::PacketBuffer& buffer, datastructure::ConfigData& config_data) const
+  const datastructure::PacketBuffer& buffer, datastructure::ConfigData& config_data)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -64,7 +64,7 @@ bool ParseMeasurementPersistentConfigData::parseTCPSequence(
 }
 
 std::string ParseMeasurementPersistentConfigData::readVersionIndicator(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   std::string result;
   result.push_back(read_write_helper::readUint8(data_ptr + 0));
@@ -72,37 +72,37 @@ std::string ParseMeasurementPersistentConfigData::readVersionIndicator(
 }
 
 uint8_t ParseMeasurementPersistentConfigData::readMajorNumber(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 1);
 }
 
 uint8_t ParseMeasurementPersistentConfigData::readMinorNumber(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 2);
 }
 
 uint8_t ParseMeasurementPersistentConfigData::readReleaseNumber(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 3);
 }
 
 bool ParseMeasurementPersistentConfigData::readEnabled(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 4);
 }
 
 uint8_t ParseMeasurementPersistentConfigData::readInterfaceType(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 5);
 }
 
 boost::asio::ip::address_v4 ParseMeasurementPersistentConfigData::readHostIp(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   uint32_t word = read_write_helper::readUint32LittleEndian(data_ptr + 8);
   boost::asio::ip::address_v4 addr(word);
@@ -110,31 +110,31 @@ boost::asio::ip::address_v4 ParseMeasurementPersistentConfigData::readHostIp(
 }
 
 uint16_t ParseMeasurementPersistentConfigData::readHostPort(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint16LittleEndian(data_ptr + 12);
 }
 
 uint16_t ParseMeasurementPersistentConfigData::readPublishingFreq(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint16LittleEndian(data_ptr + 14);
 }
 
 uint32_t ParseMeasurementPersistentConfigData::readStartAngle(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 16);
 }
 
 uint32_t ParseMeasurementPersistentConfigData::readEndAngle(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 20);
 }
 
 uint16_t ParseMeasurementPersistentConfigData::readFeatures(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   // TODO parse Features
   return read_write_helper::readUint16LittleEndian(data_ptr + 24);

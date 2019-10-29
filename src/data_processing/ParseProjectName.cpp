@@ -43,7 +43,7 @@ ParseProjectName::ParseProjectName() {}
 
 
 bool ParseProjectName::parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                                        datastructure::ProjectName& project_name) const
+                                        datastructure::ProjectName& project_name)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -53,7 +53,7 @@ bool ParseProjectName::parseTCPSequence(const datastructure::PacketBuffer& buffe
 }
 
 
-std::string ParseProjectName::readProjectName(std::vector<uint8_t>::const_iterator data_ptr) const
+std::string ParseProjectName::readProjectName(std::vector<uint8_t>::const_iterator data_ptr)
 {
   uint16_t string_length = read_write_helper::readUint16LittleEndian(data_ptr + 0);
 

@@ -81,9 +81,7 @@ public:
    */
   bool processReply();
 
-
 private:
-  std::shared_ptr<sick::data_processing::ParseFieldHeaderData> m_field_header_parser_ptr;
 };
 
 } // namespace cola2

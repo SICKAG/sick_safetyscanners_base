@@ -86,8 +86,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseFieldGeometryData> m_field_geometry_parser_ptr;
-
   sick::datastructure::FieldData& m_field_data;
 };
 

@@ -41,7 +41,7 @@ ParseApplicationData::ParseApplicationData() {}
 
 datastructure::ApplicationData
 ParseApplicationData::parseUDPSequence(const datastructure::PacketBuffer& buffer,
-                                       datastructure::Data& data) const
+                                       datastructure::Data& data)
 {
   datastructure::ApplicationData application_data;
 
@@ -59,7 +59,7 @@ ParseApplicationData::parseUDPSequence(const datastructure::PacketBuffer& buffer
   return application_data;
 }
 
-bool ParseApplicationData::checkIfPreconditionsAreMet(const datastructure::Data& data) const
+bool ParseApplicationData::checkIfPreconditionsAreMet(const datastructure::Data& data)
 {
   if (!checkIfApplicationDataIsPublished(data))
   {
@@ -72,21 +72,21 @@ bool ParseApplicationData::checkIfPreconditionsAreMet(const datastructure::Data&
   return true;
 }
 
-bool ParseApplicationData::checkIfApplicationDataIsPublished(const datastructure::Data& data) const
+bool ParseApplicationData::checkIfApplicationDataIsPublished(const datastructure::Data& data)
 {
   return !(data.getDataHeaderPtr()->getApplicationDataBlockOffset() == 0 &&
            data.getDataHeaderPtr()->getApplicationDataBlockSize() == 0);
 }
 
 bool ParseApplicationData::checkIfDataContainsNeededParsedBlocks(
-  const datastructure::Data& data) const
+  const datastructure::Data& data)
 {
   return !(data.getDataHeaderPtr()->isEmpty());
 }
 
 void ParseApplicationData::setDataInApplicationData(
   std::vector<uint8_t>::const_iterator data_ptr,
-  datastructure::ApplicationData& application_data) const
+  datastructure::ApplicationData& application_data)
 {
   setApplicationInputsInApplicationData(data_ptr, application_data);
   setApplicationOutputsInApplicationData(data_ptr, application_data);
@@ -94,7 +94,7 @@ void ParseApplicationData::setDataInApplicationData(
 
 void ParseApplicationData::setApplicationInputsInApplicationData(
   std::vector<uint8_t>::const_iterator data_ptr,
-  datastructure::ApplicationData& application_data) const
+  datastructure::ApplicationData& application_data)
 {
   datastructure::ApplicationInputs inputs;
   setDataInApplicationInputs(data_ptr, inputs);
@@ -103,7 +103,7 @@ void ParseApplicationData::setApplicationInputsInApplicationData(
 
 void ParseApplicationData::setApplicationOutputsInApplicationData(
   std::vector<uint8_t>::const_iterator data_ptr,
-  datastructure::ApplicationData& application_data) const
+  datastructure::ApplicationData& application_data)
 {
   datastructure::ApplicationOutputs outputs;
   setDataInApplicationOutputs(data_ptr, outputs);
@@ -111,7 +111,7 @@ void ParseApplicationData::setApplicationOutputsInApplicationData(
 }
 
 void ParseApplicationData::setDataInApplicationInputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs)
 {
   setUnsafeInputsInApplicationInputs(data_ptr, inputs);
   setMonitoringCaseInputsInApplicationInputs(data_ptr, inputs);
@@ -120,7 +120,7 @@ void ParseApplicationData::setDataInApplicationInputs(
 }
 
 void ParseApplicationData::setDataInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   setEvalutaionPathsOutputsInApplicationOutputs(data_ptr, outputs);
   setMonitoringCaseOutputsInApplicationOutputs(data_ptr, outputs);
@@ -132,14 +132,14 @@ void ParseApplicationData::setDataInApplicationOutputs(
 }
 
 void ParseApplicationData::setUnsafeInputsInApplicationInputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs)
 {
   setUnsafeInputsSourcesInApplicationInputs(data_ptr, inputs);
   setUnsafeInputsFlagsInApplicationInputs(data_ptr, inputs);
 }
 
 void ParseApplicationData::setUnsafeInputsSourcesInApplicationInputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs)
 {
   uint32_t word32 = read_write_helper::readUint32LittleEndian(data_ptr + 0);
   std::vector<bool> input_sources;
@@ -151,7 +151,7 @@ void ParseApplicationData::setUnsafeInputsSourcesInApplicationInputs(
 }
 
 void ParseApplicationData::setUnsafeInputsFlagsInApplicationInputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs)
 {
   uint32_t word32 = read_write_helper::readUint32LittleEndian(data_ptr + 4);
   std::vector<bool> input_flags;
@@ -163,14 +163,14 @@ void ParseApplicationData::setUnsafeInputsFlagsInApplicationInputs(
 }
 
 void ParseApplicationData::setMonitoringCaseInputsInApplicationInputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs)
 {
   setMonitoringCaseNumbersInApplicationInputs(data_ptr, inputs);
   setMonitoringCaseFlagsInApplicationInputs(data_ptr, inputs);
 }
 
 void ParseApplicationData::setMonitoringCaseNumbersInApplicationInputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs)
 {
   std::vector<uint16_t> monitoring_cases;
   for (uint8_t i = 0; i < 20; i++)
@@ -182,7 +182,7 @@ void ParseApplicationData::setMonitoringCaseNumbersInApplicationInputs(
 
 
 void ParseApplicationData::setMonitoringCaseFlagsInApplicationInputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs)
 {
   uint32_t word32 = read_write_helper::readUint32LittleEndian(data_ptr + 52);
   std::vector<bool> monitoring_flags;
@@ -195,7 +195,7 @@ void ParseApplicationData::setMonitoringCaseFlagsInApplicationInputs(
 }
 
 void ParseApplicationData::setLinearVelocityInputsInApplicationInputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs)
 {
   setLinearVelocity0InApplicationInputs(data_ptr, inputs);
   setLinearVelocity1InApplicationInputs(data_ptr, inputs);
@@ -203,19 +203,19 @@ void ParseApplicationData::setLinearVelocityInputsInApplicationInputs(
 }
 
 void ParseApplicationData::setLinearVelocity0InApplicationInputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs)
 {
   inputs.setVelocity0(read_write_helper::readUint16LittleEndian(data_ptr + 56));
 }
 
 void ParseApplicationData::setLinearVelocity1InApplicationInputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs)
 {
   inputs.setVelocity1(read_write_helper::readUint16LittleEndian(data_ptr + 58));
 }
 
 void ParseApplicationData::setLinearVelocityFlagsInApplicationInputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs)
 {
   uint8_t word8 = read_write_helper::readUint8LittleEndian(data_ptr + 60);
 
@@ -227,14 +227,14 @@ void ParseApplicationData::setLinearVelocityFlagsInApplicationInputs(
 }
 
 void ParseApplicationData::setSleepModeInputInApplicationInputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationInputs& inputs)
 {
   inputs.setSleepModeInput(read_write_helper::readUint8LittleEndian(data_ptr + 74));
 }
 
 
 void ParseApplicationData::setEvalutaionPathsOutputsInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   setEvaluationPathsOutputsEvalOutInApplicationOutputs(data_ptr, outputs);
   setEvaluationPathsOutputsIsSafeInApplicationOutputs(data_ptr, outputs);
@@ -242,7 +242,7 @@ void ParseApplicationData::setEvalutaionPathsOutputsInApplicationOutputs(
 }
 
 void ParseApplicationData::setEvaluationPathsOutputsEvalOutInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   uint32_t word32 = read_write_helper::readUint32LittleEndian(data_ptr + 140);
 
@@ -255,7 +255,7 @@ void ParseApplicationData::setEvaluationPathsOutputsEvalOutInApplicationOutputs(
 }
 
 void ParseApplicationData::setEvaluationPathsOutputsIsSafeInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   uint32_t word32 = read_write_helper::readUint32LittleEndian(data_ptr + 144);
 
@@ -269,7 +269,7 @@ void ParseApplicationData::setEvaluationPathsOutputsIsSafeInApplicationOutputs(
 
 
 void ParseApplicationData::setEvaluationPathsOutputsValidFlagsInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   uint32_t word32 = read_write_helper::readUint32LittleEndian(data_ptr + 148);
 
@@ -282,14 +282,14 @@ void ParseApplicationData::setEvaluationPathsOutputsValidFlagsInApplicationOutpu
 }
 
 void ParseApplicationData::setMonitoringCaseOutputsInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   setMonitoringCaseNumbersInApplicationOutputs(data_ptr, outputs);
   setMonitoringCaseFlagsInApplicationOutputs(data_ptr, outputs);
 }
 
 void ParseApplicationData::setMonitoringCaseNumbersInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   std::vector<uint16_t> output_monitoring_cases;
 
@@ -303,7 +303,7 @@ void ParseApplicationData::setMonitoringCaseNumbersInApplicationOutputs(
 
 
 void ParseApplicationData::setMonitoringCaseFlagsInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   uint32_t word32 = read_write_helper::readUint32LittleEndian(data_ptr + 192);
 
@@ -317,13 +317,13 @@ void ParseApplicationData::setMonitoringCaseFlagsInApplicationOutputs(
 }
 
 void ParseApplicationData::setSleepModeOutputInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   outputs.setSleepModeOutput(read_write_helper::readUint8LittleEndian(data_ptr + 193));
 }
 
 void ParseApplicationData::setErrorFlagsInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   uint8_t word8 = read_write_helper::readUint8LittleEndian(data_ptr + 194);
 
@@ -336,7 +336,7 @@ void ParseApplicationData::setErrorFlagsInApplicationOutputs(
 }
 
 void ParseApplicationData::setLinearVelocityOutoutsInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   setLinearVelocity0InApplicationOutputs(data_ptr, outputs);
   setLinearVelocity1InApplicationOutputs(data_ptr, outputs);
@@ -344,19 +344,19 @@ void ParseApplicationData::setLinearVelocityOutoutsInApplicationOutputs(
 }
 
 void ParseApplicationData::setLinearVelocity0InApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   outputs.setVelocity0(read_write_helper::readUint16LittleEndian(data_ptr + 200));
 }
 
 void ParseApplicationData::setLinearVelocity1InApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   outputs.setVelocity1(read_write_helper::readUint16LittleEndian(data_ptr + 202));
 }
 
 void ParseApplicationData::setLinearVelocityFlagsInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   uint8_t word8 = read_write_helper::readUint8LittleEndian(data_ptr + 204);
 
@@ -369,14 +369,14 @@ void ParseApplicationData::setLinearVelocityFlagsInApplicationOutputs(
 }
 
 void ParseApplicationData::setResultingVelocityOutputsInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   setResultingVelocityInApplicationOutputs(data_ptr, outputs);
   setResultingVelocityFlagsInApplicationOutputs(data_ptr, outputs);
 }
 
 void ParseApplicationData::setResultingVelocityInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   std::vector<int16_t> resulting_velocities;
   for (uint8_t i = 0; i < 20; i++)
@@ -388,7 +388,7 @@ void ParseApplicationData::setResultingVelocityInApplicationOutputs(
 }
 
 void ParseApplicationData::setResultingVelocityFlagsInApplicationOutputs(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   uint32_t word32 = read_write_helper::readUint32LittleEndian(data_ptr + 248);
 
@@ -402,7 +402,7 @@ void ParseApplicationData::setResultingVelocityFlagsInApplicationOutputs(
 }
 
 void ParseApplicationData::setOutputFlagsinApplicationOutput(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::ApplicationOutputs& outputs)
 {
   uint8_t word8 = read_write_helper::readUint8LittleEndian(data_ptr + 259);
 

@@ -43,7 +43,7 @@ ParseUserNameData::ParseUserNameData() {}
 
 
 bool ParseUserNameData::parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                                         sick::datastructure::UserName& user_name) const
+                                         sick::datastructure::UserName& user_name)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -58,35 +58,34 @@ bool ParseUserNameData::parseTCPSequence(const datastructure::PacketBuffer& buff
 }
 
 std::string
-ParseUserNameData::readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseUserNameData::readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr)
 {
   std::string result;
   result.push_back(read_write_helper::readUint8(data_ptr + 0));
   return result;
 }
 
-uint8_t ParseUserNameData::readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseUserNameData::readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 1);
 }
 
-uint8_t ParseUserNameData::readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseUserNameData::readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 2);
 }
 
-uint8_t ParseUserNameData::readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseUserNameData::readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 3);
 }
 
-uint32_t ParseUserNameData::readNameLength(std::vector<uint8_t>::const_iterator data_ptr) const
+uint32_t ParseUserNameData::readNameLength(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 4);
 }
 
-
-std::string ParseUserNameData::readUserName(std::vector<uint8_t>::const_iterator data_ptr) const
+std::string ParseUserNameData::readUserName(std::vector<uint8_t>::const_iterator data_ptr)
 {
   uint32_t name_length = read_write_helper::readUint32LittleEndian(data_ptr + 4);
   std::string name;

@@ -52,12 +52,13 @@ namespace data_processing {
  */
 class ParseDatagramHeader
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseDatagramHeader();
 
+public:
   /*!
    * \brief Parses the udp sequence to get the identification and the offset for the datagram
    * header.
@@ -67,27 +68,27 @@ public:
    *
    * \returns If parsing the datagram header was successful.
    */
-  bool parseUDPSequence(const datastructure::PacketBuffer& buffer,
-                        sick::datastructure::DatagramHeader& header) const;
+  static bool parseUDPSequence(const datastructure::PacketBuffer& buffer,
+                               sick::datastructure::DatagramHeader& header);
 
 private:
-  void setDataInHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                       datastructure::DatagramHeader& header) const;
+  static void setDataInHeader(std::vector<uint8_t>::const_iterator data_ptr,
+                              datastructure::DatagramHeader& header);
 
-  void setDatagramMarkerInHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                 datastructure::DatagramHeader& header) const;
-  void setProtocolInHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                           datastructure::DatagramHeader& header) const;
-  void setMajorVersionInHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                               datastructure::DatagramHeader& header) const;
-  void setMinorVersionInHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                               datastructure::DatagramHeader& header) const;
-  void setTotalLengthInHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                              datastructure::DatagramHeader& header) const;
-  void setIdentificationInHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                 datastructure::DatagramHeader& header) const;
-  void setFragmentOffsetInHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                 datastructure::DatagramHeader& header) const;
+  static void setDatagramMarkerInHeader(std::vector<uint8_t>::const_iterator data_ptr,
+                                        datastructure::DatagramHeader& header);
+  static void setProtocolInHeader(std::vector<uint8_t>::const_iterator data_ptr,
+                                  datastructure::DatagramHeader& header);
+  static void setMajorVersionInHeader(std::vector<uint8_t>::const_iterator data_ptr,
+                                      datastructure::DatagramHeader& header);
+  static void setMinorVersionInHeader(std::vector<uint8_t>::const_iterator data_ptr,
+                                      datastructure::DatagramHeader& header);
+  static void setTotalLengthInHeader(std::vector<uint8_t>::const_iterator data_ptr,
+                                     datastructure::DatagramHeader& header);
+  static void setIdentificationInHeader(std::vector<uint8_t>::const_iterator data_ptr,
+                                        datastructure::DatagramHeader& header);
+  static void setFragmentOffsetInHeader(std::vector<uint8_t>::const_iterator data_ptr,
+                                        datastructure::DatagramHeader& header);
 };
 
 } // namespace data_processing

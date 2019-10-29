@@ -81,8 +81,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseFirmwareVersion> m_firmware_version_parser_ptr;
-
   datastructure::FirmwareVersion& m_firmware_version;
 };
 

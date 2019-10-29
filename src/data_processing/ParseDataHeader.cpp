@@ -41,7 +41,7 @@ ParseDataHeader::ParseDataHeader() {}
 
 datastructure::DataHeader
 ParseDataHeader::parseUDPSequence(const datastructure::PacketBuffer& buffer,
-                                  datastructure::Data& data) const
+                                  datastructure::Data& data)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -52,7 +52,7 @@ ParseDataHeader::parseUDPSequence(const datastructure::PacketBuffer& buffer,
 }
 
 void ParseDataHeader::setDataInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                          datastructure::DataHeader& data_header) const
+                                          datastructure::DataHeader& data_header)
 {
   setVersionInDataHeader(data_ptr, data_header);
   setScanHeaderInDataHeader(data_ptr, data_header);
@@ -61,7 +61,7 @@ void ParseDataHeader::setDataInDataHeader(std::vector<uint8_t>::const_iterator d
 
 
 void ParseDataHeader::setVersionInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                             datastructure::DataHeader& data_header) const
+                                             datastructure::DataHeader& data_header)
 {
   setVersionIndicatorInDataHeader(data_ptr, data_header);
   setMajorVersionInDataHeader(data_ptr, data_header);
@@ -72,7 +72,7 @@ void ParseDataHeader::setVersionInDataHeader(std::vector<uint8_t>::const_iterato
 }
 
 void ParseDataHeader::setScanHeaderInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                                datastructure::DataHeader& data_header) const
+                                                datastructure::DataHeader& data_header)
 {
   setChannelNumberInDataHeader(data_ptr, data_header);
   setSequenceNumberInDataHeader(data_ptr, data_header);
@@ -82,7 +82,7 @@ void ParseDataHeader::setScanHeaderInDataHeader(std::vector<uint8_t>::const_iter
 }
 
 void ParseDataHeader::setDataBlocksInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                                datastructure::DataHeader& data_header) const
+                                                datastructure::DataHeader& data_header)
 {
   setGeneralSystemStateBlockOffsetInDataHeader(data_ptr, data_header);
   setGeneralSystemStateBlockSizeInDataHeader(data_ptr, data_header);
@@ -97,131 +97,131 @@ void ParseDataHeader::setDataBlocksInDataHeader(std::vector<uint8_t>::const_iter
 }
 
 void ParseDataHeader::setVersionIndicatorInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                                      datastructure::DataHeader& data_header) const
+                                                      datastructure::DataHeader& data_header)
 {
   data_header.setVersionIndicator(read_write_helper::readUint8LittleEndian(data_ptr + 0));
 }
 
 void ParseDataHeader::setMajorVersionInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                                  datastructure::DataHeader& data_header) const
+                                                  datastructure::DataHeader& data_header)
 {
   data_header.setVersionMajorVersion(read_write_helper::readUint8LittleEndian(data_ptr + 1));
 }
 
 void ParseDataHeader::setMinorVersionInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                                  datastructure::DataHeader& data_header) const
+                                                  datastructure::DataHeader& data_header)
 {
   data_header.setVersionMinorVersion(read_write_helper::readUint8LittleEndian(data_ptr + 2));
 }
 
 void ParseDataHeader::setVersionReleaseInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                                    datastructure::DataHeader& data_header) const
+                                                    datastructure::DataHeader& data_header)
 {
   data_header.setVersionRelease(read_write_helper::readUint8LittleEndian(data_ptr + 3));
 }
 
 void ParseDataHeader::setSerialNumberOfDeviceInDataHeader(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header)
 {
   data_header.setSerialNumberOfDevice(read_write_helper::readUint32LittleEndian(data_ptr + 4));
 }
 
 void ParseDataHeader::setSerialNumberOfSystemPlugInDataHeader(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header)
 {
   data_header.setSerialNumberOfSystemPlug(read_write_helper::readUint32LittleEndian(data_ptr + 8));
 }
 
 void ParseDataHeader::setChannelNumberInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                                   datastructure::DataHeader& data_header) const
+                                                   datastructure::DataHeader& data_header)
 {
   data_header.setChannelNumber(read_write_helper::readUint8LittleEndian(data_ptr + 12));
 }
 
 void ParseDataHeader::setSequenceNumberInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                                    datastructure::DataHeader& data_header) const
+                                                    datastructure::DataHeader& data_header)
 {
   data_header.setSequenceNumber(read_write_helper::readUint32LittleEndian(data_ptr + 16));
 }
 
 void ParseDataHeader::setScanNumberInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                                datastructure::DataHeader& data_header) const
+                                                datastructure::DataHeader& data_header)
 {
   data_header.setScanNumber(read_write_helper::readUint32LittleEndian(data_ptr + 20));
 }
 
 void ParseDataHeader::setTimestampDateInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                                   datastructure::DataHeader& data_header) const
+                                                   datastructure::DataHeader& data_header)
 {
   data_header.setTimestampDate(read_write_helper::readUint16LittleEndian(data_ptr + 24));
 }
 
 void ParseDataHeader::setTimestampTimeInDataHeader(std::vector<uint8_t>::const_iterator data_ptr,
-                                                   datastructure::DataHeader& data_header) const
+                                                   datastructure::DataHeader& data_header)
 {
   data_header.setTimestampTime(read_write_helper::readUint32LittleEndian(data_ptr + 28));
 }
 
 void ParseDataHeader::setGeneralSystemStateBlockOffsetInDataHeader(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header)
 {
   data_header.setGeneralSystemStateBlockOffset(
     read_write_helper::readUint16LittleEndian(data_ptr + 32));
 }
 
 void ParseDataHeader::setGeneralSystemStateBlockSizeInDataHeader(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header)
 {
   data_header.setGeneralSystemStateBlockSize(
     read_write_helper::readUint16LittleEndian(data_ptr + 34));
 }
 
 void ParseDataHeader::setDerivedValuesBlockOffsetInDataHeader(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header)
 {
   data_header.setDerivedValuesBlockOffset(read_write_helper::readUint16LittleEndian(data_ptr + 36));
 }
 
 void ParseDataHeader::setDerivedValuesBlockSizeInDataHeader(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header)
 {
   data_header.setDerivedValuesBlockSize(read_write_helper::readUint16LittleEndian(data_ptr + 38));
 }
 
 void ParseDataHeader::setMeasurementDataBlockOffsetInDataHeader(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header)
 {
   data_header.setMeasurementDataBlockOffset(
     read_write_helper::readUint16LittleEndian(data_ptr + 40));
 }
 
 void ParseDataHeader::setMeasurementDataBlockSizeInDataHeader(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header)
 {
   data_header.setMeasurementDataBlockSize(read_write_helper::readUint16LittleEndian(data_ptr + 42));
 }
 
 void ParseDataHeader::setIntrusionDataBlockOffsetInDataHeader(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header)
 {
   data_header.setIntrusionDataBlockOffset(read_write_helper::readUint16LittleEndian(data_ptr + 44));
 }
 
 void ParseDataHeader::setIntrusionDataBlockSizeInDataHeader(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header)
 {
   data_header.setIntrusionDataBlockSize(read_write_helper::readUint16LittleEndian(data_ptr + 46));
 }
 
 void ParseDataHeader::setApplicationDataBlockOffsetInDataHeader(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header)
 {
   data_header.setApplicationDataBlockOffset(
     read_write_helper::readUint16LittleEndian(data_ptr + 48));
 }
 
 void ParseDataHeader::setApplicationDataBlockSizeInDataHeader(
-  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header) const
+  std::vector<uint8_t>::const_iterator data_ptr, datastructure::DataHeader& data_header)
 {
   data_header.setApplicationDataBlockSize(read_write_helper::readUint16LittleEndian(data_ptr + 50));
 }

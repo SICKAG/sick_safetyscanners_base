@@ -45,8 +45,6 @@ ApplicationNameVariableCommand::ApplicationNameVariableCommand(
   : VariableCommand(session, 33)
   , m_application_name(application_name)
 {
-  m_application_name_parser_ptr =
-    std::make_shared<sick::data_processing::ParseApplicationNameData>();
 }
 
 bool ApplicationNameVariableCommand::canBeExecutedWithoutSessionID() const
@@ -60,8 +58,8 @@ bool ApplicationNameVariableCommand::processReply()
   {
     return false;
   }
-  m_application_name_parser_ptr->parseTCPSequence(getDataVector(), m_application_name);
-  return true;
+
+  return sick::data_processing::ParseApplicationNameData::parseTCPSequence(getDataVector(), m_application_name);
 }
 
 

@@ -44,7 +44,7 @@ ParseStatusOverviewData::ParseStatusOverviewData() {}
 
 bool ParseStatusOverviewData::parseTCPSequence(
   const datastructure::PacketBuffer& buffer,
-  sick::datastructure::StatusOverview& status_overview) const
+  sick::datastructure::StatusOverview& status_overview)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -66,7 +66,7 @@ bool ParseStatusOverviewData::parseTCPSequence(
 }
 
 std::string
-ParseStatusOverviewData::readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr)
 {
   std::string result;
   result.push_back(read_write_helper::readUint8(data_ptr + 0));
@@ -74,73 +74,73 @@ ParseStatusOverviewData::readVersionIndicator(std::vector<uint8_t>::const_iterat
 }
 
 uint8_t
-ParseStatusOverviewData::readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 1);
 }
 
 uint8_t
-ParseStatusOverviewData::readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 2);
 }
 
 uint8_t
-ParseStatusOverviewData::readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 3);
 }
 
 uint8_t
-ParseStatusOverviewData::readDeviceState(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readDeviceState(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 4);
 }
 
 uint8_t
-ParseStatusOverviewData::readConfigState(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readConfigState(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 5);
 }
 
 uint8_t
-ParseStatusOverviewData::readApplicationState(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readApplicationState(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 6);
 }
 
 uint32_t
-ParseStatusOverviewData::readPowerOnCount(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readPowerOnCount(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 12);
 }
 
 uint32_t
-ParseStatusOverviewData::readCurrentTime(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readCurrentTime(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 16);
 }
 
 uint16_t
-ParseStatusOverviewData::readCurrentDate(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readCurrentDate(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint16LittleEndian(data_ptr + 20);
 }
 
 uint32_t
-ParseStatusOverviewData::readErrorInfoCode(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readErrorInfoCode(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 24);
 }
 
 uint32_t
-ParseStatusOverviewData::readErrorInfoTime(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readErrorInfoTime(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 52);
 }
 
 uint16_t
-ParseStatusOverviewData::readErrorInfoDate(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseStatusOverviewData::readErrorInfoDate(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint16LittleEndian(data_ptr + 56);
 }

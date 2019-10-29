@@ -79,8 +79,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseSerialNumber> m_serial_number_parser_ptr;
-
   datastructure::SerialNumber& m_serial_number;
 };
 

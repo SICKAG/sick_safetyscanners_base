@@ -45,7 +45,6 @@ TypeCodeVariableCommand::TypeCodeVariableCommand(Cola2Session& session,
   : VariableCommand(session, 0x000d)
   , m_type_code(type_code)
 {
-  m_type_code_parser_ptr = std::make_shared<sick::data_processing::ParseTypeCodeData>();
 }
 
 bool TypeCodeVariableCommand::canBeExecutedWithoutSessionID() const
@@ -59,8 +58,8 @@ bool TypeCodeVariableCommand::processReply()
   {
     return false;
   }
-  m_type_code_parser_ptr->parseTCPSequence(getDataVector(), m_type_code);
-  return true;
+
+  return sick::data_processing::ParseTypeCodeData::parseTCPSequence(getDataVector(), m_type_code);
 }
 
 

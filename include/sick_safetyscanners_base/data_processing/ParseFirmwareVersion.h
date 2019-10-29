@@ -53,12 +53,13 @@ namespace data_processing {
  */
 class ParseFirmwareVersion
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseFirmwareVersion();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the firmware version of the sensor.
    *
@@ -67,10 +68,10 @@ public:
    *
    * \returns If parsing the firmware version was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::FirmwareVersion& firmware_version) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               datastructure::FirmwareVersion& firmware_version);
 
-  std::string readFirmwareVersion(std::vector<uint8_t>::const_iterator data_ptr) const;
+  static std::string readFirmwareVersion(std::vector<uint8_t>::const_iterator data_ptr);
 };
 
 } // namespace data_processing

@@ -64,8 +64,8 @@ bool UDPPacketMerger::addUDPPacket(const datastructure::PacketBuffer& buffer)
     m_is_complete = false;
   }
   sick::datastructure::DatagramHeader datagram_header;
-  sick::data_processing::ParseDatagramHeader datagram_header_parser;
-  datagram_header_parser.parseUDPSequence(buffer, datagram_header);
+  sick::data_processing::ParseDatagramHeader::parseUDPSequence(buffer, datagram_header);
+
   addToMap(buffer, datagram_header);
   deployPacketIfComplete(datagram_header);
 

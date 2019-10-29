@@ -43,7 +43,7 @@ ParseDeviceStatusData::ParseDeviceStatusData() {}
 
 
 bool ParseDeviceStatusData::parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                                             sick::datastructure::DeviceStatus& device_status) const
+                                             sick::datastructure::DeviceStatus& device_status)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -52,7 +52,7 @@ bool ParseDeviceStatusData::parseTCPSequence(const datastructure::PacketBuffer& 
   return true;
 }
 
-uint8_t ParseDeviceStatusData::readDeviceStatus(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseDeviceStatusData::readDeviceStatus(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 0);
 }

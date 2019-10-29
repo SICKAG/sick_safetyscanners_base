@@ -43,7 +43,7 @@ ParseFieldSetsData::ParseFieldSetsData() {}
 
 
 bool ParseFieldSetsData::parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                                          sick::datastructure::FieldSets& field_sets) const
+                                          sick::datastructure::FieldSets& field_sets)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -60,29 +60,29 @@ bool ParseFieldSetsData::parseTCPSequence(const datastructure::PacketBuffer& buf
 }
 
 std::string
-ParseFieldSetsData::readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseFieldSetsData::readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr)
 {
   std::string result;
   result.push_back(read_write_helper::readUint8(data_ptr + 0));
   return result;
 }
 
-uint8_t ParseFieldSetsData::readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseFieldSetsData::readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 1);
 }
 
-uint8_t ParseFieldSetsData::readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseFieldSetsData::readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 2);
 }
 
-uint8_t ParseFieldSetsData::readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseFieldSetsData::readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 3);
 }
 
-uint32_t ParseFieldSetsData::readArrayLength(std::vector<uint8_t>::const_iterator data_ptr) const
+uint32_t ParseFieldSetsData::readArrayLength(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 4);
 }
@@ -90,7 +90,7 @@ uint32_t ParseFieldSetsData::readArrayLength(std::vector<uint8_t>::const_iterato
 
 std::vector<std::string>
 ParseFieldSetsData::readFieldName(std::vector<uint8_t>::const_iterator data_ptr,
-                                  uint32_t array_length) const
+                                  uint32_t array_length)
 {
   std::vector<std::string> result;
   for (uint32_t i = 0; i < array_length; i++)
@@ -108,7 +108,7 @@ ParseFieldSetsData::readFieldName(std::vector<uint8_t>::const_iterator data_ptr,
 
 std::vector<uint32_t>
 ParseFieldSetsData::readNameLength(std::vector<uint8_t>::const_iterator data_ptr,
-                                   uint32_t array_length) const
+                                   uint32_t array_length)
 {
   std::vector<uint32_t> result;
   for (uint32_t i = 0; i < array_length; i++)
@@ -118,7 +118,7 @@ ParseFieldSetsData::readNameLength(std::vector<uint8_t>::const_iterator data_ptr
   return result;
 }
 std::vector<bool> ParseFieldSetsData::readIsDefined(std::vector<uint8_t>::const_iterator data_ptr,
-                                                    uint32_t array_length) const
+                                                    uint32_t array_length)
 {
   std::vector<bool> result;
   for (uint32_t i = 0; i < array_length; i++)

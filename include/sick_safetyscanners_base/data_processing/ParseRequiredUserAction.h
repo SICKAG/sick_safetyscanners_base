@@ -51,12 +51,13 @@ namespace data_processing {
  */
 class ParseRequiredUserActionData
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseRequiredUserActionData();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the  required user action of the sensor.
    *
@@ -66,12 +67,12 @@ public:
    *
    * \returns If parsing was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::RequiredUserAction& required_user_action) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               datastructure::RequiredUserAction& required_user_action);
 
 private:
-  bool readRequiredUserAction(std::vector<uint8_t>::const_iterator data_ptr,
-                              datastructure::RequiredUserAction& required_user_action) const;
+  static bool readRequiredUserAction(std::vector<uint8_t>::const_iterator data_ptr,
+                                     datastructure::RequiredUserAction& required_user_action);
 };
 
 } // namespace data_processing

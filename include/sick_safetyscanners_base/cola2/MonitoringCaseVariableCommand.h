@@ -84,8 +84,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseMonitoringCaseData> m_monitoring_case_parser_ptr;
-
   sick::datastructure::MonitoringCaseData& m_monitoring_case_data;
 };
 

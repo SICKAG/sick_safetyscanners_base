@@ -196,8 +196,6 @@ protected:
                                       size_t additional_bytes) const;
 
 private:
-  std::shared_ptr<sick::data_processing::ParseTCPPacket> m_tcp_parser_ptr;
-
   boost::mutex m_execution_mutex;
 
   bool m_was_successful;

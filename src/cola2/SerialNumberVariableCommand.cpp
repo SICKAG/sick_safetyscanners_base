@@ -45,7 +45,6 @@ SerialNumberVariableCommand::SerialNumberVariableCommand(Cola2Session& session,
   : VariableCommand(session, 3)
   , m_serial_number(serial_number)
 {
-  m_serial_number_parser_ptr = std::make_shared<sick::data_processing::ParseSerialNumber>();
 }
 
 bool SerialNumberVariableCommand::canBeExecutedWithoutSessionID() const
@@ -60,10 +59,7 @@ bool SerialNumberVariableCommand::processReply()
     return false;
   }
 
-  m_serial_number_parser_ptr->parseTCPSequence(getDataVector(), m_serial_number);
-
-
-  return true;
+  return sick::data_processing::ParseSerialNumber::parseTCPSequence(getDataVector(), m_serial_number);
 }
 
 

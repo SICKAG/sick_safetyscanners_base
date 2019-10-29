@@ -448,15 +448,14 @@ void SickSafetyscannersBase::stopTCPConnection()
   m_session_ptr->doDisconnect();
 }
 
-
 void SickSafetyscannersBase::processUDPPacket(const sick::datastructure::PacketBuffer& buffer)
 {
   if (m_packet_merger_ptr->addUDPPacket(buffer))
   {
     sick::datastructure::PacketBuffer deployed_buffer =
       m_packet_merger_ptr->getDeployedPacketBuffer();
-    sick::data_processing::ParseData data_parser;
-    sick::datastructure::Data data = data_parser.parseUDPSequence(deployed_buffer);
+
+    sick::datastructure::Data data = sick::data_processing::ParseData::parseUDPSequence(deployed_buffer);
 
     m_newPacketReceivedCallbackFunction(data);
   }

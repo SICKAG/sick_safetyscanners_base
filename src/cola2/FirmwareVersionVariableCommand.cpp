@@ -45,7 +45,6 @@ FirmwareVersionVariableCommand::FirmwareVersionVariableCommand(
   : VariableCommand(session, 4)
   , m_firmware_version(firmware_version)
 {
-  m_firmware_version_parser_ptr = std::make_shared<sick::data_processing::ParseFirmwareVersion>();
 }
 
 bool FirmwareVersionVariableCommand::canBeExecutedWithoutSessionID() const
@@ -60,10 +59,7 @@ bool FirmwareVersionVariableCommand::processReply()
     return false;
   }
 
-  m_firmware_version_parser_ptr->parseTCPSequence(getDataVector(), m_firmware_version);
-
-
-  return true;
+  return sick::data_processing::ParseFirmwareVersion::parseTCPSequence(getDataVector(), m_firmware_version);
 }
 
 

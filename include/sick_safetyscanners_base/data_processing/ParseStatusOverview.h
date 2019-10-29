@@ -51,12 +51,13 @@ namespace data_processing {
  */
 class ParseStatusOverviewData
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseStatusOverviewData();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the status overview of the sensor.
    *
@@ -65,23 +66,23 @@ public:
    *
    * \returns If parsing was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::StatusOverview& status_overview) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                        datastructure::StatusOverview& status_overview);
 
 private:
-  std::string readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readDeviceState(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readConfigState(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readApplicationState(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readPowerOnCount(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readCurrentTime(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readCurrentDate(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readErrorInfoCode(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readErrorInfoTime(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readErrorInfoDate(std::vector<uint8_t>::const_iterator data_ptr) const;
+  static std::string readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readDeviceState(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readConfigState(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readApplicationState(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readPowerOnCount(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readCurrentTime(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readCurrentDate(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readErrorInfoCode(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readErrorInfoTime(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readErrorInfoDate(std::vector<uint8_t>::const_iterator data_ptr);
 };
 
 } // namespace data_processing

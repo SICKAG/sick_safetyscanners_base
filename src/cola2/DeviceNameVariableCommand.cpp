@@ -45,7 +45,6 @@ DeviceNameVariableCommand::DeviceNameVariableCommand(Cola2Session& session,
   : VariableCommand(session, 17)
   , m_device_name(device_name)
 {
-  m_device_name_parser_ptr = std::make_shared<sick::data_processing::ParseDeviceName>();
 }
 
 bool DeviceNameVariableCommand::canBeExecutedWithoutSessionID() const
@@ -60,10 +59,7 @@ bool DeviceNameVariableCommand::processReply()
     return false;
   }
 
-  m_device_name_parser_ptr->parseTCPSequence(getDataVector(), m_device_name);
-
-
-  return true;
+  return sick::data_processing::ParseDeviceName::parseTCPSequence(getDataVector(), m_device_name);
 }
 
 

@@ -80,8 +80,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseFieldSetsData> m_field_sets_parser_ptr;
-
   sick::datastructure::FieldSets& m_field_sets;
 };
 

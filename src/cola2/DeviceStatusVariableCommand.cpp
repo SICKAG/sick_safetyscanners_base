@@ -45,7 +45,6 @@ DeviceStatusVariableCommand::DeviceStatusVariableCommand(
   : VariableCommand(session, 15)
   , m_device_status(device_status)
 {
-  m_device_status_parser_ptr = std::make_shared<sick::data_processing::ParseDeviceStatusData>();
 }
 
 bool DeviceStatusVariableCommand::canBeExecutedWithoutSessionID() const
@@ -59,8 +58,8 @@ bool DeviceStatusVariableCommand::processReply()
   {
     return false;
   }
-  m_device_status_parser_ptr->parseTCPSequence(getDataVector(), m_device_status);
-  return true;
+
+  return sick::data_processing::ParseDeviceStatusData::parseTCPSequence(getDataVector(), m_device_status);
 }
 
 

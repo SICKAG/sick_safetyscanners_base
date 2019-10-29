@@ -80,8 +80,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseUserNameData> m_user_name_parser_ptr;
-
   sick::datastructure::UserName& m_user_name;
 };
 

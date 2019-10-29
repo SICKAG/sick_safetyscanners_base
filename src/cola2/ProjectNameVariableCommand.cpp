@@ -45,7 +45,6 @@ ProjectNameVariableCommand::ProjectNameVariableCommand(Cola2Session& session,
   : VariableCommand(session, 18)
   , m_project_name(project_name)
 {
-  m_project_name_parser_ptr = std::make_shared<sick::data_processing::ParseProjectName>();
 }
 
 bool ProjectNameVariableCommand::canBeExecutedWithoutSessionID() const
@@ -60,10 +59,7 @@ bool ProjectNameVariableCommand::processReply()
     return false;
   }
 
-  m_project_name_parser_ptr->parseTCPSequence(getDataVector(), m_project_name);
-
-
-  return true;
+  return sick::data_processing::ParseProjectName::parseTCPSequence(getDataVector(), m_project_name);
 }
 
 

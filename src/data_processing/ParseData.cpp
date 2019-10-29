@@ -39,17 +39,10 @@ namespace data_processing {
 
 ParseData::ParseData()
 {
-  m_data_header_parser_ptr      = std::make_shared<sick::data_processing::ParseDataHeader>();
-  m_derived_values_parser_ptr   = std::make_shared<sick::data_processing::ParseDerivedValues>();
-  m_measurement_data_parser_ptr = std::make_shared<sick::data_processing::ParseMeasurementData>();
-  m_general_system_state_parser_ptr =
-    std::make_shared<sick::data_processing::ParseGeneralSystemState>();
-  m_intrusion_data_parser_ptr   = std::make_shared<sick::data_processing::ParseIntrusionData>();
-  m_application_data_parser_ptr = std::make_shared<sick::data_processing::ParseApplicationData>();
 }
 
 sick::datastructure::Data
-ParseData::parseUDPSequence(const datastructure::PacketBuffer& buffer) const
+ParseData::parseUDPSequence(const datastructure::PacketBuffer& buffer)
 {
   sick::datastructure::Data data;
   setDataBlocksInData(buffer, data);
@@ -57,7 +50,7 @@ ParseData::parseUDPSequence(const datastructure::PacketBuffer& buffer) const
 }
 
 void ParseData::setDataBlocksInData(const datastructure::PacketBuffer& buffer,
-                                    datastructure::Data& data) const
+                                    datastructure::Data& data)
 {
   setDataHeaderInData(buffer, data);
   setDerivedValuesInData(buffer, data);
@@ -68,52 +61,53 @@ void ParseData::setDataBlocksInData(const datastructure::PacketBuffer& buffer,
 }
 
 void ParseData::setDataHeaderInData(const datastructure::PacketBuffer& buffer,
-                                    datastructure::Data& data) const
+                                    datastructure::Data& data)
 {
   sick::datastructure::DataHeader data_header =
-    m_data_header_parser_ptr->parseUDPSequence(buffer, data);
+    sick::data_processing::ParseDataHeader::parseUDPSequence(buffer, data);
   data.setDataHeaderPtr(std::make_shared<sick::datastructure::DataHeader>(data_header));
 }
 
 void ParseData::setDerivedValuesInData(const datastructure::PacketBuffer& buffer,
-                                       datastructure::Data& data) const
+                                       datastructure::Data& data)
 {
   sick::datastructure::DerivedValues derived_values =
-    m_derived_values_parser_ptr->parseUDPSequence(buffer, data);
+    sick::data_processing::ParseDerivedValues::parseUDPSequence(buffer, data);
   data.setDerivedValuesPtr(std::make_shared<sick::datastructure::DerivedValues>(derived_values));
 }
 
 void ParseData::setMeasurementDataInData(const datastructure::PacketBuffer& buffer,
-                                         datastructure::Data& data) const
+                                         datastructure::Data& data)
 {
   sick::datastructure::MeasurementData measurement_data =
-    m_measurement_data_parser_ptr->parseUDPSequence(buffer, data);
+    sick::data_processing::ParseMeasurementData::parseUDPSequence(buffer, data);
   data.setMeasurementDataPtr(
     std::make_shared<sick::datastructure::MeasurementData>(measurement_data));
 }
 
 void ParseData::setGeneralSystemStateInData(const datastructure::PacketBuffer& buffer,
-                                            datastructure::Data& data) const
+                                            datastructure::Data& data)
 {
   sick::datastructure::GeneralSystemState general_system_state =
-    m_general_system_state_parser_ptr->parseUDPSequence(buffer, data);
+    sick::data_processing::ParseGeneralSystemState::parseUDPSequence(buffer, data);
   data.setGeneralSystemStatePtr(
     std::make_shared<sick::datastructure::GeneralSystemState>(general_system_state));
 }
 
 void ParseData::setIntrusionDataInData(const datastructure::PacketBuffer& buffer,
-                                       datastructure::Data& data) const
+                                       datastructure::Data& data)
 {
   sick::datastructure::IntrusionData intrusion_data =
-    m_intrusion_data_parser_ptr->parseUDPSequence(buffer, data);
+    sick::data_processing::ParseIntrusionData::parseUDPSequence(buffer, data);
   data.setIntrusionDataPtr(std::make_shared<sick::datastructure::IntrusionData>(intrusion_data));
 }
 
 void ParseData::setApplicationDataInData(const datastructure::PacketBuffer& buffer,
-                                         datastructure::Data& data) const
+                                         datastructure::Data& data)
 {
   sick::datastructure::ApplicationData application_data =
-    m_application_data_parser_ptr->parseUDPSequence(buffer, data);
+    sick::data_processing::ParseApplicationData::parseUDPSequence(buffer, data);
+
   data.setApplicationDataPtr(
     std::make_shared<sick::datastructure::ApplicationData>(application_data));
 }

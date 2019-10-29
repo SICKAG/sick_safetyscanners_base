@@ -44,7 +44,7 @@ ParseRequiredUserActionData::ParseRequiredUserActionData() {}
 
 bool ParseRequiredUserActionData::parseTCPSequence(
   const datastructure::PacketBuffer& buffer,
-  sick::datastructure::RequiredUserAction& required_user_action) const
+  sick::datastructure::RequiredUserAction& required_user_action)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -55,7 +55,7 @@ bool ParseRequiredUserActionData::parseTCPSequence(
 
 bool ParseRequiredUserActionData::readRequiredUserAction(
   std::vector<uint8_t>::const_iterator data_ptr,
-  sick::datastructure::RequiredUserAction& required_user_action) const
+  sick::datastructure::RequiredUserAction& required_user_action)
 {
   uint16_t word = read_write_helper::readUint16LittleEndian(data_ptr + 0);
 
