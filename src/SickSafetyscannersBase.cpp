@@ -223,47 +223,94 @@ namespace detail
 
 
 
-
 SickSafetyscannersBase::SickSafetyscannersBase(
   const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
   sick::datastructure::CommSettings* settings)
   : m_newPacketReceivedCallbackFunction(newPacketReceivedCallbackFunction)
+  , m_io_service_ptr ( std::make_shared<boost::asio::io_service>() )
+  , m_io_service ( *m_io_service_ptr )
 {
   ROS_INFO("Starting SickSafetyscannersBase");
-  m_io_service_ptr       = std::make_shared<boost::asio::io_service>();
+
   m_async_udp_client_ptr = std::make_shared<sick::communication::AsyncUDPClient>(
     boost::bind(&SickSafetyscannersBase::processUDPPacket, this, _1),
-    boost::ref(*m_io_service_ptr),
+    m_io_service,
     settings->getHostUdpPort());
+
   settings->setHostUdpPort(
     m_async_udp_client_ptr
       ->getLocalPort()); // Store which port was used, needed for data request from the laser
   m_packet_merger_ptr = std::make_shared<sick::data_processing::UDPPacketMerger>();
+
+  ROS_INFO("Started SickSafetyscannersBase");
+}
+
+
+SickSafetyscannersBase::SickSafetyscannersBase(
+    boost::asio::io_service& io_service,
+    const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
+    sick::datastructure::CommSettings* settings)
+  : m_newPacketReceivedCallbackFunction(newPacketReceivedCallbackFunction)
+  , m_io_service( io_service )
+{
+  ROS_INFO("Starting SickSafetyscannersBase");
+
+  m_async_udp_client_ptr = std::make_shared<sick::communication::AsyncUDPClient>(
+    boost::bind(&SickSafetyscannersBase::processUDPPacket, this, _1),
+    m_io_service,
+    settings->getHostUdpPort());
+
+  settings->setHostUdpPort(
+    m_async_udp_client_ptr
+      ->getLocalPort()); // Store which port was used, needed for data request from the laser
+  m_packet_merger_ptr = std::make_shared<sick::data_processing::UDPPacketMerger>();
+
   ROS_INFO("Started SickSafetyscannersBase");
 }
 
 SickSafetyscannersBase::~SickSafetyscannersBase()
 {
-  m_io_service_ptr->stop();
-  m_udp_client_thread_ptr->join();
-  m_udp_client_thread_ptr.reset();
+  stop();
 }
 
 bool SickSafetyscannersBase::run()
 {
-  m_udp_client_thread_ptr.reset(
-    new boost::thread(boost::bind(&SickSafetyscannersBase::udpClientThread, this)));
+  // if we have an internal io_service -> create a thread and run the io_service
+  if ( m_io_service_ptr )
+  {
+    m_udp_client_thread_ptr.reset(
+      new boost::thread(boost::bind(&SickSafetyscannersBase::udpClientThread, this)));
+  }
 
   m_async_udp_client_ptr->start();
   return true;
 }
 
+void SickSafetyscannersBase::stop()
+{
+  m_async_udp_client_ptr->stop();
+
+  if ( m_io_service_ptr )
+  {
+    m_io_service_ptr->stop();
+    m_udp_client_thread_ptr->join();
+    m_udp_client_thread_ptr.reset();
+  }
+
+}
+
 bool SickSafetyscannersBase::udpClientThread()
 {
   ROS_INFO("Enter io thread");
-  m_io_work_ptr = std::make_shared<boost::asio::io_service::work>(boost::ref(*m_io_service_ptr));
-  m_io_service_ptr->run();
+
+  // reset the io_service so that it can be used again
+  m_io_service.get().reset();
+
+  std::shared_ptr<boost::asio::io_service::work> io_work_ptr = std::make_shared<boost::asio::io_service::work>( m_io_service );
+  m_io_service.get().run();
+
   ROS_INFO("Exit io thread");
+
   return true;
 }
 
@@ -280,7 +327,7 @@ void SickSafetyscannersBase::changeSensorSettings(const datastructure::CommSetti
 
 void SickSafetyscannersBase::asyncChangeSensorSettings(const sick::datastructure::CommSettings& settings, AsyncCompleteHandler handler )
 {
-  detail::processCola2Command<sick::cola2::ChangeCommSettingsCommand>( *m_io_service_ptr, settings, std::ref(settings), handler );
+  detail::processCola2Command<sick::cola2::ChangeCommSettingsCommand>( m_io_service, settings, std::ref(settings), handler );
 }
 
 void SickSafetyscannersBase::findSensor(const datastructure::CommSettings& settings,
@@ -297,7 +344,7 @@ void SickSafetyscannersBase::findSensor(const datastructure::CommSettings& setti
 
 void SickSafetyscannersBase::asyncFindSensor(const datastructure::CommSettings& settings, uint16_t blink_time, AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::FindMeCommand>( *m_io_service_ptr, settings, std::ref(blink_time), handler );
+  detail::processCola2Command<sick::cola2::FindMeCommand>( m_io_service, settings, std::ref(blink_time), handler );
 }
 
 void SickSafetyscannersBase::requestTypeCode(const datastructure::CommSettings& settings,
@@ -318,7 +365,7 @@ void SickSafetyscannersBase::asyncRequestTypeCode(const sick::datastructure::Com
                                                   sick::datastructure::TypeCode& type_code,
                                                   AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::TypeCodeVariableCommand>( *m_io_service_ptr, settings, std::ref(type_code), handler );
+  detail::processCola2Command<sick::cola2::TypeCodeVariableCommand>( m_io_service, settings, std::ref(type_code), handler );
 }
 
 void SickSafetyscannersBase::requestApplicationName(const datastructure::CommSettings& settings,
@@ -339,7 +386,7 @@ void SickSafetyscannersBase::asyncRequestApplicationName(const sick::datastructu
                                                          sick::datastructure::ApplicationName& application_name,
                                                          AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::ApplicationNameVariableCommand>( *m_io_service_ptr, settings, std::ref(application_name), handler );
+  detail::processCola2Command<sick::cola2::ApplicationNameVariableCommand>( m_io_service, settings, std::ref(application_name), handler );
 }
 
 void SickSafetyscannersBase::requestSerialNumber(const datastructure::CommSettings& settings,
@@ -360,7 +407,7 @@ void SickSafetyscannersBase::asyncRequestSerialNumber(const sick::datastructure:
                                                       sick::datastructure::SerialNumber& serial_number,
                                                       AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::SerialNumberVariableCommand>( *m_io_service_ptr, settings, std::ref(serial_number), handler );
+  detail::processCola2Command<sick::cola2::SerialNumberVariableCommand>( m_io_service, settings, std::ref(serial_number), handler );
 }
 
 void SickSafetyscannersBase::requestFirmwareVersion(const datastructure::CommSettings& settings,
@@ -381,7 +428,7 @@ void SickSafetyscannersBase::asyncRequestFirmwareVersion(const sick::datastructu
                                                          sick::datastructure::FirmwareVersion& firmware_version,
                                                          AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::FirmwareVersionVariableCommand>( *m_io_service_ptr, settings, std::ref(firmware_version), handler );
+  detail::processCola2Command<sick::cola2::FirmwareVersionVariableCommand>( m_io_service, settings, std::ref(firmware_version), handler );
 }
 
 void SickSafetyscannersBase::requestOrderNumber(const datastructure::CommSettings& settings,
@@ -402,7 +449,7 @@ void SickSafetyscannersBase::asyncRequestOrderNumber(const datastructure::CommSe
                                                      datastructure::OrderNumber& order_number,
                                                      AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::OrderNumberVariableCommand>( *m_io_service_ptr, settings, std::ref(order_number), handler );
+  detail::processCola2Command<sick::cola2::OrderNumberVariableCommand>( m_io_service, settings, std::ref(order_number), handler );
 }
 
 void SickSafetyscannersBase::requestProjectName(const datastructure::CommSettings& settings,
@@ -423,7 +470,7 @@ void SickSafetyscannersBase::asyncRequestProjectName(const datastructure::CommSe
                                                      datastructure::ProjectName& project_name,
                                                      AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::ProjectNameVariableCommand>( *m_io_service_ptr, settings, std::ref(project_name), handler );
+  detail::processCola2Command<sick::cola2::ProjectNameVariableCommand>( m_io_service, settings, std::ref(project_name), handler );
 }
 
 void SickSafetyscannersBase::requestUserName(const datastructure::CommSettings& settings,
@@ -444,7 +491,7 @@ void SickSafetyscannersBase::asyncRequestUserName(const datastructure::CommSetti
                                                   datastructure::UserName& user_name,
                                                   AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::UserNameVariableCommand>( *m_io_service_ptr, settings, std::ref(user_name), handler );
+  detail::processCola2Command<sick::cola2::UserNameVariableCommand>( m_io_service, settings, std::ref(user_name), handler );
 }
 
 void SickSafetyscannersBase::requestConfigMetadata(const datastructure::CommSettings& settings,
@@ -463,7 +510,7 @@ void SickSafetyscannersBase::asyncRequestConfigMetadata(const datastructure::Com
                                                         datastructure::ConfigMetadata& config_metadata,
                                                         AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::ConfigMetadataVariableCommand>( *m_io_service_ptr, settings, std::ref(config_metadata), handler );
+  detail::processCola2Command<sick::cola2::ConfigMetadataVariableCommand>( m_io_service, settings, std::ref(config_metadata), handler );
 }
 
 void SickSafetyscannersBase::requestStatusOverview(const datastructure::CommSettings& settings,
@@ -482,7 +529,7 @@ void SickSafetyscannersBase::asyncRequestStatusOverview(const datastructure::Com
                                                         datastructure::StatusOverview& status_overview,
                                                         AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::StatusOverviewVariableCommand>( *m_io_service_ptr, settings, std::ref(status_overview), handler );
+  detail::processCola2Command<sick::cola2::StatusOverviewVariableCommand>( m_io_service, settings, std::ref(status_overview), handler );
 }
 
 void SickSafetyscannersBase::requestDeviceStatus(const datastructure::CommSettings& settings,
@@ -501,7 +548,7 @@ void SickSafetyscannersBase::asyncRequestDeviceStatus(const datastructure::CommS
                                                       datastructure::DeviceStatus& device_status,
                                                       AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::DeviceStatusVariableCommand>( *m_io_service_ptr, settings, std::ref(device_status), handler );
+  detail::processCola2Command<sick::cola2::DeviceStatusVariableCommand>( m_io_service, settings, std::ref(device_status), handler );
 }
 
 void SickSafetyscannersBase::requestRequiredUserAction(const datastructure::CommSettings& settings,
@@ -520,7 +567,7 @@ void SickSafetyscannersBase::asyncRequestRequiredUserAction(const datastructure:
                                                             datastructure::RequiredUserAction& required_user_action,
                                                             AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::RequiredUserActionVariableCommand>( *m_io_service_ptr, settings, std::ref(required_user_action), handler );
+  detail::processCola2Command<sick::cola2::RequiredUserActionVariableCommand>( m_io_service, settings, std::ref(required_user_action), handler );
 }
 
 void SickSafetyscannersBase::requestDeviceName(const datastructure::CommSettings& settings,
@@ -541,7 +588,7 @@ void SickSafetyscannersBase::asyncRequestDeviceName(const sick::datastructure::C
                                                     datastructure::DeviceName& device_name,
                                                     AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::DeviceNameVariableCommand>( *m_io_service_ptr, settings, std::ref(device_name), handler );
+  detail::processCola2Command<sick::cola2::DeviceNameVariableCommand>( m_io_service, settings, std::ref(device_name), handler );
 }
 
 void SickSafetyscannersBase::requestPersistentConfig(const datastructure::CommSettings& settings,
@@ -560,7 +607,7 @@ void SickSafetyscannersBase::asyncRequestPersistentConfig(const datastructure::C
                                                           sick::datastructure::ConfigData& config_data,
                                                           AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::MeasurementPersistentConfigVariableCommand>( *m_io_service_ptr, settings, std::ref(config_data), handler );
+  detail::processCola2Command<sick::cola2::MeasurementPersistentConfigVariableCommand>( m_io_service, settings, std::ref(config_data), handler );
 }
 
 
@@ -585,7 +632,7 @@ void SickSafetyscannersBase::asyncRequestFieldData(const sick::datastructure::Co
 {
   auto fd = std::ref(field_data);
 
-  detail::openCola2Session(*m_io_service_ptr, settings, [fd, handler](const boost::system::error_code& ec, detail::Cola2SessionPtr session) {
+  detail::openCola2Session(m_io_service, settings, [fd, handler](const boost::system::error_code& ec, detail::Cola2SessionPtr session) {
     if ( ec )
     {
       handler( ec );
@@ -632,7 +679,7 @@ void SickSafetyscannersBase::asyncRequestMonitoringCases(const sick::datastructu
 {
   auto mc = std::ref(monitoring_cases);
 
-  detail::openCola2Session(*m_io_service_ptr, settings, [mc, handler](const boost::system::error_code& ec, detail::Cola2SessionPtr session) {
+  detail::openCola2Session(m_io_service, settings, [mc, handler](const boost::system::error_code& ec, detail::Cola2SessionPtr session) {
     if ( ec )
     {
       handler( ec );

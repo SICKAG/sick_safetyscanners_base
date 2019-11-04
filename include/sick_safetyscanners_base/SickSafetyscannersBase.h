@@ -103,6 +103,18 @@ public:
   SickSafetyscannersBase(const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
                          sick::datastructure::CommSettings* settings);
 
+
+  /**
+   * \brief Constructor of the SickSafetyscannersBase class.
+   * \param io_service
+   * \param newPacketReceivedCallbackFunction Function from the calling class, which will be
+   * called when a new packet is received.
+   * \param settings Current settings for the sensor.
+   */
+  SickSafetyscannersBase(boost::asio::io_service& io_service,
+                         const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
+                         sick::datastructure::CommSettings* settings);
+
   /*!
    * \brief Destructor
    */
@@ -113,6 +125,11 @@ public:
    * \return If the setup was correct.
    */
   bool run();
+
+  /**
+   * \brief stop
+   */
+  void stop();
 
   /*!
    * \brief Changes the internal settings of the sensor.
@@ -251,7 +268,8 @@ private:
   packetReceivedCallbackFunction m_newPacketReceivedCallbackFunction;
 
   std::shared_ptr<boost::asio::io_service> m_io_service_ptr;
-  std::shared_ptr<boost::asio::io_service::work> m_io_work_ptr;
+  boost::reference_wrapper< boost::asio::io_service > m_io_service;
+
   std::shared_ptr<sick::communication::AsyncUDPClient> m_async_udp_client_ptr;
   boost::scoped_ptr<boost::thread> m_udp_client_thread_ptr;
 
