@@ -32,6 +32,7 @@
  */
 //----------------------------------------------------------------------
 
+#include <sick_safetyscanners_base/logging/logging_wrapper.h>
 
 #include <sick_safetyscanners_base/communication/AsyncUDPClient.h>
 

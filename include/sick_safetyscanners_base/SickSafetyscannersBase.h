@@ -35,9 +35,6 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H
 #define SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H
 
-//#include <ros/ros.h>
-#include <sick_safetyscanners_base/logging/logging_wrapper.h>
-
 #include <boost/function.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread.hpp>
