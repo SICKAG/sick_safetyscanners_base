@@ -50,11 +50,6 @@ Command::Command(Cola2Session& session, const uint16_t& command_type, const uint
   m_request_id     = m_session.getNextRequestID();
 }
 
-void Command::lockExecutionMutex()
-{
-  m_execution_mutex.lock();
-}
-
 std::vector<uint8_t> Command::constructTelegram(const std::vector<uint8_t>& telegram) const
 {
   auto v = addTelegramData(telegram);
@@ -65,12 +60,6 @@ void Command::processReplyBase(const std::vector<uint8_t>& packet)
 {
   sick::data_processing::ParseTCPPacket::parseTCPSequence(packet, *this);
   m_was_successful = processReply();
-  m_execution_mutex.unlock();
-}
-
-void Command::waitForCompletion()
-{
-  boost::mutex::scoped_lock lock(m_execution_mutex);
 }
 
 bool Command::wasSuccessful() const

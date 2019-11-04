@@ -79,7 +79,9 @@ public:
   /*!
    * \brief Start the listening loop for the udp data packets.
    */
-  void runService();
+  void start();
+
+  void stop();
 
   /*!
    * \brief Returns the actual port assigned to the local machine

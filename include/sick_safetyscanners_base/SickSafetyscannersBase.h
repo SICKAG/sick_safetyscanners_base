@@ -42,6 +42,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <future>
 
 #include <sick_safetyscanners_base/communication/AsyncTCPClient.h>
 #include <sick_safetyscanners_base/communication/AsyncUDPClient.h>
@@ -80,12 +81,18 @@ namespace sick {
  */
 class SickSafetyscannersBase
 {
+private:
+  typedef std::promise<boost::system::error_code> CompletePromise;
+  typedef std::shared_ptr<CompletePromise> CompletePromisePtr;
+
 public:
   /*!
    *  Typedef for function which has to be passed to this class. This enables the use of
    *  functions from the calling class.
    */
   typedef boost::function<void(const sick::datastructure::Data&)> packetReceivedCallbackFunction;
+
+  typedef std::function<void(const boost::system::error_code&)> AsyncCompleteHandler;
 
   /*!
    * \brief Constructor of the SickSafetyscannersBase class.
@@ -112,6 +119,12 @@ public:
    * \param settings New set of settings to pass to the sensor.
    */
   void changeSensorSettings(const sick::datastructure::CommSettings& settings);
+  void asyncChangeSensorSettings(const sick::datastructure::CommSettings& settings,
+                                 AsyncCompleteHandler handler);
+
+  void findSensor(const datastructure::CommSettings& settings, uint16_t blink_time);
+  void asyncFindSensor(const datastructure::CommSettings& settings, uint16_t blink_time,
+                       AsyncCompleteHandler handler);
 
   /*!
    * \brief Requests the typecode of the sensor.
@@ -120,36 +133,70 @@ public:
    */
   void requestTypeCode(const sick::datastructure::CommSettings& settings,
                        sick::datastructure::TypeCode& type_code);
+  void asyncRequestTypeCode(const sick::datastructure::CommSettings& settings,
+                            sick::datastructure::TypeCode& type_code,
+                            AsyncCompleteHandler handler);
+
 
   void requestApplicationName(const sick::datastructure::CommSettings& settings,
                               sick::datastructure::ApplicationName& application_name);
+  void asyncRequestApplicationName(const sick::datastructure::CommSettings& settings,
+                                   sick::datastructure::ApplicationName& application_name,
+                                   AsyncCompleteHandler handler);
+
   void requestSerialNumber(const sick::datastructure::CommSettings& settings,
                            sick::datastructure::SerialNumber& serial_number);
+  void asyncRequestSerialNumber(const sick::datastructure::CommSettings& settings,
+                                sick::datastructure::SerialNumber& serial_number,
+                                AsyncCompleteHandler handler);
+
   void requestFirmwareVersion(const sick::datastructure::CommSettings& settings,
                               sick::datastructure::FirmwareVersion& firmware_version);
+  void asyncRequestFirmwareVersion(const sick::datastructure::CommSettings& settings,
+                                   sick::datastructure::FirmwareVersion& firmware_version,
+                                   AsyncCompleteHandler handler);
+
   void requestOrderNumber(const datastructure::CommSettings& settings,
                           datastructure::OrderNumber& order_number);
+  void asyncRequestOrderNumber(const datastructure::CommSettings& settings,
+                               datastructure::OrderNumber& order_number,
+                               AsyncCompleteHandler handler);
+
   void requestProjectName(const datastructure::CommSettings& settings,
                           datastructure::ProjectName& project_name);
+  void asyncRequestProjectName(const datastructure::CommSettings& settings,
+                               datastructure::ProjectName& project_name,
+                               AsyncCompleteHandler handler);
+
   void requestUserName(const datastructure::CommSettings& settings,
                        datastructure::UserName& user_name);
+  void asyncRequestUserName(const datastructure::CommSettings& settings,
+                            datastructure::UserName& user_name,
+                            AsyncCompleteHandler handler);
+
   void requestConfigMetadata(const datastructure::CommSettings& settings,
                              datastructure::ConfigMetadata& config_metadata);
+  void asyncRequestConfigMetadata(const datastructure::CommSettings& settings,
+                                  datastructure::ConfigMetadata& config_metadata,
+                                  AsyncCompleteHandler handler);
+
   void requestStatusOverview(const datastructure::CommSettings& settings,
                              datastructure::StatusOverview& status_overview);
+  void asyncRequestStatusOverview(const datastructure::CommSettings& settings,
+                                  datastructure::StatusOverview& status_overview,
+                                  AsyncCompleteHandler handler);
+
   void requestDeviceStatus(const datastructure::CommSettings& settings,
                            datastructure::DeviceStatus& device_status);
+  void asyncRequestDeviceStatus(const datastructure::CommSettings& settings,
+                                datastructure::DeviceStatus& device_status,
+                                AsyncCompleteHandler handler);
+
   void requestRequiredUserAction(const datastructure::CommSettings& settings,
                                  datastructure::RequiredUserAction& required_user_action);
-  void findSensor(const datastructure::CommSettings& settings, uint16_t blink_time);
-  /*!
-   * \brief Requests data of the protective and warning fields from the sensor.
-   *
-   * \param settings Settings containing information to establish a connection to the sensor.
-   * \param field_data Returned field data.
-   */
-  void requestFieldData(const sick::datastructure::CommSettings& settings,
-                        std::vector<sick::datastructure::FieldData>& field_data);
+  void asyncRequestRequiredUserAction(const datastructure::CommSettings& settings,
+                                      datastructure::RequiredUserAction& required_user_action,
+                                      AsyncCompleteHandler handler);
 
   /*!
    * \brief Requests the name of the device from the sensor.
@@ -159,6 +206,22 @@ public:
    */
   void requestDeviceName(const sick::datastructure::CommSettings& settings,
                          datastructure::DeviceName& device_name);
+  void asyncRequestDeviceName(const sick::datastructure::CommSettings& settings,
+                              datastructure::DeviceName& device_name,
+                              AsyncCompleteHandler handler);
+
+
+  /*!
+   * \brief Requests data of the protective and warning fields from the sensor.
+   *
+   * \param settings Settings containing information to establish a connection to the sensor.
+   * \param field_data Returned field data.
+   */
+  void requestFieldData(const sick::datastructure::CommSettings& settings,
+                        std::vector<sick::datastructure::FieldData>& field_data);
+  void asyncRequestFieldData(const sick::datastructure::CommSettings& settings,
+                             std::vector<sick::datastructure::FieldData>& field_data,
+                             AsyncCompleteHandler handler);
 
   /*!
    * \brief Requests the persistent configuration from the sensor.
@@ -168,16 +231,21 @@ public:
    */
   void requestPersistentConfig(const datastructure::CommSettings& settings,
                                sick::datastructure::ConfigData& config_data);
+  void asyncRequestPersistentConfig(const datastructure::CommSettings& settings,
+                                    sick::datastructure::ConfigData& config_data,
+                                    AsyncCompleteHandler handler);
+
   /*!
    * \brief Requests the monitoring cases from the sensor.
    *
    * \param settings Settings containing information to establish a connection to the sensor.
    * \param monitoring_cases Returned monitoring cases.
    */
-  void
-  requestMonitoringCases(const sick::datastructure::CommSettings& settings,
-                         std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases);
-
+  void requestMonitoringCases(const sick::datastructure::CommSettings& settings,
+                              std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases);
+  void asyncRequestMonitoringCases(const sick::datastructure::CommSettings& settings,
+                                   std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases,
+                                   AsyncCompleteHandler handler);
 
 private:
   packetReceivedCallbackFunction m_newPacketReceivedCallbackFunction;
@@ -185,37 +253,12 @@ private:
   std::shared_ptr<boost::asio::io_service> m_io_service_ptr;
   std::shared_ptr<boost::asio::io_service::work> m_io_work_ptr;
   std::shared_ptr<sick::communication::AsyncUDPClient> m_async_udp_client_ptr;
-  std::shared_ptr<sick::communication::AsyncTCPClient> m_async_tcp_client_ptr;
   boost::scoped_ptr<boost::thread> m_udp_client_thread_ptr;
-
-  std::shared_ptr<sick::cola2::Cola2Session> m_session_ptr;
 
   std::shared_ptr<sick::data_processing::UDPPacketMerger> m_packet_merger_ptr;
 
   void processUDPPacket(const sick::datastructure::PacketBuffer& buffer);
   bool udpClientThread();
-  void processTCPPacket(const sick::datastructure::PacketBuffer& buffer);
-  void startTCPConnection(const sick::datastructure::CommSettings& settings);
-  void changeCommSettingsInColaSession(const datastructure::CommSettings& settings);
-  void stopTCPConnection();
-  void requestTypeCodeInColaSession(sick::datastructure::TypeCode& type_code);
-  void requestFieldDataInColaSession(std::vector<sick::datastructure::FieldData>& fields);
-  void requestDeviceNameInColaSession(datastructure::DeviceName& device_name);
-  void requestApplicationNameInColaSession(sick::datastructure::ApplicationName& application_name);
-  void requestSerialNumberInColaSession(sick::datastructure::SerialNumber& serial_number);
-  void requestOrderNumberInColaSession(sick::datastructure::OrderNumber& order_number);
-  void requestProjectNameInColaSession(sick::datastructure::ProjectName& project_name);
-  void requestUserNameInColaSession(sick::datastructure::UserName& user_name);
-  void requestFirmwareVersionInColaSession(sick::datastructure::FirmwareVersion& firmware_version);
-  void requestPersistentConfigInColaSession(sick::datastructure::ConfigData& config_data);
-  void requestConfigMetadataInColaSession(sick::datastructure::ConfigMetadata& config_metadata);
-  void requestStatusOverviewInColaSession(sick::datastructure::StatusOverview& status_overview);
-  void requestDeviceStatusInColaSession(sick::datastructure::DeviceStatus& device_status);
-  void requestRequiredUserActionInColaSession(
-    sick::datastructure::RequiredUserAction& required_user_action);
-  void requestMonitoringCaseDataInColaSession(
-    std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases);
-  void findSensorInColaSession(uint16_t blink_time);
 };
 
 } // namespace sick

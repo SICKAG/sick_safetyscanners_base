@@ -77,6 +77,8 @@ public:
    */
   typedef std::shared_ptr<sick::cola2::Command> CommandPtr;
 
+  typedef std::function<void(const boost::system::error_code&)> CompleteHandler;
+
   /*!
    * \brief Constructor of the cola2 session.
    *
@@ -85,11 +87,26 @@ public:
    */
   explicit Cola2Session(const std::shared_ptr<communication::AsyncTCPClient>& async_tcp_client);
 
+  ~Cola2Session();
+
+  /*!
+   * \brief Opens a session with the sensor. Executes the create session command.
+   *
+   * \returns If opening a session was successful.
+   */
+  bool open(CompleteHandler handler);
+
+  /*!
+   * \brief Closes a session with the sensor. Executes the close session command.
+   *
+   * \returns If closing the session was successful.
+   */
+  bool close(CompleteHandler handler);
 
   /*!
    * \brief Triggers the disconnection of the tcp socket.
    */
-  void doDisconnect();
+  boost::system::error_code doDisconnect();
 
   /*!
    * \brief Executes the command passed to the function.
@@ -98,7 +115,7 @@ public:
    *
    * \returns If the execution was successful.
    */
-  bool executeCommand(const CommandPtr& command);
+  bool executeCommand(const CommandPtr& command, CompleteHandler handler);
 
   /*!
    * \brief Returns the current session ID.
@@ -123,34 +140,19 @@ public:
   uint16_t getNextRequestID();
 
 
-  /*!
-   * \brief Closes a session with the sensor. Executes the close session command.
-   *
-   * \returns If closing the session was successful.
-   */
-  bool close();
-
-
-  /*!
-   * \brief Opens a session with the sensor. Executes the create session command.
-   *
-   * \returns If opening a session was successful.
-   */
-  bool open();
-
-
 private:
   std::shared_ptr<sick::communication::AsyncTCPClient> m_async_tcp_client_ptr;
   std::shared_ptr<sick::data_processing::TCPPacketMerger> m_packet_merger_ptr;
 
+  boost::mutex m_pending_commands_map_mutex;
   std::map<uint16_t, CommandPtr> m_pending_commands_map;
-
-  boost::mutex m_execution_mutex;
 
   uint32_t m_session_id;
   uint16_t m_last_request_id;
 
-  void processPacket(const sick::datastructure::PacketBuffer& packet);
+  void processPacket(const sick::datastructure::PacketBuffer& packet,
+                     const boost::system::error_code& ec,
+                     CompleteHandler handler);
 
   bool addCommand(const uint16_t& request_id, const CommandPtr& command);
   bool findCommand(const uint16_t& request_id, CommandPtr& command);
@@ -159,8 +161,7 @@ private:
   bool
   startProcessingAndRemovePendingCommandAfterwards(const sick::datastructure::PacketBuffer& packet);
   bool addPacketToMerger(const sick::datastructure::PacketBuffer& packet);
-  bool checkIfPacketIsCompleteAndOtherwiseListenForMorePackets();
-  bool sendTelegramAndListenForAnswer(const CommandPtr& command);
+  void sendTelegramAndListenForAnswer(const CommandPtr& command, CompleteHandler handler);
 };
 
 

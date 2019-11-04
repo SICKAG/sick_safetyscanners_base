@@ -76,12 +76,6 @@ public:
    */
   virtual ~Command() {}
 
-
-  /*!
-   * \brief Locks a mutex to prevent other commands being executed in parallel.
-   */
-  void lockExecutionMutex();
-
   /*!
    * \brief Adds the data to the telegram and afterwards the header with the correct length.
    *
@@ -98,13 +92,6 @@ public:
    * \param packet The incoming data package which will be processed.
    */
   void processReplyBase(const std::vector<uint8_t>& packet);
-
-
-  /*!
-   * \brief Scooped call to the mutex, which will block until the reply was processed.
-   */
-  void waitForCompletion();
-
 
   /*!
    * \brief Returns the current session ID.
@@ -128,7 +115,6 @@ public:
    * \returns If the command was successfully parsed.
    */
   bool wasSuccessful() const;
-
 
   /*!
    * \brief Returns the command type.
@@ -193,8 +179,6 @@ protected:
                                       size_t additional_bytes) const;
 
 private:
-  boost::mutex m_execution_mutex;
-
   bool m_was_successful;
 
   uint8_t m_command_mode;
