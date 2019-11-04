@@ -57,7 +57,7 @@ public:
    *
    * \returns The version indicator for the scanner.
    */
-  std::string getVersionCVersion() const;
+  const std::string& getVersionCVersion() const;
   /*!
    * \brief Sets the version indicator for the scanner.
    *
@@ -108,7 +108,7 @@ public:
    *
    * \returns The length of the field name.
    */
-  std::vector<uint32_t> getNameLength() const;
+  const std::vector<uint32_t>& getNameLength() const;
   /*!
    * \brief Sets the length of the field name.
    *
@@ -120,7 +120,7 @@ public:
    *
    * \returns The field name for the scanner.
    */
-  std::vector<std::string> getFieldName() const;
+  const std::vector<std::string>& getFieldName() const;
   /*!
    * \brief Sets the field name for the scanner.
    *
@@ -133,7 +133,7 @@ public:
    *
    * \returns if the fields are defined.
    */
-  std::vector<bool> getIsDefined() const;
+  const std::vector<bool>& getIsDefined() const;
   /*!
    * \brief Sets if the fields are defined.
    *

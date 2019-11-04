@@ -57,7 +57,7 @@ public:
    *
    * \returns The firmware version for the scanner.
    */
-  std::string getFirmwareVersion() const;
+  const std::string& getFirmwareVersion() const;
   /*!
    * \brief Sets the firmware version for the scanner.
    *

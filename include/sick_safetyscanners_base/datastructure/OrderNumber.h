@@ -57,7 +57,7 @@ public:
    *
    * \returns The order number for the scanner.
    */
-  std::string getOrderNumber() const;
+  const std::string& getOrderNumber() const;
   /*!
    * \brief Sets the order number for the scanner.
    *

@@ -57,7 +57,7 @@ public:
    *
    * \returns The project name for the scanner.
    */
-  std::string getProjectName() const;
+  const std::string& getProjectName() const;
   /*!
    * \brief Sets the project name for the scanner.
    *

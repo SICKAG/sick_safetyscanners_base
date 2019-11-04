@@ -72,7 +72,7 @@ public:
    *
    * \returns The type code for the scanner.
    */
-  std::string getTypeCode() const;
+  const std::string& getTypeCode() const;
   /*!
    * \brief Sets the type code for the scanner.
    *

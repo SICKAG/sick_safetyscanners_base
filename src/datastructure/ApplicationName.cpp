@@ -39,7 +39,7 @@ namespace datastructure {
 
 ApplicationName::ApplicationName() {}
 
-std::string ApplicationName::getVersionCVersion() const
+const std::string& ApplicationName::getVersionCVersion() const
 {
   return m_version_c_version;
 }
@@ -89,7 +89,7 @@ void ApplicationName::setNameLength(const uint32_t& name_length)
   m_name_length = name_length;
 }
 
-std::string ApplicationName::getApplicationName() const
+const std::string& ApplicationName::getApplicationName() const
 {
   return m_application_name;
 }

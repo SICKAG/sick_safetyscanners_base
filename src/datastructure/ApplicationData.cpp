@@ -42,7 +42,7 @@ ApplicationData::ApplicationData()
 {
 }
 
-ApplicationInputs ApplicationData::getInputs() const
+const ApplicationInputs&  ApplicationData::getInputs() const
 {
   return m_inputs;
 }
@@ -52,7 +52,7 @@ void ApplicationData::setInputs(const ApplicationInputs& inputs)
   m_inputs = inputs;
 }
 
-ApplicationOutputs ApplicationData::getOutputs() const
+const ApplicationOutputs& ApplicationData::getOutputs() const
 {
   return m_outputs;
 }

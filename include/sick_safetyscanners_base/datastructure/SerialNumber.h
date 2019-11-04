@@ -57,7 +57,7 @@ public:
    *
    * \returns The serial number for the scanner.
    */
-  std::string getSerialNumber() const;
+  const std::string& getSerialNumber() const;
   /*!
    * \brief Sets the serial number for the scanner.
    *

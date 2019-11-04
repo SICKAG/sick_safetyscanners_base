@@ -39,7 +39,7 @@ namespace datastructure {
 
 ApplicationInputs::ApplicationInputs() {}
 
-std::vector<bool> ApplicationInputs::getUnsafeInputsInputSourcesVector() const
+const std::vector<bool>& ApplicationInputs::getUnsafeInputsInputSourcesVector() const
 {
   return m_unsafe_inputs_input_sources_vector;
 }
@@ -50,7 +50,7 @@ void ApplicationInputs::setUnsafeInputsInputSourcesVector(
   m_unsafe_inputs_input_sources_vector = unsafe_inputs_input_sources_vector;
 }
 
-std::vector<bool> ApplicationInputs::getUnsafeInputsFlagsVector() const
+const std::vector<bool>& ApplicationInputs::getUnsafeInputsFlagsVector() const
 {
   return m_unsafe_inputs_flags_vector;
 }
@@ -61,7 +61,7 @@ void ApplicationInputs::setUnsafeInputsFlagsVector(
   m_unsafe_inputs_flags_vector = unsafe_inputs_flags_vector;
 }
 
-std::vector<uint16_t> ApplicationInputs::getMonitoringCasevector() const
+const std::vector<uint16_t>& ApplicationInputs::getMonitoringCasevector() const
 {
   return m_monitoring_case_vector;
 }
@@ -71,7 +71,7 @@ void ApplicationInputs::setMonitoringCaseVector(const std::vector<uint16_t>& mon
   m_monitoring_case_vector = monitoring_case_vector;
 }
 
-std::vector<bool> ApplicationInputs::getMonitoringCaseFlagsVector() const
+const std::vector<bool>& ApplicationInputs::getMonitoringCaseFlagsVector() const
 {
   return m_monitoring_case_flags_vector;
 }

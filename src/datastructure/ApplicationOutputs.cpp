@@ -39,7 +39,7 @@ namespace datastructure {
 
 ApplicationOutputs::ApplicationOutputs() {}
 
-std::vector<bool> ApplicationOutputs::getEvalOutVector() const
+const std::vector<bool>& ApplicationOutputs::getEvalOutVector() const
 {
   return m_eval_out_vector;
 }
@@ -49,7 +49,7 @@ void ApplicationOutputs::setEvalOutVector(const std::vector<bool>& eval_out_vect
   m_eval_out_vector = eval_out_vector;
 }
 
-std::vector<bool> ApplicationOutputs::getEvalOutIsSafeVector() const
+const std::vector<bool>& ApplicationOutputs::getEvalOutIsSafeVector() const
 {
   return m_eval_out_is_safe_vector;
 }
@@ -59,7 +59,7 @@ void ApplicationOutputs::setEvalOutIsSafeVector(const std::vector<bool>& eval_ou
   m_eval_out_is_safe_vector = eval_out_is_safe_vector;
 }
 
-std::vector<bool> ApplicationOutputs::getEvalOutIsValidVector() const
+const std::vector<bool>& ApplicationOutputs::getEvalOutIsValidVector() const
 {
   return m_eval_out_is_valid_vector;
 }
@@ -69,7 +69,7 @@ void ApplicationOutputs::setEvalOutIsValidVector(const std::vector<bool>& eval_o
   m_eval_out_is_valid_vector = eval_out_is_valid_vector;
 }
 
-std::vector<uint16_t> ApplicationOutputs::getMonitoringCaseVector() const
+const std::vector<uint16_t>& ApplicationOutputs::getMonitoringCaseVector() const
 {
   return m_monitoring_case_vector;
 }
@@ -80,7 +80,7 @@ void ApplicationOutputs::setMonitoringCaseVector(
   m_monitoring_case_vector = monitoring_case_vector;
 }
 
-std::vector<bool> ApplicationOutputs::getMonitoringCaseFlagsVector() const
+const std::vector<bool>& ApplicationOutputs::getMonitoringCaseFlagsVector() const
 {
   return m_monitoring_case_flags_vector;
 }
@@ -224,7 +224,7 @@ void ApplicationOutputs::setVelocity1TransmittedSafely(bool velocity_1_transmitt
   m_velocity_1_transmitted_safely = velocity_1_transmitted_safely;
 }
 
-std::vector<int16_t> ApplicationOutputs::getResultingVelocityVector() const
+const std::vector<int16_t>& ApplicationOutputs::getResultingVelocityVector() const
 {
   return m_resulting_velocity_vector;
 }
@@ -235,7 +235,7 @@ void ApplicationOutputs::setResultingVelocityVector(
   m_resulting_velocity_vector = resulting_velocity_vector;
 }
 
-std::vector<bool> ApplicationOutputs::getResultingVelocityIsValidVector() const
+const std::vector<bool>& ApplicationOutputs::getResultingVelocityIsValidVector() const
 {
   return m_resulting_velocity_is_valid_vector;
 }

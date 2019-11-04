@@ -39,7 +39,7 @@ namespace datastructure {
 
 UserName::UserName() {}
 
-std::string UserName::getVersionCVersion() const
+const std::string& UserName::getVersionCVersion() const
 {
   return m_version_c_version;
 }
@@ -89,7 +89,7 @@ void UserName::setNameLength(const uint32_t& name_length)
   m_name_length = name_length;
 }
 
-std::string UserName::getUserName() const
+const std::string& UserName::getUserName() const
 {
   return m_user_name;
 }

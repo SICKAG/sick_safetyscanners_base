@@ -57,7 +57,7 @@ public:
    *
    * \returns The application input.
    */
-  ApplicationInputs getInputs() const;
+  const ApplicationInputs& getInputs() const;
   /*!
    * \brief Sets the application input.
    *
@@ -70,7 +70,7 @@ public:
    *
    * \returns The application output.
    */
-  ApplicationOutputs getOutputs() const;
+  const ApplicationOutputs& getOutputs() const;
   /*!
    * \brief Sets the application output.
    *

@@ -39,7 +39,7 @@ namespace datastructure {
 
 ConfigMetadata::ConfigMetadata() {}
 
-std::string ConfigMetadata::getVersionCVersion() const
+const std::string& ConfigMetadata::getVersionCVersion() const
 {
   return m_version_c_version;
 }
@@ -139,7 +139,7 @@ void ConfigMetadata::setOverallChecksum(const uint32_t& overall_checksum)
   m_overall_checksum = overall_checksum;
 }
 
-std::vector<uint32_t> ConfigMetadata::getIntegrityHash() const
+const std::vector<uint32_t>& ConfigMetadata::getIntegrityHash() const
 {
   return m_integrity_hash;
 }

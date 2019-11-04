@@ -39,7 +39,7 @@ namespace datastructure {
 
 StatusOverview::StatusOverview() {}
 
-std::string StatusOverview::getVersionCVersion() const
+const std::string& StatusOverview::getVersionCVersion() const
 {
   return m_version_c_version;
 }

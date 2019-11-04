@@ -49,7 +49,7 @@ void FieldData::setIsValid(bool is_valid)
   m_is_valid = is_valid;
 }
 
-std::string FieldData::getVersionCVersion() const
+const std::string& FieldData::getVersionCVersion() const
 {
   return m_version_c_version;
 }
@@ -149,7 +149,7 @@ void FieldData::setNameLength(const uint32_t& name_length)
   m_name_length = name_length;
 }
 
-std::string FieldData::getFieldName() const
+const std::string& FieldData::getFieldName() const
 {
   return m_field_name;
 }
@@ -180,7 +180,7 @@ void FieldData::setIsProtectiveField(bool is_protective_field)
   m_is_protective_field = is_protective_field;
 }
 
-std::vector<uint16_t> FieldData::getBeamDistances() const
+const std::vector<uint16_t>& FieldData::getBeamDistances() const
 {
   return m_beam_distances;
 }

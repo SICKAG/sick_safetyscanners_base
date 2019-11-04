@@ -87,7 +87,7 @@ public:
    *
    * \returns The field indices.
    */
-  std::vector<uint16_t> getFieldIndices() const;
+  const std::vector<uint16_t>& getFieldIndices() const;
 
   /*!
    * \brief Sets the field indices.
@@ -101,7 +101,7 @@ public:
    *
    * \returns If the fields are valid.
    */
-  std::vector<bool> getFieldsValid() const;
+  const std::vector<bool>& getFieldsValid() const;
 
   /*!
    * \brief Sets if the fields are valid.

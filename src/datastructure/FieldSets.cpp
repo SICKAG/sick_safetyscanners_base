@@ -39,7 +39,7 @@ namespace datastructure {
 
 FieldSets::FieldSets() {}
 
-std::string FieldSets::getVersionCVersion() const
+const std::string& FieldSets::getVersionCVersion() const
 {
   return m_version_c_version;
 }
@@ -79,7 +79,7 @@ void FieldSets::setVersionReleaseNumber(const uint8_t& version_release_number)
   m_version_release_number = version_release_number;
 }
 
-std::vector<uint32_t> FieldSets::getNameLength() const
+const std::vector<uint32_t>& FieldSets::getNameLength() const
 {
   return m_name_length;
 }
@@ -89,7 +89,7 @@ void FieldSets::setNameLength(const std::vector<uint32_t>& name_length)
   m_name_length = name_length;
 }
 
-std::vector<std::string> FieldSets::getFieldName() const
+const std::vector<std::string>& FieldSets::getFieldName() const
 {
   return m_field_name;
 }
@@ -99,7 +99,7 @@ void FieldSets::setFieldName(const std::vector<std::string>& field_name)
   m_field_name = field_name;
 }
 
-std::vector<bool> FieldSets::getIsDefined() const
+const std::vector<bool>& FieldSets::getIsDefined() const
 {
   return m_is_defined;
 }

@@ -50,7 +50,7 @@ void IntrusionDatum::setSize(const int32_t& size)
   m_size = size;
 }
 
-std::vector<bool> IntrusionDatum::getFlagsVector() const
+const std::vector<bool>& IntrusionDatum::getFlagsVector() const
 {
   return m_flags_vector;
 }

@@ -70,7 +70,7 @@ public:
    * \brief Getter for all contained scanpoints.
    * \return Vector of scanpoints.
    */
-  std::vector<ScanPoint> getScanPointsVector() const;
+  const std::vector<ScanPoint>& getScanPointsVector() const;
 
   /*!
    * \brief Add a single scanpoint to the vector of scanpoints.

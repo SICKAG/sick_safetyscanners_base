@@ -68,7 +68,7 @@ public:
    * \brief Getter for the flags vector.
    * \return Boolean vector of all flags
    */
-  std::vector<bool> getFlagsVector() const;
+  const std::vector<bool>& getFlagsVector() const;
 
   /*!
    * \brief Setter for the flag vector

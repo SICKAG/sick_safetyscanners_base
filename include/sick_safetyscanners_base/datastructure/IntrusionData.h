@@ -57,7 +57,7 @@ public:
    * \brief Getter for all IntrusionDatums.
    * \return Vector of IntrusionDatum.
    */
-  std::vector<IntrusionDatum> getIntrusionDataVector() const;
+  const std::vector<IntrusionDatum>& getIntrusionDataVector() const;
 
   /*!
    * \brief Setter for the vector of IntrusionDatums.

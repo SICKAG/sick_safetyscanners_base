@@ -39,7 +39,7 @@ namespace datastructure {
 
 FirmwareVersion::FirmwareVersion() {}
 
-std::string FirmwareVersion::getFirmwareVersion() const
+const std::string& FirmwareVersion::getFirmwareVersion() const
 {
   return m_firmware_version;
 }

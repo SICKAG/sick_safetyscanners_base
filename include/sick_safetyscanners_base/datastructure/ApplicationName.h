@@ -57,7 +57,7 @@ public:
    *
    * \returns The version indicator for the scanner.
    */
-  std::string getVersionCVersion() const;
+  const std::string& getVersionCVersion() const;
   /*!
    * \brief Sets the version indicator for the scanner.
    *
@@ -120,7 +120,7 @@ public:
    *
    * \returns The application name for the scanner.
    */
-  std::string getApplicationName() const;
+  const std::string& getApplicationName() const;
   /*!
    * \brief Sets the application name for the scanner.
    *

@@ -57,7 +57,7 @@ public:
    *
    * \returns The device name for the scanner.
    */
-  std::string getDeviceName() const;
+  const std::string& getDeviceName() const;
   /*!
    * \brief Sets the device name for the scanner.
    *
