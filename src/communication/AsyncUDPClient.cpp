@@ -39,16 +39,13 @@
 namespace sick {
 namespace communication {
 AsyncUDPClient::AsyncUDPClient(const PacketHandler& packet_handler,
-                               boost::asio::io_service& io_service,
-                               const uint16_t& local_port)
+                               boost::asio::io_service& io_service)
   : m_packet_handler(packet_handler)
   , m_io_service(io_service)
 {
   try
   {
-    m_socket_ptr = std::make_shared<boost::asio::ip::udp::socket>(
-      boost::ref(m_io_service),
-      boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), local_port));
+    m_socket_ptr = std::make_shared<boost::asio::ip::udp::socket>(m_io_service);
   }
   catch (std::exception& e)
   {
@@ -62,6 +59,17 @@ AsyncUDPClient::~AsyncUDPClient()
 {
 }
 
+boost::system::error_code AsyncUDPClient::open(const uint16_t& local_port)
+{
+  boost::system::error_code ec;
+
+  boost::asio::ip::udp::endpoint endpoint(boost::asio::ip::udp::v4(), local_port);
+  m_socket_ptr->open( endpoint.protocol(), ec );
+  m_socket_ptr->bind( endpoint, ec );
+
+  return ec;
+}
+
 void AsyncUDPClient::start()
 {
   startReceive();
@@ -73,6 +81,11 @@ void AsyncUDPClient::stop()
   m_socket_ptr->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
 
   m_socket_ptr->close(ec);
+}
+
+AsyncUDPClient::endpoint_type AsyncUDPClient::getLocalEndpoint() const
+{
+  return m_socket_ptr->local_endpoint();
 }
 
 void AsyncUDPClient::startReceive()
@@ -96,11 +109,6 @@ void AsyncUDPClient::handleReceive(const boost::system::error_code& error,
   {
     ROS_ERROR("Error in UDP handle receive: %i", error.value());
   }
-}
-
-unsigned short AsyncUDPClient::getLocalPort()
-{
-  return m_socket_ptr->local_endpoint().port();
 }
 
 } // namespace communication

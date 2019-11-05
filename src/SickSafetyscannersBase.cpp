@@ -224,8 +224,7 @@ namespace detail
 
 
 SickSafetyscannersBase::SickSafetyscannersBase(
-  const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
-  sick::datastructure::CommSettings* settings)
+  const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction)
   : m_newPacketReceivedCallbackFunction(newPacketReceivedCallbackFunction)
   , m_io_service_ptr ( std::make_shared<boost::asio::io_service>() )
   , m_io_service ( *m_io_service_ptr )
@@ -234,12 +233,8 @@ SickSafetyscannersBase::SickSafetyscannersBase(
 
   m_async_udp_client_ptr = std::make_shared<sick::communication::AsyncUDPClient>(
     boost::bind(&SickSafetyscannersBase::processUDPPacket, this, _1),
-    m_io_service,
-    settings->getHostUdpPort());
+    m_io_service);
 
-  settings->setHostUdpPort(
-    m_async_udp_client_ptr
-      ->getLocalPort()); // Store which port was used, needed for data request from the laser
   m_packet_merger_ptr = std::make_shared<sick::data_processing::UDPPacketMerger>();
 
   ROS_INFO("Started SickSafetyscannersBase");
@@ -248,8 +243,7 @@ SickSafetyscannersBase::SickSafetyscannersBase(
 
 SickSafetyscannersBase::SickSafetyscannersBase(
     boost::asio::io_service& io_service,
-    const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
-    sick::datastructure::CommSettings* settings)
+    const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction)
   : m_newPacketReceivedCallbackFunction(newPacketReceivedCallbackFunction)
   , m_io_service( io_service )
 {
@@ -257,12 +251,8 @@ SickSafetyscannersBase::SickSafetyscannersBase(
 
   m_async_udp_client_ptr = std::make_shared<sick::communication::AsyncUDPClient>(
     boost::bind(&SickSafetyscannersBase::processUDPPacket, this, _1),
-    m_io_service,
-    settings->getHostUdpPort());
+    m_io_service);
 
-  settings->setHostUdpPort(
-    m_async_udp_client_ptr
-      ->getLocalPort()); // Store which port was used, needed for data request from the laser
   m_packet_merger_ptr = std::make_shared<sick::data_processing::UDPPacketMerger>();
 
   ROS_INFO("Started SickSafetyscannersBase");
@@ -273,7 +263,7 @@ SickSafetyscannersBase::~SickSafetyscannersBase()
   stop();
 }
 
-bool SickSafetyscannersBase::run()
+boost::system::error_code SickSafetyscannersBase::start(const sick::datastructure::CommSettings& settings)
 {
   // if we have an internal io_service -> create a thread and run the io_service
   if ( m_io_service_ptr )
@@ -282,8 +272,14 @@ bool SickSafetyscannersBase::run()
       new boost::thread(boost::bind(&SickSafetyscannersBase::udpClientThread, this)));
   }
 
-  m_async_udp_client_ptr->start();
-  return true;
+  const boost::system::error_code ec = m_async_udp_client_ptr->open( settings.getHostUdpPort() );
+
+  if ( !ec )
+  {
+    m_async_udp_client_ptr->start();
+  }
+
+  return ec;
 }
 
 void SickSafetyscannersBase::stop()
@@ -296,7 +292,11 @@ void SickSafetyscannersBase::stop()
     m_udp_client_thread_ptr->join();
     m_udp_client_thread_ptr.reset();
   }
+}
 
+SickSafetyscannersBase::endpoint_type SickSafetyscannersBase::getLocalUdpEndpoint() const
+{
+  return m_async_udp_client_ptr->getLocalEndpoint();
 }
 
 bool SickSafetyscannersBase::udpClientThread()

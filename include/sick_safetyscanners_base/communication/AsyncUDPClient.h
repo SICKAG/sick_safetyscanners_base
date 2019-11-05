@@ -60,6 +60,8 @@ public:
    */
   typedef boost::function<void(const sick::datastructure::PacketBuffer&)> PacketHandler;
 
+  typedef boost::asio::ip::udp::socket::endpoint_type endpoint_type;
+
   /*!
    * \brief Constructor of the asynchronous udp client.
    *
@@ -68,13 +70,20 @@ public:
    * \param local_port The local port, where the udp packets will arrive.
    */
   AsyncUDPClient(const PacketHandler& packet_handler,
-                 boost::asio::io_service& io_service,
-                 const uint16_t& local_port = 0);
+                 boost::asio::io_service& io_service );
 
   /*!
    * \brief The destructor of the asynchronous udp client.
    */
   virtual ~AsyncUDPClient();
+
+
+  /**
+   * \brief open
+   * \param local_port
+   * \return
+   */
+  boost::system::error_code open(const uint16_t& local_port = 0 );
 
   /*!
    * \brief Start the listening loop for the udp data packets.
@@ -84,10 +93,10 @@ public:
   void stop();
 
   /*!
-   * \brief Returns the actual port assigned to the local machine
-   * \return Local port number
+   * \brief Returns the actual enpoint settings of local machine
+   * \return The current local UDP endpoint settings
    */
-  unsigned short getLocalPort();
+  endpoint_type getLocalEndpoint() const;
 
 private:
   datastructure::PacketBuffer::ArrayBuffer m_recv_buffer;

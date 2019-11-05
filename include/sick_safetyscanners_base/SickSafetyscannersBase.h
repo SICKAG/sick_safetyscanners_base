@@ -94,14 +94,14 @@ public:
 
   typedef std::function<void(const boost::system::error_code&)> AsyncCompleteHandler;
 
+  typedef communication::AsyncUDPClient::endpoint_type endpoint_type;
+
   /*!
    * \brief Constructor of the SickSafetyscannersBase class.
    * \param newPacketReceivedCallbackFunction Function from the calling class, which will be
    * called when a new packet is received.
-   * \param settings Current settings for the sensor.
    */
-  SickSafetyscannersBase(const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
-                         sick::datastructure::CommSettings* settings);
+  SickSafetyscannersBase(const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction );
 
 
   /**
@@ -109,11 +109,9 @@ public:
    * \param io_service
    * \param newPacketReceivedCallbackFunction Function from the calling class, which will be
    * called when a new packet is received.
-   * \param settings Current settings for the sensor.
    */
   SickSafetyscannersBase(boost::asio::io_service& io_service,
-                         const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
-                         sick::datastructure::CommSettings* settings);
+                         const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction);
 
   /*!
    * \brief Destructor
@@ -124,12 +122,18 @@ public:
    * \brief Start the connection to the sensor and enables output.
    * \return If the setup was correct.
    */
-  bool run();
+  boost::system::error_code start(const sick::datastructure::CommSettings& settings);
 
   /**
    * \brief stop
    */
   void stop();
+
+  /*!
+   * \brief Returns the actual UDP enpoint settings of local machine
+   * \return The current local UDP endpoint settings
+   */
+  endpoint_type getLocalUdpEndpoint() const;
 
   /*!
    * \brief Changes the internal settings of the sensor.
