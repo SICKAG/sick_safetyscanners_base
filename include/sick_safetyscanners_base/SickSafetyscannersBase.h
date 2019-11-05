@@ -143,8 +143,15 @@ public:
   void asyncChangeSensorSettings(const sick::datastructure::CommSettings& settings,
                                  AsyncCompleteHandler handler);
 
-  void findSensor(const datastructure::CommSettings& settings, uint16_t blink_time);
-  void asyncFindSensor(const datastructure::CommSettings& settings, uint16_t blink_time,
+  /**
+   * \brief Find the sensor by blinking the display on the sensor
+   * \param settings The CommSettings for the sensor
+   * \param blink_time The display on the sensor is blinked by this amount of time. [seconds]
+   */
+  void findSensor(const datastructure::CommSettings& settings,
+                  uint16_t blink_time);
+  void asyncFindSensor(const datastructure::CommSettings& settings,
+                       uint16_t blink_time,
                        AsyncCompleteHandler handler);
 
   /*!

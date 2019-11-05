@@ -325,9 +325,17 @@ void SickSafetyscannersBase::changeSensorSettings(const datastructure::CommSetti
   promise->get_future().wait();
 }
 
-void SickSafetyscannersBase::asyncChangeSensorSettings(const sick::datastructure::CommSettings& settings, AsyncCompleteHandler handler )
+void SickSafetyscannersBase::asyncChangeSensorSettings(const sick::datastructure::CommSettings& settings,
+                                                       AsyncCompleteHandler handler )
 {
-  detail::processCola2Command<sick::cola2::ChangeCommSettingsCommand>( m_io_service, settings, std::ref(settings), handler );
+  // we must save the settings in a shared object, because we must gurantee that the value stays valid until the given handler is called
+  std::shared_ptr< sick::datastructure::CommSettings > shared_settings = std::make_shared< sick::datastructure::CommSettings >( settings );
+
+  detail::processCola2Command<sick::cola2::ChangeCommSettingsCommand>(m_io_service, settings,
+                                                                      std::ref(*shared_settings),
+                                                                      [shared_settings, handler](const boost::system::error_code& ec) {
+                                                                         handler( ec );
+                                                                      });
 }
 
 void SickSafetyscannersBase::findSensor(const datastructure::CommSettings& settings,
@@ -342,9 +350,18 @@ void SickSafetyscannersBase::findSensor(const datastructure::CommSettings& setti
   promise->get_future().wait();
 }
 
-void SickSafetyscannersBase::asyncFindSensor(const datastructure::CommSettings& settings, uint16_t blink_time, AsyncCompleteHandler handler)
+void SickSafetyscannersBase::asyncFindSensor(const datastructure::CommSettings& settings,
+                                             uint16_t blink_time,
+                                             AsyncCompleteHandler handler)
 {
-  detail::processCola2Command<sick::cola2::FindMeCommand>( m_io_service, settings, std::ref(blink_time), handler );
+  // we must save the blink_time in a shared object, because we must gurantee that the value stays valid until the given handler is called
+  std::shared_ptr< uint16_t > shared_blink_time = std::make_shared< uint16_t >( blink_time );
+
+  detail::processCola2Command<sick::cola2::FindMeCommand>(m_io_service, settings,
+                                                          std::ref(*shared_blink_time),
+                                                          [shared_blink_time, handler](const boost::system::error_code& ec) {
+                                                             handler( ec );
+                                                          });
 }
 
 void SickSafetyscannersBase::requestTypeCode(const datastructure::CommSettings& settings,
