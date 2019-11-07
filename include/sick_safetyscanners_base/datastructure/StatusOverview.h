@@ -49,33 +49,33 @@ class StatusOverview
 public:
   enum e_device_state
   {
-    E_NORMAL,
-    E_ERROR,
-    E_INITIALIZATION,
-    E_SHUTDOWN,
-    E_OPTICS_COVER_CALIBRATION
+    E_NORMAL                    = 0x0,
+    E_ERROR                     = 0x1,
+    E_INITIALIZATION            = 0x2,
+    E_SHUTDOWN                  = 0x3,
+    E_OPTICS_COVER_CALIBRATION  = 0x4
   };
 
   enum e_config_state
   {
-    E_UNKNOWN,
-    E_CONFIG_REQUIRED,
-    E_CONFIG_IN_PROGRESS,
-    E_NOT_VERIFIED,
-    E_REJECTED,
-    E_VERIFIED,
-    E_INTERNAL_ERROR,
-    E_VERIFICATION_IN_PROGRESS
+    E_UNKNOWN                   = 0x0,
+    E_CONFIG_REQUIRED           = 0x1,
+    E_CONFIG_IN_PROGRESS        = 0x2,
+    E_NOT_VERIFIED              = 0x3,
+    E_REJECTED                  = 0x4,
+    E_VERIFIED                  = 0x5,
+    E_INTERNAL_ERROR            = 0x6,
+    E_VERIFICATION_IN_PROGRESS  = 0x7
   };
 
   enum e_application_state
   {
-    E_STOPPED,
-    E_STARTING,
-    E_WAITING_FOR_PARTNERS,
-    E_WAITING_FOR_INPUTS,
-    E_STARTED,
-    E_SLEEP_MODE
+    E_STOPPED                   = 0x0,
+    E_STARTING                  = 0x1,
+    E_WAITING_FOR_PARTNERS      = 0x2,
+    E_WAITING_FOR_INPUTS        = 0x3,
+    E_STARTED                   = 0x4,
+    E_SLEEP_MODE                = 0x5
   };
 
   /*!
@@ -226,7 +226,6 @@ public:
    */
   void setErrorInfoCode(uint32_t error_info_code);
 
-
   /*!
    * \brief Gets the error info time for the scanner.
    *
@@ -269,6 +268,54 @@ private:
   uint32_t m_error_info_time;
   uint16_t m_error_info_date;
 };
+
+
+
+inline std::string deviceStateToString(StatusOverview::e_device_state deviceState)
+{
+  switch( deviceState )
+  {
+    case StatusOverview::E_NORMAL:          return "NORMAL";
+    case StatusOverview::E_ERROR:           return "ERROR";
+    case StatusOverview::E_INITIALIZATION:  return "INITIALIZATION";
+    case StatusOverview::E_SHUTDOWN:        return "SHUTDOWN";
+    case StatusOverview::E_OPTICS_COVER_CALIBRATION: return "OPTICS_COVER_CALIBRATION";
+  }
+
+  return std::string();
+}
+
+inline std::string configStateToString(StatusOverview::e_config_state configState)
+{
+  switch( configState )
+  {
+    case StatusOverview::E_UNKNOWN:             return "UNKNOWN";
+    case StatusOverview::E_CONFIG_REQUIRED:     return "CONFIG_REQUIRED";
+    case StatusOverview::E_CONFIG_IN_PROGRESS:  return "CONFIG_IN_PROGRESS";
+    case StatusOverview::E_NOT_VERIFIED:        return "NOT_VERIFIED";
+    case StatusOverview::E_REJECTED:            return "REJECTED";
+    case StatusOverview::E_VERIFIED:            return "VERIFIED";
+    case StatusOverview::E_INTERNAL_ERROR:      return "INTERNAL_ERROR";
+    case StatusOverview::E_VERIFICATION_IN_PROGRESS: return "VERIFICATION_IN_PROGRESS";
+  }
+
+  return std::string();
+}
+
+inline std::string applicationStateToString(StatusOverview::e_application_state applicationState)
+{
+  switch( applicationState )
+  {
+    case StatusOverview::E_STOPPED:               return "STOPPED";
+    case StatusOverview::E_STARTING:              return "STARTING";
+    case StatusOverview::E_WAITING_FOR_PARTNERS:  return "WAITING_FOR_PARTNERS";
+    case StatusOverview::E_WAITING_FOR_INPUTS:    return "WAITING_FOR_INPUTS";
+    case StatusOverview::E_STARTED:               return "STARTED";
+    case StatusOverview::E_SLEEP_MODE:            return "SLEEP_MODE";
+  }
+
+  return std::string();
+}
 
 
 } // namespace datastructure

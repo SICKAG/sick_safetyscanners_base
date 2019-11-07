@@ -82,6 +82,25 @@ private:
 };
 
 
+inline std::string sopasDeviceStatusToString(DeviceStatus::e_sopas_device_status deviceStatus)
+{
+  switch( deviceStatus )
+  {
+    case DeviceStatus::E_UNKNOWN:             return "UNKNOWN";
+    case DeviceStatus::E_START_UP:            return "START_UP";
+    case DeviceStatus::E_SERVICE_MODE:        return "SERVICE_MODE";
+    case DeviceStatus::E_NORMAL_OPERATION:    return "NORMAL_OPERATION";
+    case DeviceStatus::E_SUSPENDED_OPERATION: return "SUSPENDED_OPERATION";
+    case DeviceStatus::E_SERVICE_RECOMMENDED: return "SERVICE_RECOMMENDED";
+    case DeviceStatus::E_SERVICE_REQUIRED:    return "SERVICE_REQUIRED";
+    case DeviceStatus::E_RECOVERABLE_ERROR:   return "RECOVERABLE_ERROR";
+    case DeviceStatus::E_FATAL_ERROR:         return "FATAL_ERROR";
+  }
+
+  return std::string();
+}
+
+
 } // namespace datastructure
 } // namespace sick
 
