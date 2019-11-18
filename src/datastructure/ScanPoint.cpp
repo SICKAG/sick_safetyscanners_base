@@ -40,7 +40,7 @@ namespace datastructure {
 ScanPoint::ScanPoint() {}
 
 ScanPoint::ScanPoint(float angle,
-                     int16_t& distance,
+                     uint16_t& distance,
                      uint8_t& reflectivity,
                      bool& valid_bit,
                      bool& infinite_bit,

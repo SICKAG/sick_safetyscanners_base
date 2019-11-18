@@ -61,7 +61,7 @@ public:
    * \param contamination_warning_bit Warning if the scanpoint is contaminated.
    */
   ScanPoint(float angle,
-            int16_t& distance,
+            uint16_t& distance,
             uint8_t& reflectivity,
             bool& valid_bit,
             bool& infinite_bit,
@@ -127,7 +127,7 @@ public:
 
 private:
   float m_angle;
-  int16_t m_distance; // in mm
+  uint16_t m_distance; // in mm
   uint8_t m_reflectivity;
   bool m_valid_bit;
   bool m_infinite_bit;
