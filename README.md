@@ -136,6 +136,7 @@ Thd Library allows to access variables of the sensor and invoke methods to chang
 | void requestDeviceStatus<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::DeviceStatus& device_status); | Returns the device status |
 | void requestFieldData<br>(const sick::datastructure::CommSettings& settings,  <br>std::vector< sick::datastructure::FieldData>& field_data); | Returns the field data of the warning and safety fields |
 | void requestFirmwareVersion<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::FirmwareVersion& firmware_version); | Returns the firmware version |
+| void requestLatestTelegram<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::Data& data, <br> int8_t index = 0); | Returns the latest telegram for the channel index. Up to 4 Channels can be supported by the cola protocol, the actual number depends on the used scanner. Channel 0 is set as default value. |
 | void requestMonitoringCases<br>(const sick::datastructure::CommSettings& settings, <br>std::vector< sick::datastructure::MonitoringCaseData>& monitoring_cases); | Returns the data of the  Monitoring Cases|
  | void requestOrderNumber<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::OrderNumber& order_number); | Returns the order Number|
  | void requestPersistentConfig<br>(const sick::datastructure::CommSettings& settings, <br>sick::datastructure::ConfigData& config_data);  | Returns the Persistent configuration of the sensor, which was set in the Safety Designer|
