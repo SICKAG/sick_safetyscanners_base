@@ -146,7 +146,8 @@ public:
   void requestRequiredUserAction(const datastructure::CommSettings& settings,
                                  datastructure::RequiredUserAction& required_user_action);
   void requestLatestTelegram(const datastructure::CommSettings& settings,
-                             datastructure::Data& data);
+                             datastructure::Data& data,
+                             int8_t index = 0);
   void findSensor(const datastructure::CommSettings& settings, uint16_t blink_time);
   /*!
    * \brief Requests data of the protective and warning fields from the sensor.
@@ -221,7 +222,7 @@ private:
     sick::datastructure::RequiredUserAction& required_user_action);
   void requestMonitoringCaseDataInColaSession(
     std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases);
-  void requestLatestTelegramInColaSession(sick::datastructure::Data& data);
+  void requestLatestTelegramInColaSession(sick::datastructure::Data& data, int8_t index = 0);
   void findSensorInColaSession(uint16_t blink_time);
 };
 

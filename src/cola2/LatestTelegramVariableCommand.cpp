@@ -41,8 +41,9 @@ namespace sick {
 namespace cola2 {
 
 LatestTelegramVariableCommand::LatestTelegramVariableCommand(Cola2Session& session,
-                                                             datastructure::Data& data)
-  : VariableCommand(session, 179)
+                                                             datastructure::Data& data,
+                                                             const int8_t index)
+  : VariableCommand(session, 179 + index)
   , m_data(data)
 {
   m_data_parser_ptr = std::make_shared<sick::data_processing::ParseData>();

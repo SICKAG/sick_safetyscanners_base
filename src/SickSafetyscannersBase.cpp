@@ -215,10 +215,11 @@ void SickSafetyscannersBase::requestDeviceStatus(const datastructure::CommSettin
 }
 
 void SickSafetyscannersBase::requestLatestTelegram(const datastructure::CommSettings& settings,
-                                                   sick::datastructure::Data& data)
+                                                   sick::datastructure::Data& data,
+                                                   int8_t index)
 {
   startTCPConnection(settings);
-  requestLatestTelegramInColaSession(data);
+  requestLatestTelegramInColaSession(data, index);
   stopTCPConnection();
 }
 
@@ -450,10 +451,17 @@ void SickSafetyscannersBase::requestPersistentConfigInColaSession(
   m_session_ptr->executeCommand(command_ptr);
 }
 
-void SickSafetyscannersBase::requestLatestTelegramInColaSession(sick::datastructure::Data& data)
+void SickSafetyscannersBase::requestLatestTelegramInColaSession(sick::datastructure::Data& data,
+                                                                int8_t index)
 {
+  if (index < 0 || index > 3)
+  {
+    ROS_WARN("Index is out of bounds, returning default channel 0");
+    index = 0;
+  }
   sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::LatestTelegramVariableCommand>(boost::ref(*m_session_ptr), data);
+    std::make_shared<sick::cola2::LatestTelegramVariableCommand>(
+      boost::ref(*m_session_ptr), data, index);
   m_session_ptr->executeCommand(command_ptr);
 }
 

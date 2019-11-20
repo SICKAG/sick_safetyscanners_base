@@ -59,8 +59,11 @@ public:
    *
    * \param session The current cola2 session.
    * \param data The variable to which the  Measurement Data  will be written on execution.
+   * \param index Index of the Channel, up to 4 channels can be supported by the cola protocol
    */
-  LatestTelegramVariableCommand(Cola2Session& session, datastructure::Data& data);
+  LatestTelegramVariableCommand(Cola2Session& session,
+                                datastructure::Data& data,
+                                const int8_t index = 0);
 
   /*!
    * \brief Returns if the command can be executed without a session ID. Will return false for most
