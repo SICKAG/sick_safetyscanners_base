@@ -70,6 +70,8 @@ public:
    * \returns Parsed data
    */
   sick::datastructure::Data parseUDPSequence(const sick::datastructure::PacketBuffer& buffer) const;
+  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                        sick::datastructure::Data& data) const;
 
 private:
   std::shared_ptr<sick::data_processing::ParseDataHeader> m_data_header_parser_ptr;

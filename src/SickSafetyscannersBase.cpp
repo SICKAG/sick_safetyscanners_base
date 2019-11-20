@@ -214,6 +214,14 @@ void SickSafetyscannersBase::requestDeviceStatus(const datastructure::CommSettin
   stopTCPConnection();
 }
 
+void SickSafetyscannersBase::requestLatestTelegram(const datastructure::CommSettings& settings,
+                                                   sick::datastructure::Data& data)
+{
+  startTCPConnection(settings);
+  requestLatestTelegramInColaSession(data);
+  stopTCPConnection();
+}
+
 void SickSafetyscannersBase::requestRequiredUserAction(
   const datastructure::CommSettings& settings,
   sick::datastructure::RequiredUserAction& required_user_action)
@@ -439,6 +447,13 @@ void SickSafetyscannersBase::requestPersistentConfigInColaSession(
   sick::cola2::Cola2Session::CommandPtr command_ptr =
     std::make_shared<sick::cola2::MeasurementPersistentConfigVariableCommand>(
       boost::ref(*m_session_ptr), config_data);
+  m_session_ptr->executeCommand(command_ptr);
+}
+
+void SickSafetyscannersBase::requestLatestTelegramInColaSession(sick::datastructure::Data& data)
+{
+  sick::cola2::Cola2Session::CommandPtr command_ptr =
+    std::make_shared<sick::cola2::LatestTelegramVariableCommand>(boost::ref(*m_session_ptr), data);
   m_session_ptr->executeCommand(command_ptr);
 }
 

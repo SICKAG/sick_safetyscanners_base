@@ -64,6 +64,7 @@
 #include <sick_safetyscanners_base/cola2/FieldHeaderVariableCommand.h>
 #include <sick_safetyscanners_base/cola2/FindMeCommand.h>
 #include <sick_safetyscanners_base/cola2/FirmwareVersionVariableCommand.h>
+#include <sick_safetyscanners_base/cola2/LatestTelegramVariableCommand.h>
 #include <sick_safetyscanners_base/cola2/MeasurementCurrentConfigVariableCommand.h>
 #include <sick_safetyscanners_base/cola2/MeasurementPersistentConfigVariableCommand.h>
 #include <sick_safetyscanners_base/cola2/MonitoringCaseTableHeaderVariableCommand.h>
@@ -144,6 +145,8 @@ public:
                            datastructure::DeviceStatus& device_status);
   void requestRequiredUserAction(const datastructure::CommSettings& settings,
                                  datastructure::RequiredUserAction& required_user_action);
+  void requestLatestTelegram(const datastructure::CommSettings& settings,
+                             datastructure::Data& data);
   void findSensor(const datastructure::CommSettings& settings, uint16_t blink_time);
   /*!
    * \brief Requests data of the protective and warning fields from the sensor.
@@ -218,6 +221,7 @@ private:
     sick::datastructure::RequiredUserAction& required_user_action);
   void requestMonitoringCaseDataInColaSession(
     std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases);
+  void requestLatestTelegramInColaSession(sick::datastructure::Data& data);
   void findSensorInColaSession(uint16_t blink_time);
 };
 

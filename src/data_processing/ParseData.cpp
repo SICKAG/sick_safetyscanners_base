@@ -56,6 +56,13 @@ ParseData::parseUDPSequence(const datastructure::PacketBuffer& buffer) const
   return data;
 }
 
+bool ParseData::parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                                 sick::datastructure::Data& data) const
+{
+  setDataBlocksInData(buffer, data);
+  return true;
+}
+
 void ParseData::setDataBlocksInData(const datastructure::PacketBuffer& buffer,
                                     datastructure::Data& data) const
 {

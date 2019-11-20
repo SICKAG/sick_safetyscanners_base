@@ -42,6 +42,7 @@ add_library(sick_safetyscanners_base
   src/cola2/FieldSetsVariableCommand.cpp
   src/cola2/FindMeCommand.cpp
   src/cola2/FirmwareVersionVariableCommand.cpp
+  src/cola2/LatestTelegramVariableCommand.cpp
   src/cola2/MeasurementCurrentConfigVariableCommand.cpp
   src/cola2/MeasurementPersistentConfigVariableCommand.cpp
   src/cola2/MethodCommand.cpp
