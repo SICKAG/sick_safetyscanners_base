@@ -45,7 +45,6 @@ FieldSetsVariableCommand::FieldSetsVariableCommand(Cola2Session& session,
   : VariableCommand(session, 1003)
   , m_field_sets(field_sets)
 {
-  m_field_sets_parser_ptr = std::make_shared<sick::data_processing::ParseFieldSetsData>();
 }
 
 bool FieldSetsVariableCommand::canBeExecutedWithoutSessionID() const
@@ -59,8 +58,8 @@ bool FieldSetsVariableCommand::processReply()
   {
     return false;
   }
-  m_field_sets_parser_ptr->parseTCPSequence(getDataVector(), m_field_sets);
-  return true;
+
+  return sick::data_processing::ParseFieldSetsData::parseTCPSequence(getDataVector(), m_field_sets);
 }
 
 

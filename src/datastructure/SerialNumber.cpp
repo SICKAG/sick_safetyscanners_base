@@ -39,7 +39,7 @@ namespace datastructure {
 
 SerialNumber::SerialNumber() {}
 
-std::string SerialNumber::getSerialNumber() const
+const std::string& SerialNumber::getSerialNumber() const
 {
   return m_serial_number;
 }

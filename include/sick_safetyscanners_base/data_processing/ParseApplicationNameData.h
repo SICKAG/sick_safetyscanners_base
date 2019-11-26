@@ -51,12 +51,13 @@ namespace data_processing {
  */
 class ParseApplicationNameData
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseApplicationNameData();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the type code of the sensor.
    *
@@ -65,16 +66,16 @@ public:
    *
    * \returns If parsing was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::ApplicationName& application_name) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                              datastructure::ApplicationName& application_name);
 
 private:
-  std::string readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readNameLength(std::vector<uint8_t>::const_iterator data_ptr) const;
-  std::string readApplicationName(std::vector<uint8_t>::const_iterator data_ptr) const;
+  static std::string readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readNameLength(std::vector<uint8_t>::const_iterator data_ptr);
+  static std::string readApplicationName(std::vector<uint8_t>::const_iterator data_ptr);
 };
 
 } // namespace data_processing

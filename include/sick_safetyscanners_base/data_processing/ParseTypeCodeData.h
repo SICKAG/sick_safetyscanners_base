@@ -51,12 +51,13 @@ namespace data_processing {
  */
 class ParseTypeCodeData
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseTypeCodeData();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the type code of the sensor.
    *
@@ -65,13 +66,13 @@ public:
    *
    * \returns If parsing was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::TypeCode& type_code) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               datastructure::TypeCode& type_code);
 
 private:
-  std::string readTypeCode(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readInterfaceType(std::vector<uint8_t>::const_iterator data_ptr) const;
-  float readMaxRange(std::vector<uint8_t>::const_iterator data_ptr) const;
+  static std::string readTypeCode(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readInterfaceType(std::vector<uint8_t>::const_iterator data_ptr);
+  static float readMaxRange(std::vector<uint8_t>::const_iterator data_ptr);
 };
 
 } // namespace data_processing

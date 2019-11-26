@@ -55,12 +55,13 @@ namespace data_processing {
  */
 class ParseData
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseData();
 
+public:
   /*!
    * \brief Parses the udp data transferred in the packet buffer. It will be parsed into the data
    * reference.
@@ -69,33 +70,26 @@ public:
    *
    * \returns Parsed data
    */
-  sick::datastructure::Data parseUDPSequence(const sick::datastructure::PacketBuffer& buffer) const;
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        sick::datastructure::Data& data) const;
+  static sick::datastructure::Data parseUDPSequence(const sick::datastructure::PacketBuffer& buffer);
+
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               sick::datastructure::Data& data);
 
 private:
-  std::shared_ptr<sick::data_processing::ParseDataHeader> m_data_header_parser_ptr;
-  std::shared_ptr<sick::data_processing::ParseDerivedValues> m_derived_values_parser_ptr;
-  std::shared_ptr<sick::data_processing::ParseMeasurementData> m_measurement_data_parser_ptr;
-  std::shared_ptr<sick::data_processing::ParseGeneralSystemState> m_general_system_state_parser_ptr;
-  std::shared_ptr<sick::data_processing::ParseIntrusionData> m_intrusion_data_parser_ptr;
-  std::shared_ptr<sick::data_processing::ParseApplicationData> m_application_data_parser_ptr;
-
-
-  void setDataBlocksInData(const datastructure::PacketBuffer& buffer,
-                           datastructure::Data& data) const;
-  void setDataHeaderInData(const datastructure::PacketBuffer& buffer,
-                           datastructure::Data& data) const;
-  void setDerivedValuesInData(const datastructure::PacketBuffer& buffer,
-                              datastructure::Data& data) const;
-  void setMeasurementDataInData(const datastructure::PacketBuffer& buffer,
-                                datastructure::Data& data) const;
-  void setGeneralSystemStateInData(const datastructure::PacketBuffer& buffer,
-                                   datastructure::Data& data) const;
-  void setIntrusionDataInData(const datastructure::PacketBuffer& buffer,
-                              datastructure::Data& data) const;
-  void setApplicationDataInData(const datastructure::PacketBuffer& buffer,
-                                datastructure::Data& data) const;
+  static void setDataBlocksInData(const datastructure::PacketBuffer& buffer,
+                                  datastructure::Data& data);
+  static void setDataHeaderInData(const datastructure::PacketBuffer& buffer,
+                                  datastructure::Data& data);
+  static void setDerivedValuesInData(const datastructure::PacketBuffer& buffer,
+                                     datastructure::Data& data);
+  static void setMeasurementDataInData(const datastructure::PacketBuffer& buffer,
+                                       datastructure::Data& data);
+  static void setGeneralSystemStateInData(const datastructure::PacketBuffer& buffer,
+                                          datastructure::Data& data);
+  static void setIntrusionDataInData(const datastructure::PacketBuffer& buffer,
+                                     datastructure::Data& data);
+  static void setApplicationDataInData(const datastructure::PacketBuffer& buffer,
+                                       datastructure::Data& data);
 };
 
 } // namespace data_processing

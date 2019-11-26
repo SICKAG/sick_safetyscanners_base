@@ -45,8 +45,6 @@ RequiredUserActionVariableCommand::RequiredUserActionVariableCommand(
   : VariableCommand(session, 16)
   , m_required_user_action(required_user_action)
 {
-  m_required_user_action_parser_ptr =
-    std::make_shared<sick::data_processing::ParseRequiredUserActionData>();
 }
 
 bool RequiredUserActionVariableCommand::canBeExecutedWithoutSessionID() const
@@ -60,8 +58,8 @@ bool RequiredUserActionVariableCommand::processReply()
   {
     return false;
   }
-  m_required_user_action_parser_ptr->parseTCPSequence(getDataVector(), m_required_user_action);
-  return true;
+
+  return sick::data_processing::ParseRequiredUserActionData::parseTCPSequence(getDataVector(), m_required_user_action);
 }
 
 

@@ -53,12 +53,13 @@ namespace data_processing {
  */
 class ParseFieldGeometryData
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseFieldGeometryData();
 
+public:
   /*!
    * \brief Parses a tcp sequence and return the field geometry data of the warning and protective
    * fields.
@@ -68,13 +69,13 @@ public:
    *
    * \returns If parsing the sequence was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::FieldData& field_data) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               datastructure::FieldData& field_data);
 
 private:
-  uint32_t readArrayLength(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readArrayElement(std::vector<uint8_t>::const_iterator data_ptr,
-                            uint32_t elem_number) const;
+  static uint32_t readArrayLength(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readArrayElement(std::vector<uint8_t>::const_iterator data_ptr,
+                                   uint32_t elem_number);
 };
 
 } // namespace data_processing

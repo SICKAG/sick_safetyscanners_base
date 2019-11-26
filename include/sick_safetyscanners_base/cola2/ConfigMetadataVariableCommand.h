@@ -81,8 +81,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseConfigMetadata> m_config_metadata_parser_ptr;
-
   sick::datastructure::ConfigMetadata& m_config_metadata;
 };
 

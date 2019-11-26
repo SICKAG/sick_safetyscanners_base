@@ -45,8 +45,6 @@ MeasurementPersistentConfigVariableCommand::MeasurementPersistentConfigVariableC
   : VariableCommand(session, 177)
   , m_config_data(config_data)
 {
-  m_measurement_persistent_config_parser_ptr =
-    std::make_shared<sick::data_processing::ParseMeasurementPersistentConfigData>();
 }
 
 bool MeasurementPersistentConfigVariableCommand::canBeExecutedWithoutSessionID() const
@@ -60,8 +58,8 @@ bool MeasurementPersistentConfigVariableCommand::processReply()
   {
     return false;
   }
-  m_measurement_persistent_config_parser_ptr->parseTCPSequence(getDataVector(), m_config_data);
-  return true;
+
+  return sick::data_processing::ParseMeasurementPersistentConfigData::parseTCPSequence(getDataVector(), m_config_data);
 }
 
 

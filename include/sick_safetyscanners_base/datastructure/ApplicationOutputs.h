@@ -58,7 +58,7 @@ public:
    *
    * \returns The state of the non safe cut-off paths.
    */
-  std::vector<bool> getEvalOutVector() const;
+  const std::vector<bool>& getEvalOutVector() const;
   /*!
    * \brief Set the state of the non safe cut-off paths.
    *
@@ -71,7 +71,7 @@ public:
    *
    * \returns If a cut-off path is safe.
    */
-  std::vector<bool> getEvalOutIsSafeVector() const;
+  const std::vector<bool>& getEvalOutIsSafeVector() const;
   /*!
    * \brief Sets if an cut-off path is safe.
    *
@@ -84,7 +84,7 @@ public:
    *
    * \returns If the output path is valid.
    */
-  std::vector<bool> getEvalOutIsValidVector() const;
+  const std::vector<bool>& getEvalOutIsValidVector() const;
   /*!
    * \brief Sets if an output path is valid.
    *
@@ -97,7 +97,7 @@ public:
    *
    * \returns The monitoring case numbers.
    */
-  std::vector<uint16_t> getMonitoringCaseVector() const;
+  const std::vector<uint16_t>& getMonitoringCaseVector() const;
   /*!
    * \brief Sets the currently active monitoring case numbers.
    *
@@ -110,7 +110,7 @@ public:
    *
    * \returns If the monitoring case number is valid.
    */
-  std::vector<bool> getMonitoringCaseFlagsVector() const;
+  const std::vector<bool>& getMonitoringCaseFlagsVector() const;
   /*!
    * \brief Set is the corresponding monitoring case number is valid.
    *
@@ -293,7 +293,7 @@ public:
    *
    * \returns  The resulting velocity for each monitoring case table.
    */
-  std::vector<int16_t> getResultingVelocityVector() const;
+  const std::vector<int16_t>& getResultingVelocityVector() const;
   /*!
    * \brief Sets the resulting velocity for each monitoring case table.
    *
@@ -306,13 +306,14 @@ public:
    *
    * \returns  If the resulting velocities are valid.
    */
-  std::vector<bool> getResultingVelocityIsValidVector() const;
+  const std::vector<bool>& getResultingVelocityIsValidVector() const;
+
+  /*!
+   * \brief Sets if the resulting velocities are valid.
+   *
+   * \param resulting_velocity_is_valid_vector If the resulting velocities are valid.
+   */
   void
-    /*!
-     * \brief Sets if the resulting velocities are valid.
-     *
-     * \param resulting_velocity_is_valid_vector If the resulting velocities are valid.
-     */
   setResultingVelocityIsValidVector(const std::vector<bool>& resulting_velocity_is_valid_vector);
 
   /*!

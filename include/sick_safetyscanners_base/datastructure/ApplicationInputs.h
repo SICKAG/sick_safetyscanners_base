@@ -60,13 +60,14 @@ public:
    *
    * \returns The unsafe input sources.
    */
-  std::vector<bool> getUnsafeInputsInputSourcesVector() const;
+  const std::vector<bool>& getUnsafeInputsInputSourcesVector() const;
+
+  /*!
+   * \brief Sets the unsafe input sources.
+   *
+   * \param unsafe_inputs_input_sources_vector The unsafe input sources.
+   */
   void
-    /*!
-     * \brief Sets the unsafe input sources.
-     *
-     * \param unsafe_inputs_input_sources_vector The unsafe input sources.
-     */
   setUnsafeInputsInputSourcesVector(const std::vector<bool>& unsafe_inputs_input_sources_vector);
 
   /*!
@@ -78,7 +79,8 @@ public:
    *
    * \returns The unsafe input sources flags.
    */
-  std::vector<bool> getUnsafeInputsFlagsVector() const;
+  const std::vector<bool>& getUnsafeInputsFlagsVector() const;
+
   /*!
    * \brief Sets the unsafe input sources flags.
    *
@@ -91,7 +93,8 @@ public:
    *
    * \returns The monitoring case vector.
    */
-  std::vector<uint16_t> getMonitoringCasevector() const;
+  const std::vector<uint16_t>& getMonitoringCasevector() const;
+
   /*!
    * \brief Sets the monitoring case vector.
    *
@@ -104,7 +107,8 @@ public:
    *
    * \returns The monitoring case flags.
    */
-  std::vector<bool> getMonitoringCaseFlagsVector() const;
+  const std::vector<bool>& getMonitoringCaseFlagsVector() const;
+
   /*!
    * \brief Sets the monitoring case flags.
    *
@@ -118,6 +122,7 @@ public:
    * \returns The first linear velocity input.
    */
   int16_t getVelocity0() const;
+
   /*!
    * \brief Sets the first linear velocity input.
    *
@@ -131,6 +136,7 @@ public:
    * \returns The second linear velocity input
    */
   int16_t getVelocity1() const;
+
   /*!
    * \brief Sets the second linear velocity input.
    *
@@ -144,6 +150,7 @@ public:
    * \returns  If first linear velocity input is valid.
    */
   bool getVelocity0Valid() const;
+
   /*!
    * \brief Sets if first linear velocity input is valid.
    *
@@ -157,6 +164,7 @@ public:
    * \returns If second linear velocity input is valid.
    */
   bool getVelocity1Valid() const;
+
   /*!
    * \brief If second linear velocity input is valid.
    *
@@ -170,6 +178,7 @@ public:
    * \returns If first linear velocity input is transmitted safely.
    */
   bool getVelocity0TransmittedSafely() const;
+
   /*!
    * \brief Sets if first linear velocity input is transmitted safely.
    *
@@ -183,6 +192,7 @@ public:
    * \returns If second linear velocity input is transmitted safely.
    */
   bool getVelocity1TransmittedSafely() const;
+
   /*!
    * \brief Sets if second linear velocity input is transmitted safely.
    *
@@ -196,6 +206,7 @@ public:
    * \returns The state of the sleep mode.
    */
   int8_t getSleepModeInput() const;
+
   /*!
    * \brief Sets the state of the sleep mode.
    *

@@ -54,12 +54,14 @@ ParseIntrusionData::parseUDPSequence(const datastructure::PacketBuffer& buffer,
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
   std::vector<uint8_t>::const_iterator data_ptr =
     vec_ptr->begin() + data.getDataHeaderPtr()->getIntrusionDataBlockOffset();
-  setNumScanPoints(data.getDerivedValuesPtr()->getNumberOfBeams());
-  setDataInIntrusionData(data_ptr, intrusion_data);
+
+  const uint16_t num_scan_points = data.getDerivedValuesPtr()->getNumberOfBeams();
+
+  setDataInIntrusionData(num_scan_points, data_ptr, intrusion_data);
   return intrusion_data;
 }
 
-bool ParseIntrusionData::checkIfPreconditionsAreMet(const datastructure::Data& data) const
+bool ParseIntrusionData::checkIfPreconditionsAreMet(const datastructure::Data& data)
 {
   if (!checkIfIntrusionDataIsPublished(data))
   {
@@ -72,14 +74,14 @@ bool ParseIntrusionData::checkIfPreconditionsAreMet(const datastructure::Data& d
   return true;
 }
 
-bool ParseIntrusionData::checkIfIntrusionDataIsPublished(const datastructure::Data& data) const
+bool ParseIntrusionData::checkIfIntrusionDataIsPublished(const datastructure::Data& data)
 {
   return !(data.getDataHeaderPtr()->getIntrusionDataBlockOffset() == 0 &&
            data.getDataHeaderPtr()->getIntrusionDataBlockSize() == 0);
 }
 
 bool ParseIntrusionData::checkIfDataContainsNeededParsedBlocks(
-  const datastructure::Data& data) const
+  const datastructure::Data& data)
 {
   if (data.getDataHeaderPtr()->isEmpty())
   {
@@ -92,27 +94,19 @@ bool ParseIntrusionData::checkIfDataContainsNeededParsedBlocks(
   return true;
 }
 
-uint16_t ParseIntrusionData::getNumScanPoints() const
-{
-  return m_num_scan_points;
-}
-
-void ParseIntrusionData::setNumScanPoints(const uint16_t& num_scan_points)
-{
-  m_num_scan_points = num_scan_points;
-}
-
-void ParseIntrusionData::setDataInIntrusionData(std::vector<uint8_t>::const_iterator data_ptr,
-                                                datastructure::IntrusionData& intrusion_data) const
+void ParseIntrusionData::setDataInIntrusionData(const uint16_t num_scan_points,
+                                                std::vector<uint8_t>::const_iterator data_ptr,
+                                                datastructure::IntrusionData& intrusion_data)
 {
   std::vector<sick::datastructure::IntrusionDatum> intrusion_datums;
-  setDataInIntrusionDatums(data_ptr, intrusion_datums);
+  setDataInIntrusionDatums(num_scan_points, data_ptr, intrusion_datums);
   intrusion_data.setIntrusionDataVector(intrusion_datums);
 }
 
 void ParseIntrusionData::setDataInIntrusionDatums(
+  uint16_t num_scan_points,
   std::vector<uint8_t>::const_iterator data_ptr,
-  std::vector<sick::datastructure::IntrusionDatum>& intrusion_datums) const
+  std::vector<sick::datastructure::IntrusionDatum>& intrusion_datums)
 {
   uint16_t offset = 0;
   // Repeats for 24 CutOffPaths
@@ -121,7 +115,7 @@ void ParseIntrusionData::setDataInIntrusionDatums(
     sick::datastructure::IntrusionDatum datum;
     setSizeInIntrusionDatum(offset, data_ptr, datum);
     offset += 4;
-    setFlagsInIntrusionDatum(offset, data_ptr, datum);
+    setFlagsInIntrusionDatum(offset, num_scan_points, data_ptr, datum);
     offset += datum.getSize();
     intrusion_datums.push_back(datum);
   }
@@ -131,7 +125,7 @@ void ParseIntrusionData::setDataInIntrusionDatums(
 uint16_t
 ParseIntrusionData::setSizeInIntrusionDatum(const uint16_t& offset,
                                             std::vector<uint8_t>::const_iterator data_ptr,
-                                            sick::datastructure::IntrusionDatum& datum) const
+                                            sick::datastructure::IntrusionDatum& datum)
 {
   uint32_t num_bytes_to_read = read_write_helper::readUint32LittleEndian(data_ptr + offset);
   datum.setSize(num_bytes_to_read);
@@ -139,18 +133,19 @@ ParseIntrusionData::setSizeInIntrusionDatum(const uint16_t& offset,
 }
 
 uint16_t
-ParseIntrusionData::setFlagsInIntrusionDatum(const uint16_t& offset,
+ParseIntrusionData::setFlagsInIntrusionDatum(const uint16_t offset,
+                                             const uint16_t num_scan_points,
                                              std::vector<uint8_t>::const_iterator data_ptr,
-                                             sick::datastructure::IntrusionDatum& datum) const
+                                             sick::datastructure::IntrusionDatum& datum)
 {
   uint32_t num_read_flags = 0;
   std::vector<bool> flags;
   for (uint16_t num_read_bytes = 0;
-       (num_read_bytes < datum.getSize()) && (num_read_flags < m_num_scan_points);
+       (num_read_bytes < datum.getSize()) && (num_read_flags < num_scan_points);
        num_read_bytes++)
   {
     uint8_t bitset = read_write_helper::readUint8LittleEndian(data_ptr + offset + num_read_bytes);
-    for (uint32_t i_bit = 0; (i_bit < 8) && (num_read_flags < m_num_scan_points);
+    for (uint32_t i_bit = 0; (i_bit < 8) && (num_read_flags < num_scan_points);
          i_bit++, num_read_flags++)
     {
       flags.push_back(static_cast<bool>(bitset & (0x01 << i_bit)));

@@ -32,9 +32,10 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners_base/cola2/Command.h>
+#include <sick_safetyscanners_base/logging/logging_wrapper.h>
 
 #include <sick_safetyscanners_base/cola2/Cola2Session.h>
+#include <sick_safetyscanners_base/cola2/Command.h>
 
 
 namespace sick {
@@ -47,12 +48,6 @@ Command::Command(Cola2Session& session, const uint16_t& command_type, const uint
 {
   m_session_id     = m_session.getSessionID();
   m_request_id     = m_session.getNextRequestID();
-  m_tcp_parser_ptr = std::make_shared<sick::data_processing::ParseTCPPacket>();
-}
-
-void Command::lockExecutionMutex()
-{
-  m_execution_mutex.lock();
 }
 
 std::vector<uint8_t> Command::constructTelegram(const std::vector<uint8_t>& telegram) const
@@ -63,14 +58,8 @@ std::vector<uint8_t> Command::constructTelegram(const std::vector<uint8_t>& tele
 
 void Command::processReplyBase(const std::vector<uint8_t>& packet)
 {
-  m_tcp_parser_ptr->parseTCPSequence(packet, *this);
+  sick::data_processing::ParseTCPPacket::parseTCPSequence(packet, *this);
   m_was_successful = processReply();
-  m_execution_mutex.unlock();
-}
-
-void Command::waitForCompletion()
-{
-  boost::mutex::scoped_lock lock(m_execution_mutex);
 }
 
 bool Command::wasSuccessful() const

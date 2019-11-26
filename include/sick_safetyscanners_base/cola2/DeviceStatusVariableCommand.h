@@ -80,8 +80,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseDeviceStatusData> m_device_status_parser_ptr;
-
   sick::datastructure::DeviceStatus& m_device_status;
 };
 

@@ -52,12 +52,13 @@ namespace data_processing {
  */
 class ParseMeasurementPersistentConfigData
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseMeasurementPersistentConfigData();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the persistent configuration of the sensor.
    *
@@ -66,22 +67,22 @@ public:
    *
    * \returns If parsing was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::ConfigData& config_data) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               datastructure::ConfigData& config_data);
 
 private:
-  std::string readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  bool readEnabled(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readInterfaceType(std::vector<uint8_t>::const_iterator data_ptr) const;
-  boost::asio::ip::address_v4 readHostIp(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readHostPort(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readPublishingFreq(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readEndAngle(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readStartAngle(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readFeatures(std::vector<uint8_t>::const_iterator data_ptr) const;
+  static std::string readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static bool readEnabled(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readInterfaceType(std::vector<uint8_t>::const_iterator data_ptr);
+  static boost::asio::ip::address_v4 readHostIp(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readHostPort(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readPublishingFreq(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readEndAngle(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readStartAngle(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readFeatures(std::vector<uint8_t>::const_iterator data_ptr);
 };
 
 } // namespace data_processing

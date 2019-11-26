@@ -43,7 +43,7 @@ ParseTypeCodeData::ParseTypeCodeData() {}
 
 
 bool ParseTypeCodeData::parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                                         sick::datastructure::TypeCode& type_code) const
+                                         sick::datastructure::TypeCode& type_code)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -54,7 +54,7 @@ bool ParseTypeCodeData::parseTCPSequence(const datastructure::PacketBuffer& buff
   return true;
 }
 
-std::string ParseTypeCodeData::readTypeCode(std::vector<uint8_t>::const_iterator data_ptr) const
+std::string ParseTypeCodeData::readTypeCode(std::vector<uint8_t>::const_iterator data_ptr)
 {
   uint16_t code_length = read_write_helper::readUint16LittleEndian(data_ptr);
   std::string code;
@@ -65,7 +65,7 @@ std::string ParseTypeCodeData::readTypeCode(std::vector<uint8_t>::const_iterator
   return code;
 }
 
-uint8_t ParseTypeCodeData::readInterfaceType(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseTypeCodeData::readInterfaceType(std::vector<uint8_t>::const_iterator data_ptr)
 {
   uint8_t type_code_interface_1 = read_write_helper::readUint8(data_ptr + 14);
   uint8_t type_code_interface_2 = read_write_helper::readUint8(data_ptr + 15);
@@ -94,7 +94,7 @@ uint8_t ParseTypeCodeData::readInterfaceType(std::vector<uint8_t>::const_iterato
   return res;
 }
 
-float ParseTypeCodeData::readMaxRange(std::vector<uint8_t>::const_iterator data_ptr) const
+float ParseTypeCodeData::readMaxRange(std::vector<uint8_t>::const_iterator data_ptr)
 {
   uint8_t type_code_interface_1 = read_write_helper::readUint8(data_ptr + 12);
   uint8_t type_code_interface_2 = read_write_helper::readUint8(data_ptr + 13);

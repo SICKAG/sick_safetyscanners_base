@@ -53,7 +53,7 @@ void MeasurementData::setNumberOfBeams(const uint32_t& number_of_beams)
   m_number_of_beams = number_of_beams;
 }
 
-std::vector<ScanPoint> MeasurementData::getScanPointsVector() const
+const std::vector<ScanPoint>& MeasurementData::getScanPointsVector() const
 {
   return m_scan_points_vector;
 }

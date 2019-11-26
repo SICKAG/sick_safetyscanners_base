@@ -43,7 +43,7 @@ ParseFieldHeaderData::ParseFieldHeaderData() {}
 
 
 bool ParseFieldHeaderData::parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                                            datastructure::FieldData& field_data) const
+                                            datastructure::FieldData& field_data)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -70,7 +70,7 @@ bool ParseFieldHeaderData::parseTCPSequence(const datastructure::PacketBuffer& b
   return true;
 }
 
-bool ParseFieldHeaderData::isValid(std::vector<uint8_t>::const_iterator data_ptr) const
+bool ParseFieldHeaderData::isValid(std::vector<uint8_t>::const_iterator data_ptr)
 {
   bool res     = false;
   uint8_t byte = read_write_helper::readUint8(data_ptr + 0);
@@ -83,7 +83,7 @@ bool ParseFieldHeaderData::isValid(std::vector<uint8_t>::const_iterator data_ptr
 }
 
 void ParseFieldHeaderData::setFieldType(std::vector<uint8_t>::const_iterator data_ptr,
-                                        datastructure::FieldData& field_data) const
+                                        datastructure::FieldData& field_data)
 {
   uint8_t field_type = readEvalMethod(data_ptr);
   field_data.setIsWarningField(false);
@@ -99,65 +99,65 @@ void ParseFieldHeaderData::setFieldType(std::vector<uint8_t>::const_iterator dat
 }
 
 std::string
-ParseFieldHeaderData::readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseFieldHeaderData::readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr)
 {
   std::string result;
   result.push_back(read_write_helper::readUint8(data_ptr + 0));
   return result;
 }
 
-uint8_t ParseFieldHeaderData::readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseFieldHeaderData::readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 1);
 }
 
-uint8_t ParseFieldHeaderData::readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseFieldHeaderData::readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 2);
 }
 
-uint8_t ParseFieldHeaderData::readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseFieldHeaderData::readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 3);
 }
 
-bool ParseFieldHeaderData::readIsDefined(std::vector<uint8_t>::const_iterator data_ptr) const
+bool ParseFieldHeaderData::readIsDefined(std::vector<uint8_t>::const_iterator data_ptr)
 {
   // TODO
   return read_write_helper::readUint8(data_ptr + 72);
 }
 
-uint8_t ParseFieldHeaderData::readEvalMethod(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseFieldHeaderData::readEvalMethod(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 73);
 }
 
 
 uint16_t
-ParseFieldHeaderData::readMultiSampling(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseFieldHeaderData::readMultiSampling(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint16LittleEndian(data_ptr + 74);
 }
 
 uint16_t
-ParseFieldHeaderData::readObjectResolution(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseFieldHeaderData::readObjectResolution(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint16LittleEndian(data_ptr + 78);
 }
 
-uint16_t ParseFieldHeaderData::readSetIndex(std::vector<uint8_t>::const_iterator data_ptr) const
+uint16_t ParseFieldHeaderData::readSetIndex(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint16LittleEndian(data_ptr + 82);
 }
 
 
-uint32_t ParseFieldHeaderData::readNameLength(std::vector<uint8_t>::const_iterator data_ptr) const
+uint32_t ParseFieldHeaderData::readNameLength(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 84);
 }
 
 
-std::string ParseFieldHeaderData::readFieldName(std::vector<uint8_t>::const_iterator data_ptr) const
+std::string ParseFieldHeaderData::readFieldName(std::vector<uint8_t>::const_iterator data_ptr)
 {
   uint32_t name_length = read_write_helper::readUint32LittleEndian(data_ptr + 84);
   std::string name;

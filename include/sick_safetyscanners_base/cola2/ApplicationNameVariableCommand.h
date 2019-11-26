@@ -81,8 +81,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseApplicationNameData> m_application_name_parser_ptr;
-
   sick::datastructure::ApplicationName& m_application_name;
 };
 

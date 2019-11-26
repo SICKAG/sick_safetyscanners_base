@@ -53,12 +53,13 @@ namespace data_processing {
  */
 class ParseProjectName
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseProjectName();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the project name of the sensor.
    *
@@ -67,10 +68,10 @@ public:
    *
    * \returns If parsing the project name was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::ProjectName& project_name) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               datastructure::ProjectName& project_name);
 
-  std::string readProjectName(std::vector<uint8_t>::const_iterator data_ptr) const;
+  static std::string readProjectName(std::vector<uint8_t>::const_iterator data_ptr);
 };
 
 } // namespace data_processing

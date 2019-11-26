@@ -51,12 +51,13 @@ namespace data_processing {
  */
 class ParseGeneralSystemState
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseGeneralSystemState();
 
+public:
   /*!
    * \brief Parses the udp sequence to read the general system state if enabled.
    *
@@ -65,33 +66,33 @@ public:
    *
    * \returns If parsing was successful.
    */
-  datastructure::GeneralSystemState
+  static datastructure::GeneralSystemState
   parseUDPSequence(const sick::datastructure::PacketBuffer& buffer,
-                   datastructure::Data& data) const;
+                   datastructure::Data& data);
 
 private:
-  void setDataInGeneralSystemState(std::vector<uint8_t>::const_iterator data_ptr,
-                                   datastructure::GeneralSystemState& general_system_state) const;
-  void
+  static void setDataInGeneralSystemState(std::vector<uint8_t>::const_iterator data_ptr,
+                                   datastructure::GeneralSystemState& general_system_state);
+  static void
   setStatusBitsInGeneralSystemState(std::vector<uint8_t>::const_iterator data_ptr,
-                                    datastructure::GeneralSystemState& general_system_state) const;
-  void setSafeCutOffPathInGeneralSystemState(
+                                    datastructure::GeneralSystemState& general_system_state);
+  static void setSafeCutOffPathInGeneralSystemState(
     std::vector<uint8_t>::const_iterator data_ptr,
-    datastructure::GeneralSystemState& general_system_state) const;
-  void setNonSafeCutOffPathInGeneralSystemState(
+    datastructure::GeneralSystemState& general_system_state);
+  static void setNonSafeCutOffPathInGeneralSystemState(
     std::vector<uint8_t>::const_iterator data_ptr,
-    datastructure::GeneralSystemState& general_system_state) const;
-  void setResetRequiredCutOffPathInGeneralSystemState(
+    datastructure::GeneralSystemState& general_system_state);
+  static void setResetRequiredCutOffPathInGeneralSystemState(
     std::vector<uint8_t>::const_iterator data_ptr,
-    datastructure::GeneralSystemState& general_system_state) const;
-  void setCurrentMonitoringCasesInGeneralSystemState(
+    datastructure::GeneralSystemState& general_system_state);
+  static void setCurrentMonitoringCasesInGeneralSystemState(
     std::vector<uint8_t>::const_iterator data_ptr,
-    datastructure::GeneralSystemState& general_system_state) const;
-  void setErrorsInGeneralSystemState(std::vector<uint8_t>::const_iterator data_ptr,
-                                     datastructure::GeneralSystemState& general_system_state) const;
-  bool checkIfPreconditionsAreMet(const datastructure::Data& data) const;
-  bool checkIfGeneralSystemStateIsPublished(const datastructure::Data& data) const;
-  bool checkIfDataContainsNeededParsedBlocks(const datastructure::Data& data) const;
+    datastructure::GeneralSystemState& general_system_state);
+  static void setErrorsInGeneralSystemState(std::vector<uint8_t>::const_iterator data_ptr,
+                                     datastructure::GeneralSystemState& general_system_state);
+  static bool checkIfPreconditionsAreMet(const datastructure::Data& data);
+  static bool checkIfGeneralSystemStateIsPublished(const datastructure::Data& data);
+  static bool checkIfDataContainsNeededParsedBlocks(const datastructure::Data& data);
 };
 
 } // namespace data_processing

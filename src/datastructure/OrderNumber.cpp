@@ -39,7 +39,7 @@ namespace datastructure {
 
 OrderNumber::OrderNumber() {}
 
-std::string OrderNumber::getOrderNumber() const
+const std::string& OrderNumber::getOrderNumber() const
 {
   return m_order_number;
 }

@@ -45,7 +45,6 @@ OrderNumberVariableCommand::OrderNumberVariableCommand(Cola2Session& session,
   : VariableCommand(session, 14)
   , m_order_number(order_number)
 {
-  m_order_number_parser_ptr = std::make_shared<sick::data_processing::ParseOrderNumber>();
 }
 
 bool OrderNumberVariableCommand::canBeExecutedWithoutSessionID() const
@@ -60,10 +59,7 @@ bool OrderNumberVariableCommand::processReply()
     return false;
   }
 
-  m_order_number_parser_ptr->parseTCPSequence(getDataVector(), m_order_number);
-
-
-  return true;
+  return sick::data_processing::ParseOrderNumber::parseTCPSequence(getDataVector(), m_order_number);
 }
 
 

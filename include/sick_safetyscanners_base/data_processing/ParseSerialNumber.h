@@ -53,12 +53,13 @@ namespace data_processing {
  */
 class ParseSerialNumber
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseSerialNumber();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the serial number of the sensor.
    *
@@ -67,10 +68,10 @@ public:
    *
    * \returns If parsing the serial number was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::SerialNumber& serial_number) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               datastructure::SerialNumber& serial_number);
 
-  std::string readSerialNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
+  static std::string readSerialNumber(std::vector<uint8_t>::const_iterator data_ptr);
 };
 
 } // namespace data_processing

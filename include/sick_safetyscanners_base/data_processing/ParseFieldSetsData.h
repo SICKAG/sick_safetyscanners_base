@@ -51,12 +51,13 @@ namespace data_processing {
  */
 class ParseFieldSetsData
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseFieldSetsData();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the field sets of the sensor.
    *
@@ -65,21 +66,21 @@ public:
    *
    * \returns If parsing was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::FieldSets& field_sets) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               datastructure::FieldSets& field_sets);
 
 private:
-  std::string readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readArrayLength(std::vector<uint8_t>::const_iterator data_ptr) const;
-  std::vector<uint32_t> readNameLength(std::vector<uint8_t>::const_iterator data_ptr,
-                                       uint32_t array_length) const;
-  std::vector<std::string> readFieldName(std::vector<uint8_t>::const_iterator data_ptr,
-                                         uint32_t array_length) const;
-  std::vector<bool> readIsDefined(std::vector<uint8_t>::const_iterator data_ptr,
-                                  uint32_t array_length) const;
+  static std::string readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readArrayLength(std::vector<uint8_t>::const_iterator data_ptr);
+  static std::vector<uint32_t> readNameLength(std::vector<uint8_t>::const_iterator data_ptr,
+                                              uint32_t array_length);
+  static std::vector<std::string> readFieldName(std::vector<uint8_t>::const_iterator data_ptr,
+                                                uint32_t array_length);
+  static std::vector<bool> readIsDefined(std::vector<uint8_t>::const_iterator data_ptr,
+                                         uint32_t array_length);
 };
 
 } // namespace data_processing

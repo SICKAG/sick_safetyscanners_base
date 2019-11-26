@@ -39,7 +39,7 @@ namespace datastructure {
 
 ProjectName::ProjectName() {}
 
-std::string ProjectName::getProjectName() const
+const std::string& ProjectName::getProjectName() const
 {
   return m_project_name;
 }

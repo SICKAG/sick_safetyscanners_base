@@ -45,7 +45,6 @@ UserNameVariableCommand::UserNameVariableCommand(Cola2Session& session,
   : VariableCommand(session, 35)
   , m_user_name(user_name)
 {
-  m_user_name_parser_ptr = std::make_shared<sick::data_processing::ParseUserNameData>();
 }
 
 bool UserNameVariableCommand::canBeExecutedWithoutSessionID() const
@@ -59,8 +58,8 @@ bool UserNameVariableCommand::processReply()
   {
     return false;
   }
-  m_user_name_parser_ptr->parseTCPSequence(getDataVector(), m_user_name);
-  return true;
+
+  return sick::data_processing::ParseUserNameData::parseTCPSequence(getDataVector(), m_user_name);
 }
 
 

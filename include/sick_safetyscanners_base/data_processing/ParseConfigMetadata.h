@@ -51,12 +51,13 @@ namespace data_processing {
  */
 class ParseConfigMetadata
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseConfigMetadata();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the type code of the sensor.
    *
@@ -65,21 +66,21 @@ public:
    *
    * \returns If parsing was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::ConfigMetadata& config_metadata) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               datastructure::ConfigMetadata& config_metadata);
 
 private:
-  std::string readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readModificationTimeDate(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readModificationTimeTime(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readTransferTimeDate(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readTransferTimeTime(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readAppChecksum(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readOverallChecksum(std::vector<uint8_t>::const_iterator data_ptr) const;
-  std::vector<uint32_t> readIntegrityHash(std::vector<uint8_t>::const_iterator data_ptr) const;
+  static std::string readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readModificationTimeDate(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readModificationTimeTime(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readTransferTimeDate(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readTransferTimeTime(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readAppChecksum(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readOverallChecksum(std::vector<uint8_t>::const_iterator data_ptr);
+  static std::vector<uint32_t> readIntegrityHash(std::vector<uint8_t>::const_iterator data_ptr);
 };
 
 } // namespace data_processing

@@ -66,13 +66,13 @@ public:
    * \param is_valid if the field data is valid.
    */
   void setIsValid(bool is_valid);
-  ;
+
   /*!
    * \brief Gets the version indicator for the scanner.
    *
    * \returns The version indicator for the scanner.
    */
-  std::string getVersionCVersion() const;
+  const std::string& getVersionCVersion() const;
   /*!
    * \brief Sets the version indicator for the scanner.
    *
@@ -132,7 +132,6 @@ public:
    * \param is_defined if the field data is defined.
    */
   void setIsDefined(bool is_defined);
-  ;
 
   /*!
    * \brief Returns the configured eval method.
@@ -161,7 +160,6 @@ public:
    * \param multi_sampling The configured multiple sampling.
    */
   void setMultiSampling(const uint16_t& multi_sampling);
-  ;
 
   /*!
    * \brief Returns the configured object resolution.
@@ -176,7 +174,7 @@ public:
    * \param object_resolution The configured object resolution.
    */
   void setObjectResolution(const uint16_t& object_resolution);
-  ;
+
   /*!
    * \brief Returns the index of the field set the field belongs to.
    *
@@ -207,7 +205,7 @@ public:
    *
    * \returns The current field name.
    */
-  std::string getFieldName() const;
+  const std::string& getFieldName() const;
   /*!
    * \brief Sets the field name.
    *
@@ -248,7 +246,7 @@ public:
    *
    * \returns Vector with beam distances.
    */
-  std::vector<uint16_t> getBeamDistances() const;
+  const std::vector<uint16_t>& getBeamDistances() const;
 
   /*!
    * \brief Sets vector with beam distances for field.

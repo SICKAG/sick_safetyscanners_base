@@ -32,445 +32,696 @@
  */
 //----------------------------------------------------------------------
 
+#include <sick_safetyscanners_base/logging/logging_wrapper.h>
 
 #include "sick_safetyscanners_base/SickSafetyscannersBase.h"
 
 namespace sick {
 
+
+namespace detail
+{
+  typedef std::shared_ptr<sick::cola2::Cola2Session> Cola2SessionPtr;
+  typedef std::function<void(const boost::system::error_code&, Cola2SessionPtr )> CompleteHandler;
+  typedef std::function<void(const boost::system::error_code&)> AsyncCompleteHandler;
+
+  /**
+   * @brief openCola2Session
+   *
+   * @note The given handler will not be called from within this method
+   *
+   * @param ios
+   * @param settings
+   * @param handler The handler that should be called if the session is opened or an error occured
+   */
+  void openCola2Session(boost::asio::io_service& ios,
+                        const sick::datastructure::CommSettings& settings,
+                        CompleteHandler handler)
+  {
+    std::shared_ptr<sick::communication::AsyncTCPClient> async_tcp_client =
+      std::make_shared<sick::communication::AsyncTCPClient>(
+        ios,
+        settings.getSensorIp(),
+        settings.getSensorTcpPort());
+
+    async_tcp_client->doConnect( [async_tcp_client, handler]( boost::system::error_code ec ) {
+      if ( !ec )
+      {
+        Cola2SessionPtr session = std::make_shared<sick::cola2::Cola2Session>(async_tcp_client);
+        session->open( std::bind(handler, std::placeholders::_1, session) );
+      }
+      else
+      {
+        handler( ec, Cola2SessionPtr() );
+      }
+    });
+  }
+
+  template< typename U, typename T >
+  void processCola2Command(boost::asio::io_service& ios,
+                           const datastructure::CommSettings& settings,
+                           std::reference_wrapper<T> command,
+                           AsyncCompleteHandler handler)
+  {
+    openCola2Session(ios, settings, [command, handler](const boost::system::error_code& ec, Cola2SessionPtr session) {
+      // if there is no error -> create Cola2 Command and execute it
+      if ( !ec )
+      {
+        sick::cola2::Cola2Session::CommandPtr command_ptr = std::make_shared<U>(*session, command);
+
+        session->executeCommand(command_ptr, [session, handler](const boost::system::error_code& ec) {
+          AsyncCompleteHandler nextHandler = handler;
+
+          // if there is an error -> we call the handler and reset it because we always want to close the session
+          // but we cannot call the given handler multiple times.
+          if (ec)
+          {
+            nextHandler( ec );
+            nextHandler = AsyncCompleteHandler();
+          }
+
+          session->close([session, nextHandler](const boost::system::error_code& ec) {
+            session->doDisconnect();  // we always want to disconnect the session/tcp socket
+
+            // it the handler was not already called -> we call it with the given error_code
+            if (nextHandler)
+            {
+              nextHandler( ec );
+            }
+          });
+        });
+      }
+      // if there is an error -> call handler with error code
+      else
+      {
+        handler(ec);
+      }
+    });
+  }
+
+
+  void requestNextFieldData(int index,
+                            Cola2SessionPtr session,
+                            std::shared_ptr<sick::datastructure::ConfigData> config_data,
+                            std::reference_wrapper< std::vector<sick::datastructure::FieldData> > fields,
+                            AsyncCompleteHandler handler )
+  {
+
+    std::shared_ptr< sick::datastructure::FieldData > field_data = std::make_shared<sick::datastructure::FieldData>() ;
+    sick::cola2::Cola2Session::CommandPtr command_ptr = std::make_shared<sick::cola2::FieldHeaderVariableCommand>(*session,
+                                                                                                                  *field_data,
+                                                                                                                  index );
+
+    session->executeCommand(command_ptr, [index, session, config_data, fields, field_data, handler](const boost::system::error_code& ec) {
+      if ( !ec )
+      {
+        sick::cola2::Cola2Session::CommandPtr command2_ptr = std::make_shared<sick::cola2::FieldGeometryVariableCommand>(*session,
+                                                                                                                         *field_data,
+                                                                                                                          index );
+
+        session->executeCommand(command2_ptr, [index, session, config_data, fields, field_data, handler](const boost::system::error_code& ec) {
+          if ( !ec )
+          {
+            if (field_data->getIsValid())
+            {
+              field_data->setStartAngleDegrees(config_data->getDerivedStartAngle());
+              field_data->setAngularBeamResolutionDegrees(config_data->getDerivedAngularBeamResolution());
+              fields.get().push_back( *field_data );
+            }
+
+            if ( index < 128 )
+            {
+              requestNextFieldData( index+1, session, config_data, fields, handler );
+            }
+          }
+          else
+          {
+            handler( ec );
+          }
+        });
+      }
+      else
+      {
+        handler( ec );
+      }
+    });
+  }
+
+
+  void requestFieldData(Cola2SessionPtr session,
+                        std::reference_wrapper< std::vector<sick::datastructure::FieldData> > fields,
+                        AsyncCompleteHandler handler)
+  {
+    std::shared_ptr<sick::datastructure::ConfigData> config_data = std::make_shared<sick::datastructure::ConfigData>();
+    sick::cola2::Cola2Session::CommandPtr command_ptr = std::make_shared<sick::cola2::MeasurementCurrentConfigVariableCommand>(*session,
+                                                                                                                               *config_data);
+
+    session->executeCommand(command_ptr, [session, fields, config_data, handler](const boost::system::error_code& ec) {
+      if ( !ec )
+      {
+        detail::requestNextFieldData( 0, session, config_data, fields, handler);
+      }
+      else
+      {
+        handler(ec);
+      }
+    });
+  }
+
+
+  void requestNextMonitoringCase( int index,
+                                  Cola2SessionPtr session,
+                                  std::reference_wrapper< std::vector<sick::datastructure::MonitoringCaseData> > monitoring_cases,
+                                  AsyncCompleteHandler handler )
+  {
+    std::shared_ptr< sick::datastructure::MonitoringCaseData > monitoring_case_data = std::make_shared<sick::datastructure::MonitoringCaseData>() ;
+    sick::cola2::Cola2Session::CommandPtr command_ptr = std::make_shared<sick::cola2::MonitoringCaseVariableCommand>(*session,
+                                                                                                                     *monitoring_case_data,
+                                                                                                                     index );
+
+    session->executeCommand(command_ptr, [session, index, monitoring_cases, monitoring_case_data, handler](const boost::system::error_code& ec) {
+      if ( !ec )
+      {
+        if (monitoring_case_data->getIsValid())
+        {
+          monitoring_cases.get().push_back( *monitoring_case_data );
+        }
+
+        if ( index < 254 )
+        {
+          requestNextMonitoringCase( index+1, session, monitoring_cases, handler );
+        }
+      }
+      else
+      {
+        handler( ec );
+      }
+    });
+  }
+}
+
+
+
+
 SickSafetyscannersBase::SickSafetyscannersBase(
-  const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction,
-  sick::datastructure::CommSettings* settings)
+  const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction)
   : m_newPacketReceivedCallbackFunction(newPacketReceivedCallbackFunction)
+  , m_io_service_ptr ( std::make_shared<boost::asio::io_service>() )
+  , m_io_service ( *m_io_service_ptr )
 {
   ROS_INFO("Starting SickSafetyscannersBase");
-  m_io_service_ptr       = std::make_shared<boost::asio::io_service>();
+
   m_async_udp_client_ptr = std::make_shared<sick::communication::AsyncUDPClient>(
     boost::bind(&SickSafetyscannersBase::processUDPPacket, this, _1),
-    boost::ref(*m_io_service_ptr),
-    settings->getHostUdpPort());
-  settings->setHostUdpPort(
-    m_async_udp_client_ptr
-      ->getLocalPort()); // Store which port was used, needed for data request from the laser
+    m_io_service);
+
   m_packet_merger_ptr = std::make_shared<sick::data_processing::UDPPacketMerger>();
+
+  ROS_INFO("Started SickSafetyscannersBase");
+}
+
+
+SickSafetyscannersBase::SickSafetyscannersBase(
+    boost::asio::io_service& io_service,
+    const packetReceivedCallbackFunction& newPacketReceivedCallbackFunction)
+  : m_newPacketReceivedCallbackFunction(newPacketReceivedCallbackFunction)
+  , m_io_service( io_service )
+{
+  ROS_INFO("Starting SickSafetyscannersBase");
+
+  m_async_udp_client_ptr = std::make_shared<sick::communication::AsyncUDPClient>(
+    boost::bind(&SickSafetyscannersBase::processUDPPacket, this, _1),
+    m_io_service);
+
+  m_packet_merger_ptr = std::make_shared<sick::data_processing::UDPPacketMerger>();
+
   ROS_INFO("Started SickSafetyscannersBase");
 }
 
 SickSafetyscannersBase::~SickSafetyscannersBase()
 {
-  m_io_service_ptr->stop();
-  m_udp_client_thread_ptr->join();
-  m_udp_client_thread_ptr.reset();
+  stop();
 }
 
-bool SickSafetyscannersBase::run()
+boost::system::error_code SickSafetyscannersBase::start(const sick::datastructure::CommSettings& settings)
 {
-  m_udp_client_thread_ptr.reset(
-    new boost::thread(boost::bind(&SickSafetyscannersBase::udpClientThread, this)));
+  // if we have an internal io_service -> create a thread and run the io_service
+  if ( m_io_service_ptr )
+  {
+    m_udp_client_thread_ptr.reset(
+      new boost::thread(boost::bind(&SickSafetyscannersBase::udpClientThread, this)));
+  }
 
-  m_async_udp_client_ptr->runService();
-  return true;
+  const boost::system::error_code ec = m_async_udp_client_ptr->open( settings.getHostUdpPort() );
+
+  if ( !ec )
+  {
+    m_async_udp_client_ptr->start();
+  }
+
+  return ec;
+}
+
+void SickSafetyscannersBase::stop()
+{
+  m_async_udp_client_ptr->stop();
+
+  if ( m_io_service_ptr )
+  {
+    m_io_service_ptr->stop();
+    m_udp_client_thread_ptr->join();
+    m_udp_client_thread_ptr.reset();
+  }
+}
+
+SickSafetyscannersBase::endpoint_type SickSafetyscannersBase::getLocalUdpEndpoint() const
+{
+  return m_async_udp_client_ptr->getLocalEndpoint();
 }
 
 bool SickSafetyscannersBase::udpClientThread()
 {
   ROS_INFO("Enter io thread");
-  m_io_work_ptr = std::make_shared<boost::asio::io_service::work>(boost::ref(*m_io_service_ptr));
-  m_io_service_ptr->run();
+
+  // reset the io_service so that it can be used again
+  m_io_service.get().reset();
+
+  std::shared_ptr<boost::asio::io_service::work> io_work_ptr = std::make_shared<boost::asio::io_service::work>( m_io_service );
+  m_io_service.get().run();
+
   ROS_INFO("Exit io thread");
+
   return true;
-}
-
-
-void SickSafetyscannersBase::processTCPPacket(const sick::datastructure::PacketBuffer& buffer)
-{
-  // Not needed for current functionality, inplace for possible future developments
 }
 
 void SickSafetyscannersBase::changeSensorSettings(const datastructure::CommSettings& settings)
 {
-  startTCPConnection(settings);
-  changeCommSettingsInColaSession(settings);
-  stopTCPConnection();
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncChangeSensorSettings(settings, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
+}
+
+void SickSafetyscannersBase::asyncChangeSensorSettings(const sick::datastructure::CommSettings& settings,
+                                                       AsyncCompleteHandler handler )
+{
+  // we must save the settings in a shared object, because we must gurantee that the value stays valid until the given handler is called
+  std::shared_ptr< sick::datastructure::CommSettings > shared_settings = std::make_shared< sick::datastructure::CommSettings >( settings );
+
+  detail::processCola2Command<sick::cola2::ChangeCommSettingsCommand>(m_io_service, settings,
+                                                                      std::ref(*shared_settings),
+                                                                      [shared_settings, handler](const boost::system::error_code& ec) {
+                                                                         handler( ec );
+                                                                      });
 }
 
 void SickSafetyscannersBase::findSensor(const datastructure::CommSettings& settings,
                                         uint16_t blink_time)
 {
-  startTCPConnection(settings);
-  findSensorInColaSession(blink_time);
-  stopTCPConnection();
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncFindSensor(settings, blink_time, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
+}
+
+void SickSafetyscannersBase::asyncFindSensor(const datastructure::CommSettings& settings,
+                                             uint16_t blink_time,
+                                             AsyncCompleteHandler handler)
+{
+  // we must save the blink_time in a shared object, because we must gurantee that the value stays valid until the given handler is called
+  std::shared_ptr< uint16_t > shared_blink_time = std::make_shared< uint16_t >( blink_time );
+
+  detail::processCola2Command<sick::cola2::FindMeCommand>(m_io_service, settings,
+                                                          std::ref(*shared_blink_time),
+                                                          [shared_blink_time, handler](const boost::system::error_code& ec) {
+                                                             handler( ec );
+                                                          });
 }
 
 void SickSafetyscannersBase::requestTypeCode(const datastructure::CommSettings& settings,
                                              sick::datastructure::TypeCode& type_code)
-{
-  startTCPConnection(settings);
-  requestTypeCodeInColaSession(type_code);
-  stopTCPConnection();
+{ 
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestTypeCode(settings, type_code, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
+
+  ROS_INFO("Type Code: %s", type_code.getTypeCode().c_str());
 }
 
-void SickSafetyscannersBase::requestApplicationName(
-  const datastructure::CommSettings& settings,
-  sick::datastructure::ApplicationName& application_name)
+void SickSafetyscannersBase::asyncRequestTypeCode(const sick::datastructure::CommSettings& settings,
+                                                  sick::datastructure::TypeCode& type_code,
+                                                  AsyncCompleteHandler handler)
 {
-  startTCPConnection(settings);
-  requestApplicationNameInColaSession(application_name);
-  stopTCPConnection();
-}
-void SickSafetyscannersBase::requestFieldData(
-  const datastructure::CommSettings& settings,
-  std::vector<sick::datastructure::FieldData>& field_data)
-{
-  startTCPConnection(settings);
-  requestFieldDataInColaSession(field_data);
-  stopTCPConnection();
+  detail::processCola2Command<sick::cola2::TypeCodeVariableCommand>( m_io_service, settings, std::ref(type_code), handler );
 }
 
-void SickSafetyscannersBase::requestMonitoringCases(
-  const datastructure::CommSettings& settings,
-  std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases)
+void SickSafetyscannersBase::requestApplicationName(const datastructure::CommSettings& settings,
+                                                    sick::datastructure::ApplicationName& application_name)
 {
-  startTCPConnection(settings);
-  requestMonitoringCaseDataInColaSession(monitoring_cases);
-  stopTCPConnection();
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestApplicationName(settings, application_name, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
+
+  ROS_INFO("Application name: %s", application_name.getApplicationName().c_str());
 }
 
-void SickSafetyscannersBase::requestDeviceName(const datastructure::CommSettings& settings,
-                                               datastructure::DeviceName& device_name)
+void SickSafetyscannersBase::asyncRequestApplicationName(const sick::datastructure::CommSettings& settings,
+                                                         sick::datastructure::ApplicationName& application_name,
+                                                         AsyncCompleteHandler handler)
 {
-  startTCPConnection(settings);
-  requestDeviceNameInColaSession(device_name);
-  stopTCPConnection();
+  detail::processCola2Command<sick::cola2::ApplicationNameVariableCommand>( m_io_service, settings, std::ref(application_name), handler );
 }
 
 void SickSafetyscannersBase::requestSerialNumber(const datastructure::CommSettings& settings,
                                                  datastructure::SerialNumber& serial_number)
 {
-  startTCPConnection(settings);
-  requestSerialNumberInColaSession(serial_number);
-  stopTCPConnection();
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestSerialNumber(settings, serial_number, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
+
+  ROS_INFO("Serial Number: %s", serial_number.getSerialNumber().c_str());
+}
+
+void SickSafetyscannersBase::asyncRequestSerialNumber(const sick::datastructure::CommSettings& settings,
+                                                      sick::datastructure::SerialNumber& serial_number,
+                                                      AsyncCompleteHandler handler)
+{
+  detail::processCola2Command<sick::cola2::SerialNumberVariableCommand>( m_io_service, settings, std::ref(serial_number), handler );
+}
+
+void SickSafetyscannersBase::requestFirmwareVersion(const datastructure::CommSettings& settings,
+                                                    datastructure::FirmwareVersion& firmware_version)
+{
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestFirmwareVersion(settings, firmware_version, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
+
+  ROS_INFO("Firmware Version: %s", firmware_version.getFirmwareVersion().c_str());
+}
+
+void SickSafetyscannersBase::asyncRequestFirmwareVersion(const sick::datastructure::CommSettings& settings,
+                                                         sick::datastructure::FirmwareVersion& firmware_version,
+                                                         AsyncCompleteHandler handler)
+{
+  detail::processCola2Command<sick::cola2::FirmwareVersionVariableCommand>( m_io_service, settings, std::ref(firmware_version), handler );
 }
 
 void SickSafetyscannersBase::requestOrderNumber(const datastructure::CommSettings& settings,
                                                 datastructure::OrderNumber& order_number)
 {
-  startTCPConnection(settings);
-  requestOrderNumberInColaSession(order_number);
-  stopTCPConnection();
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestOrderNumber(settings, order_number, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
+
+  ROS_INFO("Order Number: %s", order_number.getOrderNumber().c_str());
+}
+
+void SickSafetyscannersBase::asyncRequestOrderNumber(const datastructure::CommSettings& settings,
+                                                     datastructure::OrderNumber& order_number,
+                                                     AsyncCompleteHandler handler)
+{
+  detail::processCola2Command<sick::cola2::OrderNumberVariableCommand>( m_io_service, settings, std::ref(order_number), handler );
 }
 
 void SickSafetyscannersBase::requestProjectName(const datastructure::CommSettings& settings,
                                                 datastructure::ProjectName& project_name)
 {
-  startTCPConnection(settings);
-  requestProjectNameInColaSession(project_name);
-  stopTCPConnection();
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestProjectName(settings, project_name, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
+
+  ROS_INFO("Project Name: %s", project_name.getProjectName().c_str());
+}
+
+void SickSafetyscannersBase::asyncRequestProjectName(const datastructure::CommSettings& settings,
+                                                     datastructure::ProjectName& project_name,
+                                                     AsyncCompleteHandler handler)
+{
+  detail::processCola2Command<sick::cola2::ProjectNameVariableCommand>( m_io_service, settings, std::ref(project_name), handler );
 }
 
 void SickSafetyscannersBase::requestUserName(const datastructure::CommSettings& settings,
                                              datastructure::UserName& user_name)
 {
-  startTCPConnection(settings);
-  requestUserNameInColaSession(user_name);
-  stopTCPConnection();
-}
-void SickSafetyscannersBase::requestFirmwareVersion(
-  const datastructure::CommSettings& settings, datastructure::FirmwareVersion& firmware_version)
-{
-  startTCPConnection(settings);
-  requestFirmwareVersionInColaSession(firmware_version);
-  stopTCPConnection();
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestUserName(settings, user_name, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
+
+  ROS_INFO("User Name: %s", user_name.getUserName().c_str());
 }
 
-void SickSafetyscannersBase::requestPersistentConfig(const datastructure::CommSettings& settings,
-                                                     sick::datastructure::ConfigData& config_data)
+void SickSafetyscannersBase::asyncRequestUserName(const datastructure::CommSettings& settings,
+                                                  datastructure::UserName& user_name,
+                                                  AsyncCompleteHandler handler)
 {
-  startTCPConnection(settings);
-  requestPersistentConfigInColaSession(config_data);
-  stopTCPConnection();
+  detail::processCola2Command<sick::cola2::UserNameVariableCommand>( m_io_service, settings, std::ref(user_name), handler );
 }
 
-void SickSafetyscannersBase::requestConfigMetadata(
-  const datastructure::CommSettings& settings, sick::datastructure::ConfigMetadata& config_metadata)
+void SickSafetyscannersBase::requestConfigMetadata(const datastructure::CommSettings& settings,
+                                                   sick::datastructure::ConfigMetadata& config_metadata)
 {
-  startTCPConnection(settings);
-  requestConfigMetadataInColaSession(config_metadata);
-  stopTCPConnection();
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestConfigMetadata(settings, config_metadata, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
 }
 
-void SickSafetyscannersBase::requestStatusOverview(
-  const datastructure::CommSettings& settings, sick::datastructure::StatusOverview& status_overview)
+void SickSafetyscannersBase::asyncRequestConfigMetadata(const datastructure::CommSettings& settings,
+                                                        datastructure::ConfigMetadata& config_metadata,
+                                                        AsyncCompleteHandler handler)
 {
-  startTCPConnection(settings);
-  requestStatusOverviewInColaSession(status_overview);
-  stopTCPConnection();
+  detail::processCola2Command<sick::cola2::ConfigMetadataVariableCommand>( m_io_service, settings, std::ref(config_metadata), handler );
+}
+
+void SickSafetyscannersBase::requestStatusOverview(const datastructure::CommSettings& settings,
+                                                   sick::datastructure::StatusOverview& status_overview)
+{
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestStatusOverview(settings, status_overview, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
+}
+
+void SickSafetyscannersBase::asyncRequestStatusOverview(const datastructure::CommSettings& settings,
+                                                        datastructure::StatusOverview& status_overview,
+                                                        AsyncCompleteHandler handler)
+{
+  detail::processCola2Command<sick::cola2::StatusOverviewVariableCommand>( m_io_service, settings, std::ref(status_overview), handler );
 }
 
 void SickSafetyscannersBase::requestDeviceStatus(const datastructure::CommSettings& settings,
                                                  sick::datastructure::DeviceStatus& device_status)
 {
-  startTCPConnection(settings);
-  requestDeviceStatusInColaSession(device_status);
-  stopTCPConnection();
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestDeviceStatus(settings, device_status, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
 }
 
-void SickSafetyscannersBase::requestLatestTelegram(const datastructure::CommSettings& settings,
-                                                   sick::datastructure::Data& data,
-                                                   int8_t index)
+void SickSafetyscannersBase::asyncRequestDeviceStatus(const datastructure::CommSettings& settings,
+                                                      datastructure::DeviceStatus& device_status,
+                                                      AsyncCompleteHandler handler)
 {
-  startTCPConnection(settings);
-  requestLatestTelegramInColaSession(data, index);
-  stopTCPConnection();
+  detail::processCola2Command<sick::cola2::DeviceStatusVariableCommand>( m_io_service, settings, std::ref(device_status), handler );
 }
 
-void SickSafetyscannersBase::requestRequiredUserAction(
-  const datastructure::CommSettings& settings,
-  sick::datastructure::RequiredUserAction& required_user_action)
+void SickSafetyscannersBase::requestRequiredUserAction(const datastructure::CommSettings& settings,
+                                                       sick::datastructure::RequiredUserAction& required_user_action)
 {
-  startTCPConnection(settings);
-  requestRequiredUserActionInColaSession(required_user_action);
-  stopTCPConnection();
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestRequiredUserAction(settings, required_user_action, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
 }
 
-void SickSafetyscannersBase::startTCPConnection(const sick::datastructure::CommSettings& settings)
+void SickSafetyscannersBase::asyncRequestRequiredUserAction(const datastructure::CommSettings& settings,
+                                                            datastructure::RequiredUserAction& required_user_action,
+                                                            AsyncCompleteHandler handler)
 {
-  std::shared_ptr<sick::communication::AsyncTCPClient> async_tcp_client =
-    std::make_shared<sick::communication::AsyncTCPClient>(
-      boost::bind(&SickSafetyscannersBase::processTCPPacket, this, _1),
-      boost::ref(*m_io_service_ptr),
-      settings.getSensorIp(),
-      settings.getSensorTcpPort());
-  async_tcp_client->doConnect();
-
-  m_session_ptr.reset();
-  m_session_ptr = std::make_shared<sick::cola2::Cola2Session>(async_tcp_client);
-
-  m_session_ptr->open();
+  detail::processCola2Command<sick::cola2::RequiredUserActionVariableCommand>( m_io_service, settings, std::ref(required_user_action), handler );
 }
 
-void SickSafetyscannersBase::changeCommSettingsInColaSession(
-  const datastructure::CommSettings& settings)
+void SickSafetyscannersBase::requestDeviceName(const datastructure::CommSettings& settings,
+                                               datastructure::DeviceName& device_name)
 {
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::ChangeCommSettingsCommand>(boost::ref(*m_session_ptr), settings);
-  m_session_ptr->executeCommand(command_ptr);
-}
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
 
-void SickSafetyscannersBase::requestFieldDataInColaSession(
-  std::vector<sick::datastructure::FieldData>& fields)
-{
-  sick::datastructure::ConfigData config_data;
+  asyncRequestDeviceName(settings, device_name, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
 
-  /*sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::MeasurementPersistentConfigVariableCommand>(
-      boost::ref(*m_session_ptr), pers_config_data);
-  m_session_ptr->executeCommand(command_ptr);
-*/
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::MeasurementCurrentConfigVariableCommand>(
-      boost::ref(*m_session_ptr), config_data);
-  m_session_ptr->executeCommand(command_ptr);
-  /*
-    command_ptr = std::make_shared<sick::cola2::MonitoringCaseTableHeaderVariableCommand>(
-      boost::ref(*m_session_ptr), common_field_data);
-    m_session_ptr->executeCommand(command_ptr);
-  */
-  for (int i = 0; i < 128; i++)
-  {
-    sick::datastructure::FieldData field_data;
+  promise->get_future().wait();
 
-    command_ptr = std::make_shared<sick::cola2::FieldHeaderVariableCommand>(
-      boost::ref(*m_session_ptr), field_data, i);
-    m_session_ptr->executeCommand(command_ptr);
-
-    if (field_data.getIsValid())
-    {
-      command_ptr = std::make_shared<sick::cola2::FieldGeometryVariableCommand>(
-        boost::ref(*m_session_ptr), field_data, i);
-      m_session_ptr->executeCommand(command_ptr);
-
-      field_data.setStartAngleDegrees(config_data.getDerivedStartAngle());
-      field_data.setAngularBeamResolutionDegrees(config_data.getDerivedAngularBeamResolution());
-
-      fields.push_back(field_data);
-    }
-    else if (i > 0) // index 0 is reserved for contour data
-    {
-      break; // skip other requests after first invalid
-    }
-  }
-}
-
-void SickSafetyscannersBase::requestMonitoringCaseDataInColaSession(
-  std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases)
-{
-  sick::cola2::Cola2Session::CommandPtr command_ptr;
-  for (int i = 0; i < 254; i++)
-  {
-    sick::datastructure::MonitoringCaseData monitoring_case_data;
-
-    command_ptr = std::make_shared<sick::cola2::MonitoringCaseVariableCommand>(
-      boost::ref(*m_session_ptr), monitoring_case_data, i);
-    m_session_ptr->executeCommand(command_ptr);
-    if (monitoring_case_data.getIsValid())
-    {
-      monitoring_cases.push_back(monitoring_case_data);
-    }
-    else
-    {
-      break; // skip other requests after first invalid
-    }
-  }
-}
-
-void SickSafetyscannersBase::findSensorInColaSession(uint16_t blink_time)
-{
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::FindMeCommand>(boost::ref(*m_session_ptr), blink_time);
-  m_session_ptr->executeCommand(command_ptr);
-}
-
-void SickSafetyscannersBase::requestDeviceNameInColaSession(datastructure::DeviceName& device_name)
-{
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::DeviceNameVariableCommand>(boost::ref(*m_session_ptr),
-                                                             device_name);
-  m_session_ptr->executeCommand(command_ptr);
   ROS_INFO("Device name: %s", device_name.getDeviceName().c_str());
 }
 
-
-void SickSafetyscannersBase::requestApplicationNameInColaSession(
-  datastructure::ApplicationName& application_name)
+void SickSafetyscannersBase::asyncRequestDeviceName(const sick::datastructure::CommSettings& settings,
+                                                    datastructure::DeviceName& device_name,
+                                                    AsyncCompleteHandler handler)
 {
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::ApplicationNameVariableCommand>(boost::ref(*m_session_ptr),
-                                                                  application_name);
-  m_session_ptr->executeCommand(command_ptr);
-  ROS_INFO("Application name: %s", application_name.getApplicationName().c_str());
+  detail::processCola2Command<sick::cola2::DeviceNameVariableCommand>( m_io_service, settings, std::ref(device_name), handler );
 }
 
-void SickSafetyscannersBase::requestSerialNumberInColaSession(
-  datastructure::SerialNumber& serial_number)
+void SickSafetyscannersBase::requestPersistentConfig(const datastructure::CommSettings& settings,
+                                                     sick::datastructure::ConfigData& config_data)
 {
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::SerialNumberVariableCommand>(boost::ref(*m_session_ptr),
-                                                               serial_number);
-  m_session_ptr->executeCommand(command_ptr);
-  ROS_INFO("Serial Number: %s", serial_number.getSerialNumber().c_str());
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestPersistentConfig(settings, config_data, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
 }
 
-void SickSafetyscannersBase::requestFirmwareVersionInColaSession(
-  datastructure::FirmwareVersion& firmware_version)
+void SickSafetyscannersBase::asyncRequestPersistentConfig(const datastructure::CommSettings& settings,
+                                                          sick::datastructure::ConfigData& config_data,
+                                                          AsyncCompleteHandler handler)
 {
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::FirmwareVersionVariableCommand>(boost::ref(*m_session_ptr),
-                                                                  firmware_version);
-  m_session_ptr->executeCommand(command_ptr);
-  ROS_INFO("Firmware Version: %s", firmware_version.getFirmwareVersion().c_str());
+  detail::processCola2Command<sick::cola2::MeasurementPersistentConfigVariableCommand>( m_io_service, settings, std::ref(config_data), handler );
 }
 
-void SickSafetyscannersBase::requestTypeCodeInColaSession(sick::datastructure::TypeCode& type_code)
+
+
+
+
+void SickSafetyscannersBase::requestFieldData(const datastructure::CommSettings& settings,
+                                              std::vector<sick::datastructure::FieldData>& field_data)
 {
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::TypeCodeVariableCommand>(boost::ref(*m_session_ptr), type_code);
-  m_session_ptr->executeCommand(command_ptr);
-  ROS_INFO("Type Code: %s", type_code.getTypeCode().c_str());
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestFieldData(settings, field_data, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
 }
 
-void SickSafetyscannersBase::requestOrderNumberInColaSession(
-  sick::datastructure::OrderNumber& order_number)
+void SickSafetyscannersBase::asyncRequestFieldData(const sick::datastructure::CommSettings& settings,
+                                                   std::vector<sick::datastructure::FieldData>& field_data,
+                                                   AsyncCompleteHandler handler)
 {
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::OrderNumberVariableCommand>(boost::ref(*m_session_ptr),
-                                                              order_number);
-  m_session_ptr->executeCommand(command_ptr);
-  ROS_INFO("Order Number: %s", order_number.getOrderNumber().c_str());
+  auto fd = std::ref(field_data);
+
+  detail::openCola2Session(m_io_service, settings, [fd, handler](const boost::system::error_code& ec, detail::Cola2SessionPtr session) {
+    if ( ec )
+    {
+      handler( ec );
+      return;
+    }
+
+    detail::requestFieldData( session, fd, [session, handler](const boost::system::error_code& ec) {
+      AsyncCompleteHandler nextHandler = handler;
+      if ( ec )
+      {
+        nextHandler( ec );
+        nextHandler = AsyncCompleteHandler();
+      }
+
+      session->close( [session, nextHandler](const boost::system::error_code& ec) {
+        session->doDisconnect();
+
+        if ( nextHandler )
+        {
+          nextHandler( ec );
+        }
+      });
+    });
+  });
 }
 
-void SickSafetyscannersBase::requestProjectNameInColaSession(
-  sick::datastructure::ProjectName& project_name)
+
+void SickSafetyscannersBase::requestMonitoringCases(const datastructure::CommSettings& settings,
+                                                    std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases)
 {
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::ProjectNameVariableCommand>(boost::ref(*m_session_ptr),
-                                                              project_name);
-  m_session_ptr->executeCommand(command_ptr);
-  ROS_INFO("Project Name: %s", project_name.getProjectName().c_str());
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestMonitoringCases(settings, monitoring_cases, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
 }
 
-void SickSafetyscannersBase::requestUserNameInColaSession(sick::datastructure::UserName& user_name)
-{
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::UserNameVariableCommand>(boost::ref(*m_session_ptr), user_name);
-  m_session_ptr->executeCommand(command_ptr);
-  ROS_INFO("User Name: %s", user_name.getUserName().c_str());
-}
 
-void SickSafetyscannersBase::requestConfigMetadataInColaSession(
-  sick::datastructure::ConfigMetadata& config_metadata)
+void SickSafetyscannersBase::asyncRequestMonitoringCases(const sick::datastructure::CommSettings& settings,
+                                                         std::vector<sick::datastructure::MonitoringCaseData>& monitoring_cases,
+                                                         AsyncCompleteHandler handler)
 {
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::ConfigMetadataVariableCommand>(boost::ref(*m_session_ptr),
-                                                                 config_metadata);
-  m_session_ptr->executeCommand(command_ptr);
-}
+  auto mc = std::ref(monitoring_cases);
 
-void SickSafetyscannersBase::requestStatusOverviewInColaSession(
-  sick::datastructure::StatusOverview& status_overview)
-{
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::StatusOverviewVariableCommand>(boost::ref(*m_session_ptr),
-                                                                 status_overview);
-  m_session_ptr->executeCommand(command_ptr);
-}
+  detail::openCola2Session(m_io_service, settings, [mc, handler](const boost::system::error_code& ec, detail::Cola2SessionPtr session) {
+    if ( ec )
+    {
+      handler( ec );
+      return;
+    }
 
-void SickSafetyscannersBase::requestDeviceStatusInColaSession(
-  sick::datastructure::DeviceStatus& device_status)
-{
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::DeviceStatusVariableCommand>(boost::ref(*m_session_ptr),
-                                                               device_status);
-  m_session_ptr->executeCommand(command_ptr);
-}
+    detail::requestNextMonitoringCase( 0, session, mc, [session, handler](const boost::system::error_code& ec) {
+      AsyncCompleteHandler nextHandler = handler;
+      if ( ec )
+      {
+        nextHandler( ec );
+        nextHandler = AsyncCompleteHandler();
+      }
 
-void SickSafetyscannersBase::requestRequiredUserActionInColaSession(
-  sick::datastructure::RequiredUserAction& required_user_action)
-{
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::RequiredUserActionVariableCommand>(boost::ref(*m_session_ptr),
-                                                                     required_user_action);
-  m_session_ptr->executeCommand(command_ptr);
-}
+      session->close( [session, nextHandler](const boost::system::error_code& ec) {
+        session->doDisconnect();
 
-void SickSafetyscannersBase::requestPersistentConfigInColaSession(
-  sick::datastructure::ConfigData& config_data)
-{
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::MeasurementPersistentConfigVariableCommand>(
-      boost::ref(*m_session_ptr), config_data);
-  m_session_ptr->executeCommand(command_ptr);
+        if ( nextHandler )
+        {
+          nextHandler( ec );
+        }
+      });
+    });
+  });
 }
-
-void SickSafetyscannersBase::requestLatestTelegramInColaSession(sick::datastructure::Data& data,
-                                                                int8_t index)
-{
-  if (index < 0 || index > 3)
-  {
-    ROS_WARN("Index is out of bounds, returning default channel 0");
-    index = 0;
-  }
-  sick::cola2::Cola2Session::CommandPtr command_ptr =
-    std::make_shared<sick::cola2::LatestTelegramVariableCommand>(
-      boost::ref(*m_session_ptr), data, index);
-  m_session_ptr->executeCommand(command_ptr);
-}
-
-void SickSafetyscannersBase::stopTCPConnection()
-{
-  m_session_ptr->close();
-  m_session_ptr->doDisconnect();
-}
-
 
 void SickSafetyscannersBase::processUDPPacket(const sick::datastructure::PacketBuffer& buffer)
 {
@@ -478,8 +729,8 @@ void SickSafetyscannersBase::processUDPPacket(const sick::datastructure::PacketB
   {
     sick::datastructure::PacketBuffer deployed_buffer =
       m_packet_merger_ptr->getDeployedPacketBuffer();
-    sick::data_processing::ParseData data_parser;
-    sick::datastructure::Data data = data_parser.parseUDPSequence(deployed_buffer);
+
+    sick::datastructure::Data data = sick::data_processing::ParseData::parseUDPSequence(deployed_buffer);
 
     m_newPacketReceivedCallbackFunction(data);
   }

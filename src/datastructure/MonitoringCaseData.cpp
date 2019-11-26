@@ -59,7 +59,7 @@ void MonitoringCaseData::setMonitoringCaseNumber(const uint16_t& monitoring_case
   m_monitoring_case_number = monitoring_case_number;
 }
 
-std::vector<uint16_t> MonitoringCaseData::getFieldIndices() const
+const std::vector<uint16_t>& MonitoringCaseData::getFieldIndices() const
 {
   return m_field_indices;
 }
@@ -69,7 +69,7 @@ void MonitoringCaseData::setFieldIndices(const std::vector<uint16_t>& field_indi
   m_field_indices = field_indices;
 }
 
-std::vector<bool> MonitoringCaseData::getFieldsValid() const
+const std::vector<bool>& MonitoringCaseData::getFieldsValid() const
 {
   return m_fields_valid;
 }

@@ -81,9 +81,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseRequiredUserActionData>
-    m_required_user_action_parser_ptr;
-
   sick::datastructure::RequiredUserAction& m_required_user_action;
 };
 

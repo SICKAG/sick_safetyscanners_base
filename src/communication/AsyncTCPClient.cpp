@@ -32,20 +32,17 @@
  */
 //----------------------------------------------------------------------
 
+#include <sick_safetyscanners_base/logging/logging_wrapper.h>
+
 #include <sick_safetyscanners_base/communication/AsyncTCPClient.h>
 
 namespace sick {
 namespace communication {
-AsyncTCPClient::AsyncTCPClient(const PacketHandler& packet_handler,
-                               boost::asio::io_service& io_service,
+AsyncTCPClient::AsyncTCPClient(boost::asio::io_service& io_service,
                                const boost::asio::ip::address_v4& server_ip,
                                const uint16_t& server_port)
-  : m_packet_handler(packet_handler)
-  , m_io_service(io_service)
-
+  : m_io_service(io_service)
 {
-  // Keep io_service busy
-  m_io_work_ptr = std::make_shared<boost::asio::io_service::work>(boost::ref(m_io_service));
   try
   {
     m_socket_ptr = std::make_shared<boost::asio::ip::tcp::socket>(boost::ref(m_io_service));
@@ -54,18 +51,24 @@ AsyncTCPClient::AsyncTCPClient(const PacketHandler& packet_handler,
   {
     ROS_ERROR("Exception while creating socket: %s", e.what());
   }
+
   m_remote_endpoint = boost::asio::ip::tcp::endpoint(server_ip, server_port);
   ROS_INFO("TCP client is setup");
 }
 
 AsyncTCPClient::~AsyncTCPClient() {}
 
-void AsyncTCPClient::doDisconnect()
+void AsyncTCPClient::doConnect( CompleteHandler handler )
+{
+  m_socket_ptr->async_connect(m_remote_endpoint, handler );
+}
+
+boost::system::error_code AsyncTCPClient::doDisconnect()
 {
   boost::mutex::scoped_lock lock(m_socket_mutex);
   boost::system::error_code ec;
   m_socket_ptr->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
-  if (ec != 0)
+  if (ec)
   {
     ROS_ERROR("Error shutting socket down: %i", ec.value());
   }
@@ -75,7 +78,7 @@ void AsyncTCPClient::doDisconnect()
   }
 
   m_socket_ptr->close(ec);
-  if (ec != 0)
+  if (ec)
   {
     ROS_ERROR("Error closing Socket: %i", ec.value());
   }
@@ -83,88 +86,52 @@ void AsyncTCPClient::doDisconnect()
   {
     ROS_INFO("TCP Socket successfully closed.");
   }
+
+  return ec;
 }
 
-void AsyncTCPClient::doConnect()
+void AsyncTCPClient::send(const std::vector<uint8_t>& sendBuffer, CompleteHandler handler)
 {
-  boost::mutex::scoped_lock lock(m_socket_mutex);
-  boost::mutex::scoped_lock lock_connect(m_connect_mutex);
-  m_socket_ptr->async_connect(m_remote_endpoint, [this](boost::system::error_code ec) {
-    if (ec != 0)
-    {
-      ROS_ERROR("TCP error code: %i", ec.value());
-    }
-    else
-    {
-      ROS_INFO("TCP connection successfully established.");
-    }
-    m_connect_condition.notify_all();
-  });
-
-  m_connect_condition.wait(lock_connect);
-}
-
-
-void AsyncTCPClient::doSendAndReceive(const std::vector<uint8_t>& sendBuffer)
-{
-  boost::mutex::scoped_lock lock(m_socket_mutex);
   if (!m_socket_ptr)
   {
+    handler( boost::asio::error::not_connected );
     return;
   }
+
   boost::asio::async_write(*m_socket_ptr,
                            boost::asio::buffer(sendBuffer),
-                           [this](boost::system::error_code ec, std::size_t bytes_send) {
-                             this->handleSendAndReceive(ec, bytes_send);
-                           });
+                           std::bind( handler, std::placeholders::_1 ) );
 }
 
-void AsyncTCPClient::initiateReceive()
+void AsyncTCPClient::readSome( PacketHandler handler )
 {
-  boost::mutex::scoped_lock lock(m_socket_mutex);
   if (!m_socket_ptr)
   {
+    handler( sick::datastructure::PacketBuffer(), boost::asio::error::not_connected );
     return;
   }
+
   m_socket_ptr->async_read_some(boost::asio::buffer(m_recv_buffer),
-                                [this](boost::system::error_code ec, std::size_t bytes_recvd) {
-                                  this->handleReceive(ec, bytes_recvd);
-                                });
+                                std::bind( &AsyncTCPClient::handleReceive,
+                                           this,
+                                           handler,
+                                           std::placeholders::_1, std::placeholders::_2 ) );
 }
 
-void AsyncTCPClient::setPacketHandler(const PacketHandler& packet_handler)
-{
-  m_packet_handler = packet_handler;
-}
-
-void AsyncTCPClient::handleSendAndReceive(const boost::system::error_code& error,
-                                          const std::size_t& bytes_transferred)
-{
-  // Check for errors
-  if (!error || error == boost::asio::error::message_size)
-  {
-    initiateReceive();
-  }
-  else
-  {
-    ROS_ERROR("Error in tcp handle send and receive: %i", error.value());
-  }
-}
-
-
-void AsyncTCPClient::startReceive() {}
-
-void AsyncTCPClient::handleReceive(const boost::system::error_code& error,
+void AsyncTCPClient::handleReceive(PacketHandler handler,
+                                   const boost::system::error_code& error,
                                    const std::size_t& bytes_transferred)
 {
   if (!error)
   {
     sick::datastructure::PacketBuffer packet_buffer(m_recv_buffer, bytes_transferred);
-    m_packet_handler(packet_buffer);
+    handler( packet_buffer, error );
   }
   else
   {
     ROS_ERROR("Error in tcp handle receive: %i", error.value());
+
+    handler( sick::datastructure::PacketBuffer(), error );
   }
 }
 

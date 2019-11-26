@@ -43,7 +43,7 @@ ParseFieldGeometryData::ParseFieldGeometryData() {}
 
 
 bool ParseFieldGeometryData::parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                                              sick::datastructure::FieldData& field_data) const
+                                              sick::datastructure::FieldData& field_data)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -60,13 +60,13 @@ bool ParseFieldGeometryData::parseTCPSequence(const datastructure::PacketBuffer&
 }
 
 uint32_t
-ParseFieldGeometryData::readArrayLength(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseFieldGeometryData::readArrayLength(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 4);
 }
 
 uint16_t ParseFieldGeometryData::readArrayElement(std::vector<uint8_t>::const_iterator data_ptr,
-                                                  uint32_t elem_number) const
+                                                  uint32_t elem_number)
 {
   return read_write_helper::readUint16LittleEndian(data_ptr + 8 + elem_number * 2);
 }

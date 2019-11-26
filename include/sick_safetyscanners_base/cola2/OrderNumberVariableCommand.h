@@ -79,8 +79,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseOrderNumber> m_order_number_parser_ptr;
-
   datastructure::OrderNumber& m_order_number;
 };
 

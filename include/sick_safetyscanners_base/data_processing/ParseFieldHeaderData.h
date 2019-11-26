@@ -51,12 +51,13 @@ namespace data_processing {
  */
 class ParseFieldHeaderData
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseFieldHeaderData();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the header for a warning or protective field.
    *
@@ -65,25 +66,25 @@ public:
    *
    * \returns If parsing was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::FieldData& field_data) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                        datastructure::FieldData& field_data);
 
 private:
-  bool isValid(std::vector<uint8_t>::const_iterator data_ptr) const;
-  void setFieldType(std::vector<uint8_t>::const_iterator data_ptr,
-                    datastructure::FieldData& field_data) const;
-  uint8_t readFieldType(std::vector<uint8_t>::const_iterator data_ptr) const;
-  std::string readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  bool readIsDefined(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readEvalMethod(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readMultiSampling(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readObjectResolution(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readSetIndex(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readNameLength(std::vector<uint8_t>::const_iterator data_ptr) const;
-  std::string readFieldName(std::vector<uint8_t>::const_iterator data_ptr) const;
+  static bool isValid(std::vector<uint8_t>::const_iterator data_ptr);
+  static void setFieldType(std::vector<uint8_t>::const_iterator data_ptr,
+                    datastructure::FieldData& field_data);
+  static uint8_t readFieldType(std::vector<uint8_t>::const_iterator data_ptr);
+  static std::string readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static bool readIsDefined(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readEvalMethod(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readMultiSampling(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readObjectResolution(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readSetIndex(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readNameLength(std::vector<uint8_t>::const_iterator data_ptr);
+  static std::string readFieldName(std::vector<uint8_t>::const_iterator data_ptr);
 };
 
 } // namespace data_processing

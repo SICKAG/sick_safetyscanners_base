@@ -39,7 +39,7 @@ namespace datastructure {
 
 DeviceName::DeviceName() {}
 
-std::string DeviceName::getDeviceName() const
+const std::string& DeviceName::getDeviceName() const
 {
   return m_device_name;
 }

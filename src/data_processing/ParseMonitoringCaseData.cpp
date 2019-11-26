@@ -44,7 +44,7 @@ ParseMonitoringCaseData::ParseMonitoringCaseData() {}
 
 bool ParseMonitoringCaseData::parseTCPSequence(
   const datastructure::PacketBuffer& buffer,
-  sick::datastructure::MonitoringCaseData& monitoring_case_data) const
+  sick::datastructure::MonitoringCaseData& monitoring_case_data)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -68,7 +68,7 @@ bool ParseMonitoringCaseData::parseTCPSequence(
   return true;
 }
 
-bool ParseMonitoringCaseData::isValid(std::vector<uint8_t>::const_iterator data_ptr) const
+bool ParseMonitoringCaseData::isValid(std::vector<uint8_t>::const_iterator data_ptr)
 {
   bool res     = false;
   uint8_t byte = read_write_helper::readUint8(data_ptr + 0);
@@ -80,19 +80,19 @@ bool ParseMonitoringCaseData::isValid(std::vector<uint8_t>::const_iterator data_
 }
 
 uint16_t ParseMonitoringCaseData::readMonitoringCaseNumber(
-  std::vector<uint8_t>::const_iterator data_ptr) const
+  std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint16LittleEndian(data_ptr + 6);
 }
 
 uint16_t ParseMonitoringCaseData::readFieldIndex(std::vector<uint8_t>::const_iterator data_ptr,
-                                                 const uint8_t& index) const
+                                                 const uint8_t& index)
 {
   return read_write_helper::readUint16LittleEndian(data_ptr + 158 + (index * 4));
 }
 
 bool ParseMonitoringCaseData::readFieldValid(std::vector<uint8_t>::const_iterator data_ptr,
-                                             const uint8_t& index) const
+                                             const uint8_t& index)
 {
   uint8_t byte = read_write_helper::readUint8(data_ptr + 157 + (index * 4));
 

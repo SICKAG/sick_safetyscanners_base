@@ -52,12 +52,13 @@ namespace data_processing {
  */
 class ParseMeasurementData
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseMeasurementData();
 
+public:
   /*!
    * \brief Parses the measurement data if it is enabled.
    *
@@ -66,25 +67,27 @@ public:
    *
    * \returns The parsed measurement data.
    */
-  datastructure::MeasurementData parseUDPSequence(const datastructure::PacketBuffer& buffer,
-                                                  datastructure::Data& data);
+  static datastructure::MeasurementData parseUDPSequence(const datastructure::PacketBuffer& buffer,
+                                                         datastructure::Data& data);
 
 private:
-  float m_angle;
-  float m_angle_delta;
-  void setDataInMeasurementData(std::vector<uint8_t>::const_iterator data_ptr,
-                                datastructure::MeasurementData& measurement_data);
-  void setNumberOfBeamsInMeasurementData(std::vector<uint8_t>::const_iterator data_ptr,
-                                         datastructure::MeasurementData& measurement_data) const;
-  void setStartAngleAndDelta(const datastructure::Data& data);
-  void setScanPointsInMeasurementData(std::vector<uint8_t>::const_iterator data_ptr,
-                                      datastructure::MeasurementData& measurement_data);
-  void addScanPointToMeasurementData(uint16_t offset,
-                                     std::vector<uint8_t>::const_iterator data_ptr,
-                                     datastructure::MeasurementData& measurement_data) const;
-  bool checkIfPreconditionsAreMet(const datastructure::Data& data) const;
-  bool checkIfMeasurementDataIsPublished(const datastructure::Data& data) const;
-  bool checkIfDataContainsNeededParsedBlocks(const datastructure::Data& data) const;
+  static void setDataInMeasurementData(const float& angle,
+                                       const float& angle_delta,
+                                       std::vector<uint8_t>::const_iterator data_ptr,
+                                       datastructure::MeasurementData& measurement_data);
+  static void setNumberOfBeamsInMeasurementData(std::vector<uint8_t>::const_iterator data_ptr,
+                                                datastructure::MeasurementData& measurement_data);
+  static void setScanPointsInMeasurementData(const float& angle,
+                                             const float& angle_delta,
+                                             std::vector<uint8_t>::const_iterator data_ptr,
+                                             datastructure::MeasurementData& measurement_data);
+  static void addScanPointToMeasurementData(const uint16_t offset,
+                                            const float& angle,
+                                            std::vector<uint8_t>::const_iterator data_ptr,
+                                            datastructure::MeasurementData& measurement_data);
+  static bool checkIfPreconditionsAreMet(const datastructure::Data& data);
+  static bool checkIfMeasurementDataIsPublished(const datastructure::Data& data);
+  static bool checkIfDataContainsNeededParsedBlocks(const datastructure::Data& data);
 };
 
 } // namespace data_processing

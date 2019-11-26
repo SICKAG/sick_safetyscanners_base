@@ -84,9 +84,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseMeasurementPersistentConfigData>
-    m_measurement_persistent_config_parser_ptr;
-
   sick::datastructure::ConfigData& m_config_data;
 };
 

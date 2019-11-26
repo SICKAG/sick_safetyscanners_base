@@ -82,8 +82,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseData> m_data_parser_ptr;
-
   datastructure::Data& m_data;
 };
 

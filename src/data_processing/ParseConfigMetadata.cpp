@@ -44,7 +44,7 @@ ParseConfigMetadata::ParseConfigMetadata() {}
 
 bool ParseConfigMetadata::parseTCPSequence(
   const datastructure::PacketBuffer& buffer,
-  sick::datastructure::ConfigMetadata& config_metadata) const
+  sick::datastructure::ConfigMetadata& config_metadata)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -64,65 +64,65 @@ bool ParseConfigMetadata::parseTCPSequence(
 }
 
 std::string
-ParseConfigMetadata::readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseConfigMetadata::readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr)
 {
   std::string result;
   result.push_back(read_write_helper::readUint8(data_ptr + 0));
   return result;
 }
 
-uint8_t ParseConfigMetadata::readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseConfigMetadata::readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 1);
 }
 
-uint8_t ParseConfigMetadata::readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseConfigMetadata::readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 2);
 }
 
-uint8_t ParseConfigMetadata::readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+uint8_t ParseConfigMetadata::readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 3);
 }
 
 uint16_t
-ParseConfigMetadata::readModificationTimeDate(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseConfigMetadata::readModificationTimeDate(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint16LittleEndian(data_ptr + 4);
 }
 
 uint32_t
-ParseConfigMetadata::readModificationTimeTime(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseConfigMetadata::readModificationTimeTime(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 8);
 }
 
 uint16_t
-ParseConfigMetadata::readTransferTimeDate(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseConfigMetadata::readTransferTimeDate(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint16LittleEndian(data_ptr + 12);
 }
 
 uint32_t
-ParseConfigMetadata::readTransferTimeTime(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseConfigMetadata::readTransferTimeTime(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 16);
 }
 
-uint32_t ParseConfigMetadata::readAppChecksum(std::vector<uint8_t>::const_iterator data_ptr) const
+uint32_t ParseConfigMetadata::readAppChecksum(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 36);
 }
 
 uint32_t
-ParseConfigMetadata::readOverallChecksum(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseConfigMetadata::readOverallChecksum(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 52);
 }
 
 std::vector<uint32_t>
-ParseConfigMetadata::readIntegrityHash(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseConfigMetadata::readIntegrityHash(std::vector<uint8_t>::const_iterator data_ptr)
 {
   std::vector<uint32_t> result;
   for (uint8_t i = 0; i < 4; i++)

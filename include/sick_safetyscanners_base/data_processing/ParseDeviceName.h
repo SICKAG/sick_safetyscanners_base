@@ -53,12 +53,13 @@ namespace data_processing {
  */
 class ParseDeviceName
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseDeviceName();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the device name of the sensor.
    *
@@ -67,11 +68,11 @@ public:
    *
    * \returns If parsing the device name was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::DeviceName& device_name) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               datastructure::DeviceName& device_name);
 
 private:
-  std::string readDeviceName(std::vector<uint8_t>::const_iterator data_ptr) const;
+  static std::string readDeviceName(std::vector<uint8_t>::const_iterator data_ptr);
 };
 
 } // namespace data_processing

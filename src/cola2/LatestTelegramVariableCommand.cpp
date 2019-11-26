@@ -46,7 +46,6 @@ LatestTelegramVariableCommand::LatestTelegramVariableCommand(Cola2Session& sessi
   : VariableCommand(session, 179 + index)
   , m_data(data)
 {
-  m_data_parser_ptr = std::make_shared<sick::data_processing::ParseData>();
 }
 
 bool LatestTelegramVariableCommand::canBeExecutedWithoutSessionID() const
@@ -61,7 +60,7 @@ bool LatestTelegramVariableCommand::processReply()
     return false;
   }
 
-  m_data_parser_ptr->parseTCPSequence(getDataVector(), m_data);
+  sick::data_processing::ParseData::parseTCPSequence( getDataVector(), m_data );
 
 
   return true;

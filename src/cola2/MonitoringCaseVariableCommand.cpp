@@ -48,7 +48,6 @@ MonitoringCaseVariableCommand::MonitoringCaseVariableCommand(
   : VariableCommand(session, 2101 + index)
   , m_monitoring_case_data(monitoring_case_data)
 {
-  m_monitoring_case_parser_ptr = std::make_shared<sick::data_processing::ParseMonitoringCaseData>();
 }
 
 bool MonitoringCaseVariableCommand::canBeExecutedWithoutSessionID() const
@@ -62,8 +61,8 @@ bool MonitoringCaseVariableCommand::processReply()
   {
     return false;
   }
-  m_monitoring_case_parser_ptr->parseTCPSequence(getDataVector(), m_monitoring_case_data);
-  return true;
+
+  return sick::data_processing::ParseMonitoringCaseData::parseTCPSequence(getDataVector(), m_monitoring_case_data);
 }
 
 

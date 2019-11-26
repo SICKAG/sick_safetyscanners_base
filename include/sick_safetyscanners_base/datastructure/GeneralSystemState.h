@@ -129,7 +129,7 @@ public:
    * \brief Returns the state for all safe cut off paths.
    * \return Vector containing the state of all safe cut off paths.
    */
-  std::vector<bool> getSafeCutOffPathVector() const;
+  const std::vector<bool>& getSafeCutOffPathVector() const;
 
   /*!
    * \brief Sets the state of all safe cut-off paths.
@@ -141,7 +141,7 @@ public:
    * \brief Returns the state of all non-safe cut-off paths.
    * \return  Vector containing the state of all non-safe cut-off paths
    */
-  std::vector<bool> getNonSafeCutOffPathVector() const;
+  const std::vector<bool>& getNonSafeCutOffPathVector() const;
 
   /*!
    * \brief Sets the state of all non-safe cut-off paths.
@@ -153,7 +153,7 @@ public:
    * \brief Returns if a cut-off path has to be reset.
    * \return Vector if a cut-off path has to be reset.
    */
-  std::vector<bool> getResetRequiredCutOffPathVector() const;
+  const std::vector<bool>& getResetRequiredCutOffPathVector() const;
 
   /*!
    * \brief Sets the reset state for all cut-off paths

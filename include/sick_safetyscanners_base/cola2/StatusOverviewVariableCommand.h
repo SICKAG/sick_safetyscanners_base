@@ -81,8 +81,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseStatusOverviewData> m_status_overview_parser_ptr;
-
   sick::datastructure::StatusOverview& m_status_overview;
 };
 

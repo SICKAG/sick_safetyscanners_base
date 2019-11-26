@@ -19,9 +19,12 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 ###########
 ## Build ##
 ###########
+option(WITHOUT_LOGGING "Disable all logging" OFF)
 option(WITHOUT_ROS_LOGGING "Disable ROS Logging and use printf instead" ON)
 
-if(WITHOUT_ROS_LOGGING)
+if(WITHOUT_LOGGING)
+  add_definitions(-DNO_LOGGING=1)
+elseif(WITHOUT_ROS_LOGGING)
   add_definitions(-DNO_ROS_LOGGING=1)
 endif()
 

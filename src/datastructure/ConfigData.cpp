@@ -39,7 +39,7 @@ namespace datastructure {
 
 ConfigData::ConfigData() {}
 
-std::string ConfigData::getVersionCVersion() const
+const std::string& ConfigData::getVersionCVersion() const
 {
   return m_version_c_version;
 }

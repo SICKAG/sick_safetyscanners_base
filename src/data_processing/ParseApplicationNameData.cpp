@@ -44,7 +44,7 @@ ParseApplicationNameData::ParseApplicationNameData() {}
 
 bool ParseApplicationNameData::parseTCPSequence(
   const datastructure::PacketBuffer& buffer,
-  sick::datastructure::ApplicationName& application_name) const
+  sick::datastructure::ApplicationName& application_name)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -59,7 +59,7 @@ bool ParseApplicationNameData::parseTCPSequence(
 }
 
 std::string
-ParseApplicationNameData::readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseApplicationNameData::readVersionIndicator(std::vector<uint8_t>::const_iterator data_ptr)
 {
   std::string result;
   result.push_back(read_write_helper::readUint8(data_ptr + 0));
@@ -67,32 +67,32 @@ ParseApplicationNameData::readVersionIndicator(std::vector<uint8_t>::const_itera
 }
 
 uint8_t
-ParseApplicationNameData::readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseApplicationNameData::readMajorNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 1);
 }
 
 uint8_t
-ParseApplicationNameData::readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseApplicationNameData::readMinorNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 2);
 }
 
 uint8_t
-ParseApplicationNameData::readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseApplicationNameData::readReleaseNumber(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint8(data_ptr + 3);
 }
 
 uint32_t
-ParseApplicationNameData::readNameLength(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseApplicationNameData::readNameLength(std::vector<uint8_t>::const_iterator data_ptr)
 {
   return read_write_helper::readUint32LittleEndian(data_ptr + 4);
 }
 
 
 std::string
-ParseApplicationNameData::readApplicationName(std::vector<uint8_t>::const_iterator data_ptr) const
+ParseApplicationNameData::readApplicationName(std::vector<uint8_t>::const_iterator data_ptr)
 {
   uint32_t name_length = read_write_helper::readUint32LittleEndian(data_ptr + 4);
   std::string name;

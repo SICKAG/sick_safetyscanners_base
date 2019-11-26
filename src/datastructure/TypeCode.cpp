@@ -39,7 +39,7 @@ namespace datastructure {
 
 TypeCode::TypeCode() {}
 
-std::string TypeCode::getTypeCode() const
+const std::string& TypeCode::getTypeCode() const
 {
   return m_type_code;
 }

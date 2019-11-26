@@ -45,7 +45,6 @@ StatusOverviewVariableCommand::StatusOverviewVariableCommand(
   : VariableCommand(session, 23)
   , m_status_overview(status_overview)
 {
-  m_status_overview_parser_ptr = std::make_shared<sick::data_processing::ParseStatusOverviewData>();
 }
 
 bool StatusOverviewVariableCommand::canBeExecutedWithoutSessionID() const
@@ -59,8 +58,8 @@ bool StatusOverviewVariableCommand::processReply()
   {
     return false;
   }
-  m_status_overview_parser_ptr->parseTCPSequence(getDataVector(), m_status_overview);
-  return true;
+
+  return sick::data_processing::ParseStatusOverviewData::parseTCPSequence(getDataVector(), m_status_overview);
 }
 
 

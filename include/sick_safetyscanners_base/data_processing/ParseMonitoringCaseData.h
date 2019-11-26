@@ -53,12 +53,13 @@ namespace data_processing {
  */
 class ParseMonitoringCaseData
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseMonitoringCaseData();
 
+public:
   /*!
    * \brief Parses a tcp sequence and return the monitoring case data.
    *
@@ -67,15 +68,15 @@ public:
    *
    * \returns If parsing the sequence was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::MonitoringCaseData& monitoring_case_data) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               datastructure::MonitoringCaseData& monitoring_case_data);
 
 private:
-  bool isValid(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readMonitoringCaseNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readFieldIndex(std::vector<uint8_t>::const_iterator data_ptr,
-                          const uint8_t& index) const;
-  bool readFieldValid(std::vector<uint8_t>::const_iterator data_ptr, const uint8_t& index) const;
+  static bool isValid(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readMonitoringCaseNumber(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readFieldIndex(std::vector<uint8_t>::const_iterator data_ptr,
+                                 const uint8_t& index);
+  static bool readFieldValid(std::vector<uint8_t>::const_iterator data_ptr, const uint8_t& index);
 };
 
 } // namespace data_processing

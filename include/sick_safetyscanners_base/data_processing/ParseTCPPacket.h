@@ -58,12 +58,13 @@ namespace data_processing {
  */
 class ParseTCPPacket
 {
-public:
+private:
   /*!
    * \brief Constructor of parser.
    */
   ParseTCPPacket();
 
+public:
   /*!
    * \brief Parse the tcp sequence to get the header information of the cola2 protocol.
    *
@@ -72,8 +73,8 @@ public:
    *
    * \returns If parsing was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        sick::cola2::Command& command) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               sick::cola2::Command& command);
 
   /*!
    * \brief Gets the expected packet length for a buffer.
@@ -82,7 +83,7 @@ public:
    *
    * \returns Expected length of the incoming packet buffer.
    */
-  uint32_t getExpectedPacketLength(const datastructure::PacketBuffer& buffer);
+  static uint32_t getExpectedPacketLength(const datastructure::PacketBuffer& buffer);
 
   /*!
    * \brief Gets the request ID of the incoming tcp packet.
@@ -91,21 +92,21 @@ public:
    *
    * \returns The request ID of the incoming packet buffer.
    */
-  uint16_t getRequestID(const datastructure::PacketBuffer& buffer) const;
+  static uint16_t getRequestID(const datastructure::PacketBuffer& buffer);
 
 private:
-  uint32_t readSTx(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readLength(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readRequestID(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readHubCntr(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readNoC(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint32_t readSessionID(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readCommandType(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint8_t readCommandMode(std::vector<uint8_t>::const_iterator data_ptr) const;
-  uint16_t readErrorCode(std::vector<uint8_t>::const_iterator data_ptr) const;
-  std::vector<uint8_t> readData(const datastructure::PacketBuffer& buffer) const;
-  void setCommandValuesFromPacket(const sick::datastructure::PacketBuffer& buffer,
-                                  sick::cola2::Command& command) const;
+  static uint32_t readSTx(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readLength(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readRequestID(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readHubCntr(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readNoC(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint32_t readSessionID(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readCommandType(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint8_t readCommandMode(std::vector<uint8_t>::const_iterator data_ptr);
+  static uint16_t readErrorCode(std::vector<uint8_t>::const_iterator data_ptr);
+  static std::vector<uint8_t> readData(const datastructure::PacketBuffer& buffer);
+  static void setCommandValuesFromPacket(const sick::datastructure::PacketBuffer& buffer,
+                                         sick::cola2::Command& command);
 };
 
 } // namespace data_processing

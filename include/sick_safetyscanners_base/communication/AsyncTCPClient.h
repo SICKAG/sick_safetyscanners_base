@@ -35,9 +35,6 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCTCPCLIENT_H
 #define SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCTCPCLIENT_H
 
-//#include <ros/ros.h>
-#include <sick_safetyscanners_base/logging/logging_wrapper.h>
-
 #include <functional>
 #include <iostream>
 #include <thread>
@@ -67,7 +64,9 @@ public:
    * \brief Typedef to a function referencing a packet handler. This can be passed to the class and
    * therefore be called on processing the data.
    */
-  typedef boost::function<void(const sick::datastructure::PacketBuffer&)> PacketHandler;
+  typedef std::function<void(const sick::datastructure::PacketBuffer&, const boost::system::error_code&)> PacketHandler;
+
+  typedef std::function<void(const boost::system::error_code&)> CompleteHandler;
 
   /*!
    * \brief Constructor of the asynchronous tcp client.
@@ -77,8 +76,7 @@ public:
    * \param server_ip The IP address of the server to connect to.
    * \param server_port The port on the server to connect to.
    */
-  AsyncTCPClient(const PacketHandler& packet_handler,
-                 boost::asio::io_service& io_service,
+  AsyncTCPClient(boost::asio::io_service& io_service,
                  const boost::asio::ip::address_v4& server_ip,
                  const uint16_t& server_port);
 
@@ -90,36 +88,28 @@ public:
   /*!
    * \brief Establishes a connection from the host to the sensor.
    */
-  void doConnect();
+  void doConnect( CompleteHandler handler );
 
   /*!
    * \brief Disconnects the host from the sensor
    */
-  void doDisconnect();
+  boost::system::error_code doDisconnect();
 
   /*!
    * \brief Start a cycle of sensing a command and waiting got the return.
    *
    * \param sendBuffer The telegram which will be sent to the server.
    */
-  void doSendAndReceive(const std::vector<uint8_t>& sendBuffer);
+  void send(const std::vector<uint8_t>& sendBuffer, CompleteHandler handler);
 
   /*!
    * \brief Initiates the listening for a message from the server.
    */
-  void initiateReceive();
+  void readSome( PacketHandler handler );
 
-  /*!
-   * \brief Sets the packet handler function.
-   *
-   * \param packet_handler The new packet handler function.
-   */
-  void setPacketHandler(const PacketHandler& packet_handler);
 
 private:
   datastructure::PacketBuffer::ArrayBuffer m_recv_buffer;
-
-  PacketHandler m_packet_handler;
 
   std::shared_ptr<boost::asio::io_service::work> m_io_work_ptr;
   boost::asio::io_service& m_io_service;
@@ -131,9 +121,7 @@ private:
   boost::mutex m_connect_mutex;
   boost::mutex m_socket_mutex;
 
-  void startReceive();
-  void handleReceive(const boost::system::error_code& error, const std::size_t& bytes_transferred);
-
+  void handleReceive( PacketHandler handler, const boost::system::error_code& error, const std::size_t& bytes_transferred);
 
   AsyncTCPClient(AsyncTCPClient&); // block default copy constructor
 

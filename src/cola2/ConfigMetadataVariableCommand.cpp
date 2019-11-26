@@ -45,7 +45,6 @@ ConfigMetadataVariableCommand::ConfigMetadataVariableCommand(
   : VariableCommand(session, 28)
   , m_config_metadata(config_metadata)
 {
-  m_config_metadata_parser_ptr = std::make_shared<sick::data_processing::ParseConfigMetadata>();
 }
 
 bool ConfigMetadataVariableCommand::canBeExecutedWithoutSessionID() const
@@ -59,8 +58,8 @@ bool ConfigMetadataVariableCommand::processReply()
   {
     return false;
   }
-  m_config_metadata_parser_ptr->parseTCPSequence(getDataVector(), m_config_metadata);
-  return true;
+
+  return sick::data_processing::ParseConfigMetadata::parseTCPSequence(getDataVector(), m_config_metadata);
 }
 
 

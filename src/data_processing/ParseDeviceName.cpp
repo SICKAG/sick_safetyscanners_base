@@ -43,7 +43,7 @@ ParseDeviceName::ParseDeviceName() {}
 
 
 bool ParseDeviceName::parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                                       datastructure::DeviceName& device_name) const
+                                       datastructure::DeviceName& device_name)
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
@@ -53,7 +53,7 @@ bool ParseDeviceName::parseTCPSequence(const datastructure::PacketBuffer& buffer
 }
 
 
-std::string ParseDeviceName::readDeviceName(std::vector<uint8_t>::const_iterator data_ptr) const
+std::string ParseDeviceName::readDeviceName(std::vector<uint8_t>::const_iterator data_ptr)
 {
   uint16_t string_length = read_write_helper::readUint16LittleEndian(data_ptr + 0);
 

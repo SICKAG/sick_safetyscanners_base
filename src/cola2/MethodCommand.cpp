@@ -32,10 +32,12 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners_base/cola2/MethodCommand.h>
+#include <sick_safetyscanners_base/logging/logging_wrapper.h>
 
 #include <sick_safetyscanners_base/cola2/Cola2Session.h>
 #include <sick_safetyscanners_base/cola2/Command.h>
+
+#include <sick_safetyscanners_base/cola2/MethodCommand.h>
 
 namespace sick {
 namespace cola2 {

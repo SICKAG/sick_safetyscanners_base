@@ -78,8 +78,6 @@ public:
 
 
 private:
-  std::shared_ptr<sick::data_processing::ParseDeviceName> m_device_name_parser_ptr;
-
   datastructure::DeviceName& m_device_name;
 };
 

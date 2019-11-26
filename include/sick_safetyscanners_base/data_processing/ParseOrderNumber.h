@@ -53,12 +53,13 @@ namespace data_processing {
  */
 class ParseOrderNumber
 {
-public:
+private:
   /*!
    * \brief Constructor of the parser.
    */
   ParseOrderNumber();
 
+public:
   /*!
    * \brief Parses a tcp sequence to read the order number of the sensor.
    *
@@ -67,10 +68,10 @@ public:
    *
    * \returns If parsing the order number was successful.
    */
-  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        datastructure::OrderNumber& order_number) const;
+  static bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                               datastructure::OrderNumber& order_number);
 
-  std::string readOrderNumber(std::vector<uint8_t>::const_iterator data_ptr) const;
+  static std::string readOrderNumber(std::vector<uint8_t>::const_iterator data_ptr);
 };
 
 } // namespace data_processing

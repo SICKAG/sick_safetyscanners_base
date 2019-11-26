@@ -42,7 +42,7 @@ IntrusionData::IntrusionData()
 {
 }
 
-std::vector<IntrusionDatum> IntrusionData::getIntrusionDataVector() const
+const std::vector<IntrusionDatum>& IntrusionData::getIntrusionDataVector() const
 {
   return m_intrusion_data_vector;
 }
