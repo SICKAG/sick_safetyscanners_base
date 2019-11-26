@@ -77,17 +77,18 @@ namespace detail
     });
   }
 
-  template< typename U, typename T >
+  template< typename U, typename T, class ...Ts >
   void processCola2Command(boost::asio::io_service& ios,
                            const datastructure::CommSettings& settings,
                            std::reference_wrapper<T> command,
-                           AsyncCompleteHandler handler)
+                           AsyncCompleteHandler handler,
+                           Ts... args )
   {
-    openCola2Session(ios, settings, [command, handler](const boost::system::error_code& ec, Cola2SessionPtr session) {
+    openCola2Session(ios, settings, [command, handler, args...](const boost::system::error_code& ec, Cola2SessionPtr session) {
       // if there is no error -> create Cola2 Command and execute it
       if ( !ec )
       {
-        sick::cola2::Cola2Session::CommandPtr command_ptr = std::make_shared<U>(*session, command);
+        sick::cola2::Cola2Session::CommandPtr command_ptr = std::make_shared<U>(*session, command, args...);
 
         session->executeCommand(command_ptr, [session, handler](const boost::system::error_code& ec) {
           AsyncCompleteHandler nextHandler = handler;
@@ -585,6 +586,32 @@ void SickSafetyscannersBase::asyncRequestRequiredUserAction(const datastructure:
                                                             AsyncCompleteHandler handler)
 {
   detail::processCola2Command<sick::cola2::RequiredUserActionVariableCommand>( m_io_service, settings, std::ref(required_user_action), handler );
+}
+
+
+void SickSafetyscannersBase::requestLatestTelegram(const datastructure::CommSettings& settings,
+                                                   datastructure::Data& data,
+                                                   int8_t index)
+{
+  CompletePromisePtr promise = std::make_shared<CompletePromise>();
+
+  asyncRequestLatestTelegram(settings, data, index, [promise](const boost::system::error_code& ec) {
+    promise->set_value(ec);
+  });
+
+  promise->get_future().wait();
+}
+
+void SickSafetyscannersBase::asyncRequestLatestTelegram(const datastructure::CommSettings& settings,
+                                                        datastructure::Data& data,
+                                                        int8_t index,
+                                                        AsyncCompleteHandler handler)
+{
+  detail::processCola2Command<sick::cola2::LatestTelegramVariableCommand>( m_io_service,
+                                                                           settings,
+                                                                           std::ref(data),
+                                                                           handler,
+                                                                           index );
 }
 
 void SickSafetyscannersBase::requestDeviceName(const datastructure::CommSettings& settings,

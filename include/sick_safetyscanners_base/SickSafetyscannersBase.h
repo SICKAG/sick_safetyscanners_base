@@ -228,6 +228,14 @@ public:
                                       datastructure::RequiredUserAction& required_user_action,
                                       AsyncCompleteHandler handler);
 
+  void requestLatestTelegram(const datastructure::CommSettings& settings,
+                             datastructure::Data& data,
+                             int8_t index = 0);
+  void asyncRequestLatestTelegram(const datastructure::CommSettings& settings,
+                                  datastructure::Data& data,
+                                  int8_t index,
+                                  AsyncCompleteHandler handler);
+
   /*!
    * \brief Requests the name of the device from the sensor.
    *
