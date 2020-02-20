@@ -44,6 +44,7 @@
 
 #include <sick_safetyscanners_base/data_processing/ParseTCPPacket.h>
 #include <sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp>
+#include <sick_safetyscanners_base/log.h>
 
 #include <boost/thread/mutex.hpp>
 

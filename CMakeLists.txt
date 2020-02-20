@@ -22,7 +22,7 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 option(USE_ROS_LOGGING "Use ROS Logging instead of printf" OFF)
 
 if(USE_ROS_LOGGING)
-  add_definitions(-DNROS_BUILD=1)
+  add_definitions(-DROS_BUILD=1)
 endif()
 
 ## Declare a cpp library
