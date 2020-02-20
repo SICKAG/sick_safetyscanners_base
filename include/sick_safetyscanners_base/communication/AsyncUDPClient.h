@@ -36,7 +36,7 @@
 #define SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCUDPCLIENT_H
 
 //#include <ros/ros.h>
-#include <sick_safetyscanners_base/logging/logging_wrapper.h>
+// #include <sick_safetyscanners_base/log.h>
 
 #include <functional>
 #include <iostream>
