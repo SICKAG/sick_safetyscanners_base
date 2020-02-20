@@ -19,10 +19,10 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 ###########
 ## Build ##
 ###########
-option(WITHOUT_ROS_LOGGING "Disable ROS Logging and use printf instead" ON)
+option(USE_ROS_LOGGING "Use ROS Logging instead of printf" OFF)
 
-if(WITHOUT_ROS_LOGGING)
-  add_definitions(-DNO_ROS_LOGGING=1)
+if(USE_ROS_LOGGING)
+  add_definitions(-DNROS_BUILD=1)
 endif()
 
 ## Declare a cpp library
@@ -125,11 +125,11 @@ target_compile_options(sick_safetyscanners_base
   PUBLIC ${CXX11_FLAG}
   PRIVATE -Wall)
 
-option(WITHOUT_ROS_LOGGING "Disable ROS Logging and use printf instead" ON)
+option(USE_ROS_LOGGING "Use ROS Logging instead of printf" OFF)
 
-if(WITHOUT_ROS_LOGGING)
+if(USE_ROS_LOGGING)
   target_compile_definitions(sick_safetyscanners_base
-    PRIVATE NO_ROS_LOGGING=1)
+    PRIVATE ROS_BUILD=1)
 endif()
 
 target_include_directories(sick_safetyscanners_base PUBLIC
