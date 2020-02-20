@@ -37,6 +37,7 @@
 
 //#include <ros/ros.h>
 #include <sick_safetyscanners_base/log.h>
+#include <sick_safetyscanners_base/types.h>
 
 #include <boost/function.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -46,6 +47,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <chrono>
 
 #include <sick_safetyscanners_base/communication/AsyncTCPClient.h>
 #include <sick_safetyscanners_base/communication/AsyncUDPClient.h>
@@ -91,27 +93,18 @@ public:
    *  Typedef for function which has to be passed to this class. This enables the use of
    *  functions from the calling class.
    */
-  using dataReceivedCb = std::function<void(const sick::datastructure::Data &)>;
 
   /*!
    * \brief Constructor of the SickSafetyscannersBase class.
-   * \param newPacketReceivedCallbackFunction Function from the calling class, which will be
    * called when a new packet is received.
    * \param settings Current settings for the sensor.
    */
-  SickSafetyscannersBase(const dataReceivedCb &newPacketReceivedCallbackFunction,
-                         sick::datastructure::CommSettings *settings);
+  SickSafetyscannersBase(std::shared_ptr<sick::datastructure::CommSettings> settings);
 
   /*!
    * \brief Destructor
    */
   virtual ~SickSafetyscannersBase();
-
-  /*!
-   * \brief Start the connection to the sensor and enables output.
-   * \return If the setup was correct.
-   */
-  bool run();
 
   /*!
    * \brief Changes the internal settings of the sensor.
@@ -188,17 +181,17 @@ public:
                          std::vector<sick::datastructure::MonitoringCaseData> &monitoring_cases);
 
 private:
-  dataReceivedCb m_newPacketReceivedCallbackFunction;
+  // dataReceivedCb m_newPacketReceivedCallbackFunction;
 
-  std::shared_ptr<boost::asio::io_service> m_io_service_ptr;
-  std::shared_ptr<boost::asio::io_service::work> m_io_work_ptr;
-  std::shared_ptr<sick::communication::AsyncUDPClient> m_async_udp_client_ptr;
-  std::shared_ptr<sick::communication::AsyncTCPClient> m_async_tcp_client_ptr;
-  boost::scoped_ptr<boost::thread> m_udp_client_thread_ptr;
+  // std::shared_ptr<boost::asio::io_service> m_io_service_ptr;
+  // std::shared_ptr<boost::asio::io_service::work> m_io_work_ptr;
+  // std::shared_ptr<sick::communication::AsyncUDPClient> m_async_udp_client_ptr;
+  // std::shared_ptr<sick::communication::AsyncTCPClient> m_async_tcp_client_ptr;
+  // boost::scoped_ptr<boost::thread> m_udp_client_thread_ptr;
 
-  std::shared_ptr<sick::cola2::Cola2Session> m_session_ptr;
+  // std::shared_ptr<sick::cola2::Cola2Session> m_session_ptr;
 
-  std::shared_ptr<sick::data_processing::UDPPacketMerger> m_packet_merger_ptr;
+  // std::shared_ptr<sick::data_processing::UDPPacketMerger> m_packet_merger_ptr;
 
   void processUDPPacket(const sick::datastructure::PacketBuffer &buffer);
   bool udpClientThread();
@@ -227,7 +220,27 @@ private:
   void findSensorInColaSession(uint16_t blink_time);
 };
 
-} // namespace sick
+class AsyncSickSafetyScanner : public SickSafetyscannersBase
+{
+public:
+  // SickSafetyScannerAsync() : SickSafetyscannersBase(){};
 
+  /*!
+   * \brief Start the connection to the sensor and enables output.
+   * \return If the setup was correct.
+   */
+  void run(DataReceivedCb callback);
+  void stop();
+};
+
+class SyncSickSafetyScanner : public SickSafetyscannersBase
+{
+public:
+  void waitForData(long timeout_ms = 1000) const;
+  const sick::datastructure::Data getData();
+  void stop();
+};
+
+} // namespace sick
 
 #endif // SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H
