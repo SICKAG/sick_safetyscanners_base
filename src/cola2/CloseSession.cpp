@@ -63,12 +63,12 @@ bool CloseSession::processReply()
       (getCommandType() == 0x43 && getCommandMode() == 0x41))
   {
     m_session.setSessionID(getSessionID());
-    ROS_INFO("Successfully closed Cola2 session with sessionID: %u", m_session.getSessionID());
+    LOG_INFO("Successfully closed Cola2 session with sessionID: %u", m_session.getSessionID());
     result = true;
   }
   else
   {
-    ROS_WARN("Could not close Cola2 session with sessionID: %u", m_session.getSessionID());
+    LOG_WARN("Could not close Cola2 session with sessionID: %u", m_session.getSessionID());
   }
   return result;
 }

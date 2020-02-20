@@ -52,10 +52,10 @@ AsyncTCPClient::AsyncTCPClient(const PacketHandler& packet_handler,
   }
   catch (std::exception& e)
   {
-    ROS_ERROR("Exception while creating socket: %s", e.what());
+    LOG_ERROR("Exception while creating socket: %s", e.what());
   }
   m_remote_endpoint = boost::asio::ip::tcp::endpoint(server_ip, server_port);
-  ROS_INFO("TCP client is setup");
+  LOG_INFO("TCP client is setup");
 }
 
 AsyncTCPClient::~AsyncTCPClient() {}
@@ -67,21 +67,21 @@ void AsyncTCPClient::doDisconnect()
   m_socket_ptr->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
   if (ec != 0)
   {
-    ROS_ERROR("Error shutting socket down: %i", ec.value());
+    LOG_ERROR("Error shutting socket down: %i", ec.value());
   }
   else
   {
-    ROS_INFO("TCP Connection successfully shutdown");
+    LOG_INFO("TCP Connection successfully shutdown");
   }
 
   m_socket_ptr->close(ec);
   if (ec != 0)
   {
-    ROS_ERROR("Error closing Socket: %i", ec.value());
+    LOG_ERROR("Error closing Socket: %i", ec.value());
   }
   else
   {
-    ROS_INFO("TCP Socket successfully closed.");
+    LOG_INFO("TCP Socket successfully closed.");
   }
 }
 
@@ -92,11 +92,11 @@ void AsyncTCPClient::doConnect()
   m_socket_ptr->async_connect(m_remote_endpoint, [this](boost::system::error_code ec) {
     if (ec != 0)
     {
-      ROS_ERROR("TCP error code: %i", ec.value());
+      LOG_ERROR("TCP error code: %i", ec.value());
     }
     else
     {
-      ROS_INFO("TCP connection successfully established.");
+      LOG_INFO("TCP connection successfully established.");
     }
     m_connect_condition.notify_all();
   });
@@ -147,7 +147,7 @@ void AsyncTCPClient::handleSendAndReceive(const boost::system::error_code& error
   }
   else
   {
-    ROS_ERROR("Error in tcp handle send and receive: %i", error.value());
+    LOG_ERROR("Error in tcp handle send and receive: %i", error.value());
   }
 }
 
@@ -164,7 +164,7 @@ void AsyncTCPClient::handleReceive(const boost::system::error_code& error,
   }
   else
   {
-    ROS_ERROR("Error in tcp handle receive: %i", error.value());
+    LOG_ERROR("Error in tcp handle receive: %i", error.value());
   }
 }
 
