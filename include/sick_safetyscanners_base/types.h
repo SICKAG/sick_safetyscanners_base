@@ -125,6 +125,7 @@ ENABLE_BITMASK_OPERATORS(SensorFeatures);
 // Callback types
 using DataReceivedCb = CallbackT<const sick::datastructure::Data &>;
 
+
 } // namespace types
 } // namespace sick
 

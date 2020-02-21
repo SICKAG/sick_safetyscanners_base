@@ -53,15 +53,7 @@ using sick::types::SensorFeatures;
 struct CommSettings
 {
   CommSettings() = default;
-  CommSettings(boost::asio::ip::address_v4 host_ip, uint16_t host_udp_port, boost::asio::ip::address_v4 sensor_ip, uint16_t sensor_port);
-  CommSettings(std::string &host_ip, uint16_t host_udp_port, boost::asio::ip::address_v4 sensor_ip, uint16_t sensor_port);
 
-  boost::asio::ip::address_v4 sensor_ip{
-      boost::asio::ip::address_v4::from_string("192.168.1.11")};
-  boost::asio::ip::address_v4 host_ip{
-      boost::asio::ip::address_v4::from_string("192.168.1.9")};
-  uint16_t sensor_port{0};
-  uint16_t host_udp_port{0};
   uint8_t channel{0};
   uint16_t publishing_frequency{1};
   uint8_t e_interface_type{0};
@@ -70,6 +62,7 @@ struct CommSettings
   SensorFeatures features{sick::all_sensor_features};
   bool enabled{true};
 };
+
 
 /*!
  * \brief Containing the communication settings for the sensor which can be changed on runtime.
