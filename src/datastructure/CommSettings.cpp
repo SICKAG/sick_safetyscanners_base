@@ -37,6 +37,7 @@
 namespace sick {
 namespace datastructure {
 
+
 CommSettings::CommSettings()
 {
   // Defaults, could be moved to an external config xml

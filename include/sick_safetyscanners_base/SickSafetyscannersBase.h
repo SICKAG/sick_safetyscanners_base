@@ -99,7 +99,7 @@ public:
    * called when a new packet is received.
    * \param settings Current settings for the sensor.
    */
-  SickSafetyscannersBase(std::shared_ptr<sick::datastructure::CommSettings> settings);
+  SickSafetyscannersBase(sick::datastructure::CommSettings settings);
 
   /*!
    * \brief Destructor
