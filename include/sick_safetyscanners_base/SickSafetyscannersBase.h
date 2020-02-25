@@ -167,11 +167,13 @@ public:
   requestMonitoringCases(std::vector<MonitoringCaseData> &monitoring_cases);
 
 private:
-  ip_address_t sensor_ip{ip_address_t::from_string("192.168.1.11")};
-  ip_address_t host_ip{ip_address_t::from_string("192.168.1.9")};
-  uint16_t sensor_port{0};
-  uint16_t host_port{0};
-  CommSettings comm_settings{};
+  ip_address_t m_sensor_ip{ip_address_t::from_string("192.168.1.11")};
+  ip_address_t m_host_ip{ip_address_t::from_string("192.168.1.9")};
+  uint16_t m_sensor_port{0};
+  uint16_t m_host_port{0};
+  CommSettings m_comm_settings{};
+  sick::cola2::Cola2Session m_session{};
+
   // dataReceivedCb m_newPacketReceivedCallbackFunction;
 
   // std::shared_ptr<boost::asio::io_service> m_io_service_ptr;

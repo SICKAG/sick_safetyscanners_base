@@ -58,6 +58,8 @@ add_library(sick_safetyscanners_base
   src/cola2/VariableCommand.cpp
   src/communication/AsyncTCPClient.cpp
   src/communication/AsyncUDPClient.cpp
+  src/communication/SyncTCPClient.cpp
+  src/communication/SyncUDPClient.cpp
   src/data_processing/ParseApplicationData.cpp
   src/data_processing/ParseApplicationNameData.cpp
   src/data_processing/ParseConfigMetadata.cpp

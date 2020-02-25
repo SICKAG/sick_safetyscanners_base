@@ -59,6 +59,8 @@ namespace communication {
 class AsyncUDPClient
 {
 public:
+
+// TODO typedefs fur globale typen auslagern
   /*!
    * \brief Typedef to a reference to a function. Will be used to process the incoming packets.
    */
@@ -80,6 +82,8 @@ public:
    */
   virtual ~AsyncUDPClient();
 
+
+// TODO Wat furn Service, bessere Namen
   /*!
    * \brief Start the listening loop for the udp data packets.
    */
@@ -102,6 +106,8 @@ private:
   boost::asio::ip::udp::endpoint m_remote_endpoint;
 
   void startReceive();
+
+  // TODO error codes sind boese
   void handleReceive(const boost::system::error_code& error, const std::size_t& bytes_transferred);
 
 

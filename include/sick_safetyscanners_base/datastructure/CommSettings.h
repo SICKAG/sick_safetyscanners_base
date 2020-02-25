@@ -48,7 +48,8 @@ namespace sick
 {
 namespace datastructure
 {
-using sick::types::SensorFeatures;
+
+
 
 struct CommSettings
 {
@@ -261,4 +262,5 @@ struct CommSettings
 } // namespace datastructure
 } // namespace sick
 
+ENABLE_BITMASK_OPERATORS(SensorFeatures);
 #endif // SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_COMMSETTINGS_H

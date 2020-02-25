@@ -98,6 +98,7 @@ public:
    */
   void doDisconnect();
 
+// TODO weg mit dem quatsch
   /*!
    * \brief Start a cycle of sensing a command and waiting got the return.
    *
@@ -105,11 +106,15 @@ public:
    */
   void doSendAndReceive(const std::vector<uint8_t>& sendBuffer);
 
+
+// TODO weg mit dem quatsch
   /*!
    * \brief Initiates the listening for a message from the server.
    */
   void initiateReceive();
 
+
+// TODO besser std::function<PacketHandler>
   /*!
    * \brief Sets the packet handler function.
    *
