@@ -43,7 +43,7 @@ namespace cola2 {
 /*!
  * \brief Command to read a variable from the sensor.
  */
-class VariableCommand : public Command
+class VariableCommand : public CommandMsg
 {
 public:
   /*!

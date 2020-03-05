@@ -60,7 +60,7 @@ class Cola2Session;
 /*!
  * \brief Base class for commands. Defines the base interface and does the common tasks.
  */
-class Command
+class CommandMsg
 {
 public:
   /*!
@@ -71,14 +71,14 @@ public:
    * Invoking a method).
    * \param command_mode Specifies the mode of the command. If the request is by index or name.
    */
-  Command(sick::cola2::Cola2Session& session,
+  CommandMsg(sick::cola2::Cola2Session& session,
           const uint16_t& command_type,
           const uint16_t& command_mode);
 
   /*!
    * \brief We have virtual member functions, so a virtual destructor is needed.
    */
-  virtual ~Command() {}
+  virtual ~CommandMsg() {}
 
 
   /*!

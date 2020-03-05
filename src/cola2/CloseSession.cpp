@@ -42,7 +42,7 @@ namespace sick {
 namespace cola2 {
 
 CloseSession::CloseSession(Cola2Session& session)
-  : Command(session, 0x43, 0x58) // see cola2 manual 0x43 = C, 0x58 = X
+  : CommandMsg(session, 0x43, 0x58) // see cola2 manual 0x43 = C, 0x58 = X
 {
 }
 

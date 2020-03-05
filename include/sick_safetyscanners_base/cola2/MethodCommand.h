@@ -43,7 +43,7 @@ namespace cola2 {
 /*!
  * \brief Command for method calls to the sensor
  */
-class MethodCommand : public Command
+class MethodCommand : public CommandMsg
 {
 public:
   /*!
