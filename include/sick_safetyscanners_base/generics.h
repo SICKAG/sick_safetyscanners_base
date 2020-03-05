@@ -2,9 +2,8 @@
 
 namespace sick
 {
-namespace generics
-{
 
+// Strongly Typed BitFlag operator overloads
 template <typename Enum>
 struct EnableBitMaskOperators
 {
@@ -14,14 +13,11 @@ struct EnableBitMaskOperators
 #define ENABLE_BITMASK_OPERATORS(x)      \
     namespace sick                       \
     {                                    \
-    namespace generics                   \
-    {                                    \
     template <>                          \
     struct EnableBitMaskOperators<x>     \
     {                                    \
         static const bool enable = true; \
     };                                   \
-    }                                    \
     }
 
 template <typename Enum>
@@ -96,5 +92,17 @@ typename std::enable_if_t<EnableBitMaskOperators<Enum>::enable, Enum>
     return lhs;
 }
 
-} // namespace generics
+template <typename T, typename... Args>
+T createT(Args &&... ARGS)
+{
+    return T(std::forward<Args>(args)...);
+}
+
+// C++11 does not come with a make_unique function, so here it is.
+// Borrowed from Scott Meyers' Effective C++ page 139.
+template <typename T, typename... Ts>
+std::unique_ptr<T> make_unique(Ts &&... params)
+{
+    return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
+}
 } // namespace sick
