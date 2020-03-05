@@ -48,6 +48,7 @@
 #include <vector>
 #include <functional>
 #include <chrono>
+#include <memory>
 
 #include <sick_safetyscanners_base/communication/AsyncTCPClient.h>
 #include <sick_safetyscanners_base/communication/AsyncUDPClient.h>
@@ -80,10 +81,14 @@
 #include <sick_safetyscanners_base/cola2/TypeCodeVariableCommand.h>
 #include <sick_safetyscanners_base/cola2/UserNameVariableCommand.h>
 
+#include <sick_safetyscanners_base/communication/TCPClient.h>
+
 namespace sick
 {
 
 using ip_address_t = boost::asio::ip::address_v4;
+using io_service_ptr = std::shared_ptr<boost::asio::io_service>;
+
 using namespace sick::datastructure;
 /*!
  * \brief Class managing the algorithmic part of the package.
@@ -101,8 +106,12 @@ public:
    * called when a new packet is received.
    * \param settings Current settings for the sensor.
    */
-  SickSafetyscannersBase() = default;
-  SickSafetyscannersBase(ip_address_t host_ip, uint16_t host_port, ip_address_t sensor_ip, uint16_t sensor_port);
+  SickSafetyscannersBase() = delete;
+
+  SickSafetyscannersBase(const SickSafetyscannersBase &) = delete;
+  SickSafetyscannersBase &operator=(const SickSafetyscannersBase &) = delete;
+  SickSafetyscannersBase(ip_address_t host_ip, uint16_t host_port, ip_address_t sensor_ip, uint16_t sensor_port, CommSettings comm_settings);
+  SickSafetyscannersBase(ip_address_t host_ip, uint16_t host_port, ip_address_t sensor_ip, uint16_t sensor_port, CommSettings comm_settings, io_service_ptr io_service);
 
   /*!
    * \brief Destructor
@@ -163,16 +172,19 @@ public:
    * \param settings Settings containing information to establish a connection to the sensor.
    * \param monitoring_cases Returned monitoring cases.
    */
+
   void
   requestMonitoringCases(std::vector<MonitoringCaseData> &monitoring_cases);
 
 private:
-  ip_address_t m_sensor_ip{ip_address_t::from_string("192.168.1.11")};
   ip_address_t m_host_ip{ip_address_t::from_string("192.168.1.9")};
-  uint16_t m_sensor_port{0};
-  uint16_t m_host_port{0};
-  CommSettings m_comm_settings{};
-  sick::cola2::Cola2Session m_session{};
+  ip_address_t m_sensor_ip{ip_address_t::from_string("192.168.1.11")};
+  uint16_t m_host_port;
+  uint16_t m_sensor_port;
+  io_service_ptr m_io_service;
+  CommSettings m_comm_settings;
+  // communication::TCPClientPtr m_tcp_client_ptr;
+  sick::cola2::Cola2Session m_session;
 
   // dataReceivedCb m_newPacketReceivedCallbackFunction;
 
@@ -186,31 +198,20 @@ private:
 
   // std::shared_ptr<sick::data_processing::UDPPacketMerger> m_packet_merger_ptr;
 
+  template <class CommandT, typename... Args>
+  void inline createAndExecuteCommand(Args &&... args)
+  {
+    auto cmd = createT<CommandT>(args);
+    m_session.executeCommand(cmd);
+  }
+
   void processUDPPacket(const PacketBuffer &buffer);
   bool udpClientThread();
   void processTCPPacket(const PacketBuffer &buffer);
   void startTCPConnection(const CommSettings &settings);
   void changeCommSettingsInColaSession(const datastructure::CommSettings &settings);
+  void startTCPConnection();
   void stopTCPConnection();
-  void requestTypeCodeInColaSession(TypeCode &type_code);
-  void requestFieldDataInColaSession(std::vector<FieldData> &fields);
-  void requestDeviceNameInColaSession(datastructure::DeviceName &device_name);
-  void requestApplicationNameInColaSession(ApplicationName &application_name);
-  void requestSerialNumberInColaSession(SerialNumber &serial_number);
-  void requestOrderNumberInColaSession(OrderNumber &order_number);
-  void requestProjectNameInColaSession(ProjectName &project_name);
-  void requestUserNameInColaSession(UserName &user_name);
-  void requestFirmwareVersionInColaSession(FirmwareVersion &firmware_version);
-  void requestPersistentConfigInColaSession(ConfigData &config_data);
-  void requestConfigMetadataInColaSession(ConfigMetadata &config_metadata);
-  void requestStatusOverviewInColaSession(StatusOverview &status_overview);
-  void requestDeviceStatusInColaSession(DeviceStatus &device_status);
-  void requestRequiredUserActionInColaSession(
-      RequiredUserAction &required_user_action);
-  void requestMonitoringCaseDataInColaSession(
-      std::vector<MonitoringCaseData> &monitoring_cases);
-  void requestLatestTelegramInColaSession(Data &data, int8_t index = 0);
-  void findSensorInColaSession(uint16_t blink_time);
 };
 
 class AsyncSickSafetyScanner : public SickSafetyscannersBase
@@ -230,6 +231,7 @@ class SyncSickSafetyScanner : public SickSafetyscannersBase
 {
 public:
   void waitForData(long timeout_ms = 1000) const;
+  // poll?
   const Data getData();
   void stop();
 };
