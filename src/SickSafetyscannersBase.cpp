@@ -59,10 +59,10 @@ SickSafetyscannersBase::~SickSafetyscannersBase()
 {
 }
 
-void SickSafetyscannersBase::processTCPPacket(const sick::datastructure::PacketBuffer &buffer)
-{
-  // Not needed for current functionality, inplace for possible future developments
-}
+// void SickSafetyscannersBase::processTCPPacket(const sick::datastructure::PacketBuffer &buffer)
+// {
+//   // Not needed for current functionality, inplace for possible future developments
+// }
 
 void SickSafetyscannersBase::changeSensorSettings(const CommSettings &settings)
 {

@@ -66,7 +66,7 @@ void Cola2Session::open()
 
     // TODO rename this command
     // TODO refactor Command class
-    CreateSession cmd(this);
+    CreateSession cmd(*this);
     executeCommand(cmd);
     uint32_t sessID = cmd.getSessionID();
     setSessionID(sessID);
@@ -80,7 +80,7 @@ void Cola2Session::close()
         return;
     }
 
-    CloseSession cmd(this);
+    CloseSession cmd(*this);
     executeCommand(cmd);
     m_tcp_client_ptr_->disconnect();
 }
@@ -88,9 +88,12 @@ void Cola2Session::close()
 void Cola2Session::executeCommand(CommandMsg &cmd, ulong timeout_ms)
 {
     boost::lock_guard<boost::mutex> guard(m_execution_mutex_);
+    sick::data_processing::TCPPacketMerger packet_merger(0);
+    sick::data_processing::ParseTCPPacket tcp_packet_parser;
+    std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
     // TODO remove?
-    cmd.lockExecutionMutex();
+    // cmd.lockExecutionMutex();
 
     if (!m_tcp_client_ptr_->isConnected())
     {
@@ -100,14 +103,30 @@ void Cola2Session::executeCommand(CommandMsg &cmd, ulong timeout_ms)
     telegram = cmd.constructTelegram(telegram);
     m_tcp_client_ptr_->send(telegram);
 
-    m_tcp_client_ptr_->receive();
-    cmd.waitForCompletion();
+    while (!packet_merger.isComplete())
+    {
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count() > timeout_ms)
+        {
+            throw std::runtime_error("Timeout during collecting command response packages.");
+        }
+        sick::datastructure::PacketBuffer packet_buffer = m_tcp_client_ptr_->receive();
+        if (packet_merger.isEmpty())
+        {
+            packet_merger.setTargetSize(tcp_packet_parser.getExpectedPacketLength(packet_buffer));
+        }
+        packet_merger.addTCPPacket(packet_buffer);
+    }
+    sick::datastructure::PacketBuffer response = packet_merger.getDeployedPacketBuffer();
+    cmd.processReplyBase(*response.getBuffer());
 }
 
 void Cola2Session::executeCommandAsync(CommandMsg &cmd)
 {
     // TODO
+    cmd.waitForCompletion();
 }
+
+// bool Cola2Session::addPacketTo
 
 // Cola2Session::Cola2Session(
 //     // const std::shared_ptr<communication::AsyncTCPClient>& async_tcp_client

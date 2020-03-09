@@ -8,6 +8,14 @@ TCPClient::TCPClient(const boost::asio::ip::address_v4 &server_ip, uint16_t serv
 {
 }
 
+TCPClient::TCPClient(const boost::asio::ip::address_v4 &server_ip, uint16_t server_port, boost::asio::ip::tcp::socket &&socket)
+    : m_server_ip_(server_ip),
+      m_server_port_(server_port),
+      m_socket_(std::move(socket))
+
+{
+}
+
 void TCPClient::connect()
 {
     m_socket_.close();
@@ -42,7 +50,8 @@ void TCPClient::disconnect()
     }
 }
 
-bool TCPClient::isConnected() {
+bool TCPClient::isConnected()
+{
     return m_socket_.is_open();
 }
 
@@ -52,7 +61,8 @@ void TCPClient::send(const std::vector<uint8_t> &buf)
     boost::system::error_code ec;
     boost::asio::write(m_socket_, boost::asio::buffer(buf), boost::asio::transfer_all(), ec);
 
-    if (ec) {
+    if (ec)
+    {
         LOG_ERROR("Error while sending a TCP message: %s", ec.message());
         throw boost::system::system_error(ec);
     }

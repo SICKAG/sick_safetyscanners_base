@@ -34,14 +34,19 @@
 
 #include <sick_safetyscanners_base/data_processing/TCPPacketMerger.h>
 
-namespace sick {
-namespace data_processing {
+namespace sick
+{
+namespace data_processing
+{
 
-TCPPacketMerger::TCPPacketMerger()
-  : m_is_complete(false)
+TCPPacketMerger::TCPPacketMerger(std::size_t target_size)
+    : m_is_complete(false),
+      m_deployed_packet_buffer(),
+      m_buffer_vector(),
+      m_buffer_mutex(),
+      m_target_size(target_size)
 {
 }
-
 
 bool TCPPacketMerger::isComplete() const
 {
@@ -59,7 +64,7 @@ sick::datastructure::PacketBuffer TCPPacketMerger::getDeployedPacketBuffer()
   return m_deployed_packet_buffer;
 }
 
-bool TCPPacketMerger::addTCPPacket(const datastructure::PacketBuffer& buffer)
+bool TCPPacketMerger::addTCPPacket(const datastructure::PacketBuffer &buffer)
 {
   // Protect the internal memory for duplciate calls
   std::lock_guard<std::mutex> lock(m_buffer_mutex);
@@ -74,10 +79,10 @@ bool TCPPacketMerger::addTCPPacket(const datastructure::PacketBuffer& buffer)
   return isComplete();
 }
 
-bool TCPPacketMerger::addToMap(const datastructure::PacketBuffer& new_packet)
+bool TCPPacketMerger::addToMap(const datastructure::PacketBuffer &new_packet)
 {
-  uint32_t current_size   = getCurrentSize();
-  uint32_t remaining_size = m_targetSize - current_size;
+  uint32_t current_size = getCurrentSize();
+  uint32_t remaining_size = m_target_size - current_size;
   m_buffer_vector.push_back(new_packet);
   if (remaining_size == new_packet.getLength())
   {
@@ -100,38 +105,38 @@ bool TCPPacketMerger::deployPacketIfComplete()
 bool TCPPacketMerger::deployPacket()
 {
   std::vector<uint8_t> headerless_packet_buffer;
-  for (auto& parsed_packet_buffer : m_buffer_vector)
+  for (auto &parsed_packet_buffer : m_buffer_vector)
   {
     // This insert is memory safe because we constructed the vector in this function
     const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = parsed_packet_buffer.getBuffer();
     headerless_packet_buffer.insert(
-      headerless_packet_buffer.end(), vec_ptr->begin(), vec_ptr->end());
+        headerless_packet_buffer.end(), vec_ptr->begin(), vec_ptr->end());
   }
   m_deployed_packet_buffer.setBuffer(headerless_packet_buffer);
   m_buffer_vector.clear();
   return true;
 }
 
-uint32_t TCPPacketMerger::getTargetSize() const
+std::size_t TCPPacketMerger::getTargetSize() const
 {
-  return m_targetSize;
+  return m_target_size;
 }
 
-void TCPPacketMerger::setTargetSize(const uint32_t& targetSize)
-{
-  m_targetSize = targetSize;
-}
 
-uint32_t TCPPacketMerger::getCurrentSize()
+std::size_t TCPPacketMerger::getCurrentSize()
 {
-  size_t sum = 0;
+  std::size_t sum = 0;
   for (auto it_packet = m_buffer_vector.begin(); it_packet != m_buffer_vector.end(); ++it_packet)
   {
-    const auto& packet = *it_packet;
+    const auto &packet = *it_packet;
     sum += packet.getLength();
   }
 
-  return static_cast<uint32_t>(sum);
+  return static_cast<std::size_t>(sum);
+}
+
+void setTargetSize(std::size_t target_size) {
+  m_target_size = target_size;
 }
 
 } // namespace data_processing

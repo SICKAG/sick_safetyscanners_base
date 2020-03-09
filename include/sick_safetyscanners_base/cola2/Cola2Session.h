@@ -49,6 +49,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/optional.hpp>
+#include <chrono>
 #include <limits>
 #include <map>
 #include <mutex>
@@ -66,7 +67,6 @@ class CreateSession;
 //     CLOSED,
 //     OPENED
 // };
-
 
 class Cola2Session
 {
@@ -97,12 +97,14 @@ private:
   uint16_t m_request_id_{0};
   boost::mutex m_execution_mutex_{};
   boost::optional<uint32_t> m_session_id_{boost::none};
+  // std::unique_ptr<sick::data_processing::TCPPacketMerger> m_packet_merger_ptr_;
   // Currently set in CreateSession command
   // boost::optional<uint8_t> m_session_time_out_sec{boost::none};
   communication::TCPClientPtr m_tcp_client_ptr_{};
   // SessionState m_state_{SessionState::CLOSED};
-};
 
+  bool addToPacketMerger(sick::datastructure::PacketBuffer &buf);
+};
 
 // TODO remove old stuff
 

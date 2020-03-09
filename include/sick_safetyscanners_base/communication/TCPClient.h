@@ -21,6 +21,11 @@ public:
         uint16_t server_port,
         boost::asio::io_service &io_service);
 
+    TCPClient(
+        const boost::asio::ip::address_v4 &server_ip,
+        uint16_t server_port,
+        boost::asio::ip::tcp::socket &&socket);
+
     TCPClient() = delete;
     TCPClient(const TCPClient &) = delete;
     TCPClient &operator=(const TCPClient &) = delete;

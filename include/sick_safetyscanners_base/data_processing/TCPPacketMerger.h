@@ -42,8 +42,10 @@
 #include <mutex>
 #include <vector>
 
-namespace sick {
-namespace data_processing {
+namespace sick
+{
+namespace data_processing
+{
 
 /*!
  * \brief Merges incoming tcp packets together to get a complete data packet.
@@ -54,7 +56,10 @@ public:
   /*!
    * \brief Constructor of merger.
    */
-  TCPPacketMerger();
+  TCPPacketMerger() = delete;
+  TCPPacketMerger(std::size_t target_size);
+  TCPPacketMerger(const TCPPacketMerger &) = delete;
+  TCPPacketMerger &operator=(const TCPPacketMerger &) = delete;
 
   /*!
    * \brief Check if the packet is complete.
@@ -78,7 +83,7 @@ public:
    *
    * \returns True if the data packet is complete with the new packet.
    */
-  bool addTCPPacket(const sick::datastructure::PacketBuffer& buffer);
+  bool addTCPPacket(const sick::datastructure::PacketBuffer &buffer);
 
   /*!
    * \brief Gets the latest complete data packet.
@@ -92,14 +97,16 @@ public:
    *
    * \returns The target size of a complete data packet.
    */
-  uint32_t getTargetSize() const;
+  std::size_t getTargetSize() const;
 
   /*!
    * \brief Sets the target size of a data packet.
    *
    * \param targetSize The new target size of a data packet.
    */
-  void setTargetSize(const uint32_t& targetSize);
+  void setTargetSize(std::size_t target_size);
+
+  // void reset();
 
 private:
   bool m_is_complete;
@@ -107,12 +114,12 @@ private:
 
   std::vector<sick::datastructure::PacketBuffer> m_buffer_vector;
   std::mutex m_buffer_mutex;
-  uint32_t m_targetSize;
+  std::size_t m_target_size;
 
-  bool addToMap(const sick::datastructure::PacketBuffer& new_packet);
+  bool addToMap(const sick::datastructure::PacketBuffer &new_packet);
   bool deployPacketIfComplete();
 
-  uint32_t getCurrentSize();
+  std::size_t getCurrentSize();
   bool deployPacket();
 };
 

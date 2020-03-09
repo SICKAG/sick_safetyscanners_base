@@ -205,13 +205,13 @@ private:
     m_session.executeCommand(cmd);
   }
 
-  void processUDPPacket(const PacketBuffer &buffer);
-  bool udpClientThread();
-  void processTCPPacket(const PacketBuffer &buffer);
-  void startTCPConnection(const CommSettings &settings);
   void changeCommSettingsInColaSession(const datastructure::CommSettings &settings);
-  void startTCPConnection();
-  void stopTCPConnection();
+  // void startTCPConnection();
+  // bool udpClientThread();
+  // void startTCPConnection(const CommSettings &settings);
+  // void processUDPPacket(const PacketBuffer &buffer);
+  // void processTCPPacket(const PacketBuffer &buffer);
+  // void stopTCPConnection();
 };
 
 class AsyncSickSafetyScanner : public SickSafetyscannersBase
