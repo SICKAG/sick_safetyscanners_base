@@ -4,15 +4,21 @@ namespace sick
 {
 namespace communication
 {
-TCPClient::TCPClient(const boost::asio::ip::address_v4 &server_ip, uint16_t server_port, boost::asio::io_service &io_service) : m_socket_(io_service), m_server_ip_(server_ip), m_server_port_(server_port), m_recv_buffer_()
+TCPClient::TCPClient(const boost::asio::ip::address_v4 &server_ip, uint16_t server_port, boost::asio::io_service &io_service)
+    : m_recv_buffer_(),
+      m_socket_(io_service),
+      m_server_ip_(server_ip),
+      m_mutex_(),
+      m_server_port_(server_port)
 {
 }
 
 TCPClient::TCPClient(const boost::asio::ip::address_v4 &server_ip, uint16_t server_port, boost::asio::ip::tcp::socket &&socket)
-    : m_server_ip_(server_ip),
-      m_server_port_(server_port),
-      m_socket_(std::move(socket))
-
+    : m_recv_buffer_(),
+      m_socket_(std::move(socket)),
+      m_server_ip_(server_ip),
+      m_mutex_(),
+      m_server_port_(server_port)
 {
 }
 
@@ -46,7 +52,7 @@ void TCPClient::disconnect()
     else if (ec)
     {
         // Some other error occured
-        LOG_ERROR("An error occured during disconnecting from the server: %s. This error is internally ignored and socket has been closed", ec.message());
+        LOG_ERROR("An error occured during disconnecting from the server: %s. This error is internally ignored and socket has been closed", ec.message().c_str());
     }
 }
 
@@ -63,7 +69,7 @@ void TCPClient::send(const std::vector<uint8_t> &buf)
 
     if (ec)
     {
-        LOG_ERROR("Error while sending a TCP message: %s", ec.message());
+        LOG_ERROR("Error while sending a TCP message: %s", ec.message().c_str());
         throw boost::system::system_error(ec);
     }
 }
@@ -74,7 +80,7 @@ sick::datastructure::PacketBuffer TCPClient::receive()
     boost::system::error_code ec;
     // std::size_t bytes_received = m_socket_.read_some(boost::asio::buffer(m_recv_buffer_), ec);
 
-    std::size_t bytes_received = m_socket_.read_some(m_recv_buffer_, ec);
+    std::size_t bytes_received = m_socket_.read_some(boost::asio::buffer(m_recv_buffer_), ec);
     if (!ec)
     {
         sick::datastructure::PacketBuffer buffer(m_recv_buffer_, bytes_received);
@@ -82,7 +88,7 @@ sick::datastructure::PacketBuffer TCPClient::receive()
     }
     else
     {
-        LOG_ERROR("Error while receiving TCP message: %s", ec.message());
+        LOG_ERROR("Error while receiving TCP message: %s", ec.message().c_str());
         throw boost::system::system_error(ec);
     }
 }
@@ -100,7 +106,7 @@ sick::datastructure::PacketBuffer TCPClient::receive(std::size_t n_bytes)
     }
     else
     {
-        LOG_ERROR("Error while receiving TCP message: %s", ec.message());
+        LOG_ERROR("Error while receiving TCP message: %s", ec.message().c_str());
         throw boost::system::system_error(ec);
     }
 }

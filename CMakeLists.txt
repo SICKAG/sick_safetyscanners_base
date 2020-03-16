@@ -9,7 +9,6 @@ add_definitions(-std=c++11)
 
 
 ## Find system libraries
-#find_package(Eigen3 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system thread)
 
 
@@ -56,10 +55,9 @@ add_library(sick_safetyscanners_base
   src/cola2/TypeCodeVariableCommand.cpp
   src/cola2/UserNameVariableCommand.cpp
   src/cola2/VariableCommand.cpp
+  src/communication/TCPClient.cpp
   src/communication/AsyncTCPClient.cpp
   src/communication/AsyncUDPClient.cpp
-  src/communication/SyncTCPClient.cpp
-  src/communication/SyncUDPClient.cpp
   src/data_processing/ParseApplicationData.cpp
   src/data_processing/ParseApplicationNameData.cpp
   src/data_processing/ParseConfigMetadata.cpp

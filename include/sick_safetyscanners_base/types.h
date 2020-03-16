@@ -16,8 +16,7 @@ using CallbackT = std::function<void(T)>;
 
 using DataReceivedCb = CallbackT<const sick::datastructure::Data &>;
 
-
-enum class SensorFeatures: uint8_t
+enum class SensorFeatures : uint16_t
 {
     NONE = 0,
     SYSTEM_STATE = 1 << 0,
@@ -31,6 +30,5 @@ enum class SensorFeatures: uint8_t
 } // namespace sick
 
 ENABLE_BITMASK_OPERATORS(sick::types::SensorFeatures);
-
 
 #endif // ifndef SICK_SAFETYSCANNERS_TYPES_H

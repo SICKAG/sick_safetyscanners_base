@@ -40,7 +40,11 @@ namespace sick
 namespace cola2
 {
 
-Cola2Session::Cola2Session(communication::TCPClientPtr tcp_client) : m_tcp_client_ptr_(std::move(tcp_client))
+Cola2Session::Cola2Session(communication::TCPClientPtr tcp_client) :
+                                                                     m_request_id_(0),
+                                                                     m_execution_mutex_(),
+                                                                     m_session_id_(boost::none),
+                                                                     m_tcp_client_ptr_(std::move(tcp_client))
 {
 }
 
@@ -85,7 +89,7 @@ void Cola2Session::close()
     m_tcp_client_ptr_->disconnect();
 }
 
-void Cola2Session::executeCommand(CommandMsg &cmd, ulong timeout_ms)
+void Cola2Session::executeCommand(CommandMsg &cmd, long int timeout_ms)
 {
     boost::lock_guard<boost::mutex> guard(m_execution_mutex_);
     sick::data_processing::TCPPacketMerger packet_merger(0);
@@ -118,13 +122,17 @@ void Cola2Session::executeCommand(CommandMsg &cmd, ulong timeout_ms)
     }
     sick::datastructure::PacketBuffer response = packet_merger.getDeployedPacketBuffer();
     cmd.processReplyBase(*response.getBuffer());
+    if (!cmd.wasSuccessful())
+    {
+        throw std::runtime_error("Command could not be executed");
+    }
 }
 
-void Cola2Session::executeCommandAsync(CommandMsg &cmd)
-{
-    // TODO
-    cmd.waitForCompletion();
-}
+// void Cola2Session::executeCommandAsync(CommandMsg &cmd)
+// {
+//     // TODO
+//     cmd.waitForCompletion();
+// }
 
 // bool Cola2Session::addPacketTo
 

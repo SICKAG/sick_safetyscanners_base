@@ -36,17 +36,18 @@
 
 #include <sick_safetyscanners_base/cola2/Cola2Session.h>
 
-
-namespace sick {
-namespace cola2 {
-
-CommandMsg::CommandMsg(Cola2Session& session, const uint16_t& command_type, const uint16_t& command_mode)
-  : m_session(session)
-  , m_command_mode(command_mode)
-  , m_command_type(command_type)
+namespace sick
 {
-  m_session_id     = m_session.getSessionID();
-  m_request_id     = m_session.getNextRequestID();
+namespace cola2
+{
+
+CommandMsg::CommandMsg(Cola2Session &session, uint16_t command_type, uint16_t command_mode)
+    : m_session(session),
+      m_command_mode(command_mode),
+      m_command_type(command_type),
+      m_session_id(session.getSessionID()),
+      m_request_id(session.getNextRequestID())
+{
   m_tcp_parser_ptr = std::make_shared<sick::data_processing::ParseTCPPacket>();
 }
 
@@ -55,13 +56,13 @@ void CommandMsg::lockExecutionMutex()
   m_execution_mutex.lock();
 }
 
-std::vector<uint8_t> CommandMsg::constructTelegram(const std::vector<uint8_t>& telegram) const
+std::vector<uint8_t> CommandMsg::constructTelegram(const std::vector<uint8_t> &telegram) const
 {
   auto v = addTelegramData(telegram);
   return addTelegramHeader(v);
 }
 
-void CommandMsg::processReplyBase(const std::vector<uint8_t>& packet)
+void CommandMsg::processReplyBase(const std::vector<uint8_t> &packet)
 {
   m_tcp_parser_ptr->parseTCPSequence(packet, *this);
   m_was_successful = processReply();
@@ -83,7 +84,7 @@ uint8_t CommandMsg::getCommandType() const
   return m_command_type;
 }
 
-void CommandMsg::setCommandType(const uint8_t& command_type)
+void CommandMsg::setCommandType(const uint8_t &command_type)
 {
   m_command_type = command_type;
 }
@@ -93,17 +94,17 @@ uint8_t CommandMsg::getCommandMode() const
   return m_command_mode;
 }
 
-void CommandMsg::setCommandMode(const uint8_t& command_mode)
+void CommandMsg::setCommandMode(const uint8_t &command_mode)
 {
   m_command_mode = command_mode;
 }
 
 uint32_t CommandMsg::getSessionID() const
 {
-  return m_session_id;
+  return m_session_id.value();
 }
 
-void CommandMsg::setSessionID(const uint32_t& session_id)
+void CommandMsg::setSessionID(const uint32_t &session_id)
 {
   m_session_id = session_id;
 }
@@ -113,13 +114,13 @@ uint16_t CommandMsg::getRequestID() const
   return m_request_id;
 }
 
-void CommandMsg::setRequestID(const uint16_t& request_id)
+void CommandMsg::setRequestID(const uint16_t &request_id)
 {
   m_request_id = request_id;
 }
 
-std::vector<uint8_t> CommandMsg::expandTelegram(const std::vector<uint8_t>& telegram,
-                                             size_t additional_bytes) const
+std::vector<uint8_t> CommandMsg::expandTelegram(const std::vector<uint8_t> &telegram,
+                                                size_t additional_bytes) const
 {
   // Allocate memory to the desired final size
   std::vector<uint8_t> output(telegram.size() + additional_bytes);
@@ -129,9 +130,9 @@ std::vector<uint8_t> CommandMsg::expandTelegram(const std::vector<uint8_t>& tele
   return output;
 }
 
-std::vector<uint8_t> CommandMsg::addTelegramHeader(const std::vector<uint8_t>& telegram) const
+std::vector<uint8_t> CommandMsg::addTelegramHeader(const std::vector<uint8_t> &telegram) const
 {
-  std::vector<uint8_t> header             = prepareHeader();
+  std::vector<uint8_t> header = prepareHeader();
   std::vector<uint8_t>::iterator data_ptr = header.begin();
   writeDataToDataPtr(data_ptr, telegram);
   // Add telegram to end of new header, this may resize header
@@ -149,13 +150,13 @@ std::vector<uint8_t> CommandMsg::getDataVector() const
   return m_data_vector;
 }
 
-void CommandMsg::setDataVector(const std::vector<uint8_t>& data)
+void CommandMsg::setDataVector(const std::vector<uint8_t> &data)
 {
   m_data_vector = data;
 }
 
 void CommandMsg::writeDataToDataPtr(std::vector<uint8_t>::iterator data_ptr,
-                                 const std::vector<uint8_t>& telegram) const
+                                    const std::vector<uint8_t> &telegram) const
 {
   writeCola2StxToDataPtr(data_ptr);
   writeLengthToDataPtr(data_ptr, telegram);
@@ -174,7 +175,7 @@ void CommandMsg::writeCola2StxToDataPtr(std::vector<uint8_t>::iterator data_ptr)
 }
 
 void CommandMsg::writeLengthToDataPtr(std::vector<uint8_t>::iterator data_ptr,
-                                   const std::vector<uint8_t>& telegram) const
+                                      const std::vector<uint8_t> &telegram) const
 {
   uint32_t length = 10 + telegram.size();
   read_write_helper::writeUint32BigEndian(data_ptr + 4, length);

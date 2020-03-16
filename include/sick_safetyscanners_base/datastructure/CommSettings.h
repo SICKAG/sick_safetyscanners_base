@@ -35,7 +35,7 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_COMMSETTINGS_H
 #define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_COMMSETTINGS_H
 
-#include <boost/asio/ip/address_v4.hpp>
+#include <boost/asio.hpp>
 #include <iostream>
 #include <cstdint>
 #include <string>
@@ -49,8 +49,8 @@ namespace sick
 namespace datastructure
 {
 
-
-
+// Aggregate Initialization, do not add constructors, default-initializers etc.
+// see https://en.cppreference.com/w/cpp/language/aggregate_initialization
 struct CommSettings
 {
   CommSettings() = default;
@@ -62,8 +62,9 @@ struct CommSettings
   float end_angle{0.0};
   SensorFeatures features{sick::all_sensor_features};
   bool enabled{true};
+  uint16_t host_port{0};
+  boost::asio::ip::address_v4 host_ip{boost::asio::ip::address_v4::from_string("192.168.0.100")};
 };
-
 
 /*!
  * \brief Containing the communication settings for the sensor which can be changed on runtime.
@@ -262,5 +263,4 @@ struct CommSettings
 } // namespace datastructure
 } // namespace sick
 
-ENABLE_BITMASK_OPERATORS(SensorFeatures);
 #endif // SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_COMMSETTINGS_H

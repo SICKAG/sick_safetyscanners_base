@@ -110,13 +110,13 @@ public:
 
   SickSafetyscannersBase(const SickSafetyscannersBase &) = delete;
   SickSafetyscannersBase &operator=(const SickSafetyscannersBase &) = delete;
-  SickSafetyscannersBase(ip_address_t host_ip, uint16_t host_port, ip_address_t sensor_ip, uint16_t sensor_port, CommSettings comm_settings);
-  SickSafetyscannersBase(ip_address_t host_ip, uint16_t host_port, ip_address_t sensor_ip, uint16_t sensor_port, CommSettings comm_settings, io_service_ptr io_service);
+  SickSafetyscannersBase(ip_address_t sensor_ip, uint16_t sensor_port, CommSettings comm_settings);
+  SickSafetyscannersBase(ip_address_t sensor_ip, uint16_t sensor_port, CommSettings comm_settings, io_service_ptr io_service);
 
   /*!
    * \brief Destructor
    */
-  virtual ~SickSafetyscannersBase() = default;
+  // virtual ~SickSafetyscannersBase(); 
 
   /*!
    * \brief Changes the internal settings of the sensor.
@@ -177,13 +177,10 @@ public:
   requestMonitoringCases(std::vector<MonitoringCaseData> &monitoring_cases);
 
 private:
-  ip_address_t m_host_ip{ip_address_t::from_string("192.168.1.9")};
-  ip_address_t m_sensor_ip{ip_address_t::from_string("192.168.1.11")};
-  uint16_t m_host_port;
+  ip_address_t m_sensor_ip;
   uint16_t m_sensor_port;
   io_service_ptr m_io_service;
   CommSettings m_comm_settings;
-  // communication::TCPClientPtr m_tcp_client_ptr;
   sick::cola2::Cola2Session m_session;
 
   // dataReceivedCb m_newPacketReceivedCallbackFunction;
@@ -201,11 +198,13 @@ private:
   template <class CommandT, typename... Args>
   void inline createAndExecuteCommand(Args &&... args)
   {
-    auto cmd = createT<CommandT>(args);
-    m_session.executeCommand(cmd);
+    // auto cmd = createT<CommandT>(std::forward<Args>(args)...);
+    // CommandT cmd = createT<CommandT>(args...);
+    auto cmd = new CommandT(std::forward<Args>(args)...);
+    m_session.executeCommand(*cmd);
   }
 
-  void changeCommSettingsInColaSession(const datastructure::CommSettings &settings);
+  // void changeCommSettingsInColaSession(const datastructure::CommSettings &settings);
   // void startTCPConnection();
   // bool udpClientThread();
   // void startTCPConnection(const CommSettings &settings);

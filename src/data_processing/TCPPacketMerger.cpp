@@ -122,7 +122,6 @@ std::size_t TCPPacketMerger::getTargetSize() const
   return m_target_size;
 }
 
-
 std::size_t TCPPacketMerger::getCurrentSize()
 {
   std::size_t sum = 0;
@@ -135,7 +134,8 @@ std::size_t TCPPacketMerger::getCurrentSize()
   return static_cast<std::size_t>(sum);
 }
 
-void setTargetSize(std::size_t target_size) {
+void TCPPacketMerger::setTargetSize(std::size_t target_size)
+{
   m_target_size = target_size;
 }
 

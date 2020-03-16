@@ -37,15 +37,17 @@
 #include <sick_safetyscanners_base/cola2/Cola2Session.h>
 #include <sick_safetyscanners_base/cola2/Command.h>
 
-namespace sick {
-namespace cola2 {
+namespace sick
+{
+namespace cola2
+{
 
-CreateSession::CreateSession(Cola2Session& session)
-  : CommandMsg(session, 0x4F, 0x58) // see cola2 manual 0x4F = O, 0x58 = X
+CreateSession::CreateSession(Cola2Session &session)
+    : CommandMsg(session, 0x4F, 0x58) // see cola2 manual 0x4F = O, 0x58 = X
 {
 }
 
-std::vector<uint8_t> CreateSession::addTelegramData(const std::vector<uint8_t>& telegram) const
+std::vector<uint8_t> CreateSession::addTelegramData(const std::vector<uint8_t> &telegram) const
 {
   auto output = expandTelegram(telegram, 5);
   // Add new values after telegram
@@ -66,8 +68,8 @@ bool CreateSession::processReply()
   if ((getCommandType() == 'O' && getCommandMode() == 'A') ||
       (getCommandType() == 0x4F && getCommandMode() == 0x41))
   {
-    m_session.setSessionID(getSessionID());
-    LOG_INFO("Successfully opened Cola2 session with sessionID: %u", m_session.getSessionID());
+    // m_session.setSessionID(getSessionID());
+    LOG_INFO("Successfully opened Cola2 session with sessionID: %u", m_session.getSessionID().value());
     result = true;
   }
   else
