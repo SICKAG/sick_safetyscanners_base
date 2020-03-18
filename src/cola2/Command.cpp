@@ -32,9 +32,8 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners_base/cola2/Command.h>
-
-#include <sick_safetyscanners_base/cola2/Cola2Session.h>
+#include "sick_safetyscanners_base/cola2/Command.h"
+#include "sick_safetyscanners_base/cola2/Cola2Session.h"
 
 namespace sick
 {
@@ -45,7 +44,7 @@ CommandMsg::CommandMsg(Cola2Session &session, uint16_t command_type, uint16_t co
     : m_session(session),
       m_command_mode(command_mode),
       m_command_type(command_type),
-      m_session_id(session.getSessionID()),
+      m_session_id(session.getSessionID().value_or(0)),
       m_request_id(session.getNextRequestID())
 {
   m_tcp_parser_ptr = std::make_shared<sick::data_processing::ParseTCPPacket>();
@@ -65,8 +64,10 @@ std::vector<uint8_t> CommandMsg::constructTelegram(const std::vector<uint8_t> &t
 void CommandMsg::processReplyBase(const std::vector<uint8_t> &packet)
 {
   m_tcp_parser_ptr->parseTCPSequence(packet, *this);
+  LOG_INFO("process reply stuff");
   m_was_successful = processReply();
-  m_execution_mutex.unlock();
+  LOG_INFO("process reply stuff2");
+  // m_execution_mutex.unlock();
 }
 
 void CommandMsg::waitForCompletion()
@@ -101,10 +102,10 @@ void CommandMsg::setCommandMode(const uint8_t &command_mode)
 
 uint32_t CommandMsg::getSessionID() const
 {
-  return m_session_id.value();
+  return m_session_id;
 }
 
-void CommandMsg::setSessionID(const uint32_t &session_id)
+void CommandMsg::setSessionID(uint32_t session_id)
 {
   m_session_id = session_id;
 }

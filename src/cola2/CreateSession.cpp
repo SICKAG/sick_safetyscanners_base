@@ -32,10 +32,10 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners_base/cola2/CreateSession.h>
+#include "sick_safetyscanners_base/cola2/CreateSession.h"
 
-#include <sick_safetyscanners_base/cola2/Cola2Session.h>
-#include <sick_safetyscanners_base/cola2/Command.h>
+#include "sick_safetyscanners_base/cola2/Cola2Session.h"
+#include "sick_safetyscanners_base/cola2/Command.h"
 
 namespace sick
 {
@@ -68,8 +68,7 @@ bool CreateSession::processReply()
   if ((getCommandType() == 'O' && getCommandMode() == 'A') ||
       (getCommandType() == 0x4F && getCommandMode() == 0x41))
   {
-    // m_session.setSessionID(getSessionID());
-    LOG_INFO("Successfully opened Cola2 session with sessionID: %u", m_session.getSessionID().value());
+    m_session.setSessionID(getSessionID());
     result = true;
   }
   else

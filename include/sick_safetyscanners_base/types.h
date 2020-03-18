@@ -3,8 +3,8 @@
 
 #include <functional>
 #include <memory>
-#include <sick_safetyscanners_base/datastructure/Data.h>
-#include <sick_safetyscanners_base/generics.h>
+#include "sick_safetyscanners_base/datastructure/Data.h"
+#include "sick_safetyscanners_base/generics.h"
 
 namespace sick
 {
@@ -14,7 +14,7 @@ namespace types
 template <typename T>
 using CallbackT = std::function<void(T)>;
 
-using DataReceivedCb = CallbackT<const sick::datastructure::Data &>;
+using ScanDataCb = CallbackT<const sick::datastructure::Data &>;
 
 enum class SensorFeatures : uint16_t
 {

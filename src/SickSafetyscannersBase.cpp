@@ -38,11 +38,11 @@ namespace sick
 {
 
 SickSafetyscannersBase::SickSafetyscannersBase(
-    ip_address_t sensor_ip, uint16_t sensor_port, CommSettings comm_settings)
+    ip_address_t sensor_ip, uint16_t sensor_tcp_port, CommSettings comm_settings)
     : SickSafetyscannersBase(
           sensor_ip,
-          sensor_port,
-          comm_settings,
+          sensor_tcp_port,
+          comm_settings,      
           std::make_shared<boost::asio::io_service>())
 {
   LOG_INFO("Started SickSafetyscannersBase");
@@ -50,14 +50,14 @@ SickSafetyscannersBase::SickSafetyscannersBase(
 
 SickSafetyscannersBase::SickSafetyscannersBase(
     ip_address_t sensor_ip,
-    uint16_t sensor_port,
+    uint16_t sensor_tcp_port,
     CommSettings comm_settings,
     io_service_ptr io_service)
     : m_sensor_ip(sensor_ip),
-      m_sensor_port(sensor_port),
+      m_sensor_tcp_port(sensor_tcp_port),
       m_io_service(io_service),
       m_comm_settings(comm_settings),
-      m_session(sick::make_unique<sick::communication::TCPClient>(m_sensor_ip, m_sensor_port, boost::asio::ip::tcp::socket(*m_io_service)))
+      m_session(sick::make_unique<sick::communication::TCPClient>(m_sensor_ip, m_sensor_tcp_port, boost::asio::ip::tcp::socket(*m_io_service)))
 {
 }
 
@@ -215,17 +215,38 @@ void SickSafetyscannersBase::requestRequiredUserAction(
   createAndExecuteCommand<sick::cola2::RequiredUserActionVariableCommand>(m_session, required_user_action);
 }
 
-// void SickSafetyscannersBase::processUDPPacket(const sick::datastructure::PacketBuffer &buffer)
-// {
-//   if (m_packet_merger_ptr->addUDPPacket(buffer))
-//   {
-//     sick::datastructure::PacketBuffer deployed_buffer =
-//         m_packet_merger_ptr->getDeployedPacketBuffer();
-//     sick::data_processing::ParseData data_parser;
-//     sick::datastructure::Data data = data_parser.parseUDPSequence(deployed_buffer);
 
-//     m_newPacketReceivedCallbackFunction(data);
-//   }
-// }
+// Async
+AsyncSickSafetyScanner::AsyncSickSafetyScanner(
+  
+)
+
+void AsyncSickSafetyScanner::processUDPPacket(const sick::datastructure::PacketBuffer &buffer)
+{
+  if (m_packet_merger_ptr->addUDPPacket(buffer))
+  {
+    sick::datastructure::PacketBuffer deployed_buffer =
+        m_packet_merger_ptr->getDeployedPacketBuffer();
+    sick::data_processing::ParseData data_parser;
+    sick::datastructure::Data data = data_parser.parseUDPSequence(deployed_buffer);
+
+    m_scan_data_cb(data);
+  }
+}
+
+void AsyncSickSafetyScanner::run(sick::types::ScanDataCb callback)
+{
+  // TODO Start Thread
+  // TODO Set data callback?
+}
+
+const Data AsyncSickSafetyScanner::getData()
+{
+}
+
+void AsyncSickSafetyScanner::stop()
+{
+  // TODO stop thread
+}
 
 } // namespace sick

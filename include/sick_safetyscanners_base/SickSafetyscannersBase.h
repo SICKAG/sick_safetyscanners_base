@@ -36,8 +36,6 @@
 #define SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H
 
 //#include <ros/ros.h>
-#include <sick_safetyscanners_base/log.h>
-#include <sick_safetyscanners_base/types.h>
 
 #include <boost/function.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -50,38 +48,41 @@
 #include <chrono>
 #include <memory>
 
-#include <sick_safetyscanners_base/communication/AsyncTCPClient.h>
-#include <sick_safetyscanners_base/communication/AsyncUDPClient.h>
-#include <sick_safetyscanners_base/data_processing/ParseData.h>
-#include <sick_safetyscanners_base/data_processing/UDPPacketMerger.h>
-#include <sick_safetyscanners_base/datastructure/CommSettings.h>
-#include <sick_safetyscanners_base/datastructure/ConfigData.h>
-#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
+#include "sick_safetyscanners_base/log.h"
+#include "sick_safetyscanners_base/types.h"
 
-#include <sick_safetyscanners_base/cola2/ApplicationNameVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/ChangeCommSettingsCommand.h>
-#include <sick_safetyscanners_base/cola2/Cola2Session.h>
-#include <sick_safetyscanners_base/cola2/ConfigMetadataVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/DeviceNameVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/DeviceStatusVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/FieldGeometryVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/FieldHeaderVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/FindMeCommand.h>
-#include <sick_safetyscanners_base/cola2/FirmwareVersionVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/LatestTelegramVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/MeasurementCurrentConfigVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/MeasurementPersistentConfigVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/MonitoringCaseTableHeaderVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/MonitoringCaseVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/OrderNumberVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/ProjectNameVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/RequiredUserActionVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/SerialNumberVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/StatusOverviewVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/TypeCodeVariableCommand.h>
-#include <sick_safetyscanners_base/cola2/UserNameVariableCommand.h>
+#include "sick_safetyscanners_base/communication/AsyncTCPClient.h"
+#include "sick_safetyscanners_base/communication/AsyncUDPClient.h"
+#include "sick_safetyscanners_base/data_processing/ParseData.h"
+#include "sick_safetyscanners_base/data_processing/UDPPacketMerger.h"
+#include "sick_safetyscanners_base/datastructure/CommSettings.h"
+#include "sick_safetyscanners_base/datastructure/ConfigData.h"
+#include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 
-#include <sick_safetyscanners_base/communication/TCPClient.h>
+#include "sick_safetyscanners_base/cola2/ApplicationNameVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/ChangeCommSettingsCommand.h"
+#include "sick_safetyscanners_base/cola2/Cola2Session.h"
+#include "sick_safetyscanners_base/cola2/ConfigMetadataVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/DeviceNameVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/DeviceStatusVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/FieldGeometryVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/FieldHeaderVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/FindMeCommand.h"
+#include "sick_safetyscanners_base/cola2/FirmwareVersionVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/LatestTelegramVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/MeasurementCurrentConfigVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/MeasurementPersistentConfigVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/MonitoringCaseTableHeaderVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/MonitoringCaseVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/OrderNumberVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/ProjectNameVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/RequiredUserActionVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/SerialNumberVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/StatusOverviewVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/TypeCodeVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/UserNameVariableCommand.h"
+
+#include "sick_safetyscanners_base/communication/TCPClient.h"
 
 namespace sick
 {
@@ -110,13 +111,13 @@ public:
 
   SickSafetyscannersBase(const SickSafetyscannersBase &) = delete;
   SickSafetyscannersBase &operator=(const SickSafetyscannersBase &) = delete;
-  SickSafetyscannersBase(ip_address_t sensor_ip, uint16_t sensor_port, CommSettings comm_settings);
-  SickSafetyscannersBase(ip_address_t sensor_ip, uint16_t sensor_port, CommSettings comm_settings, io_service_ptr io_service);
+  SickSafetyscannersBase(ip_address_t sensor_ip, uint16_t sensor_tcp_port, CommSettings comm_settings);
+  SickSafetyscannersBase(ip_address_t sensor_ip, uint16_t sensor_tcp_port, CommSettings comm_settings, io_service_ptr io_service);
 
   /*!
    * \brief Destructor
    */
-  // virtual ~SickSafetyscannersBase(); 
+  // virtual ~SickSafetyscannersBase();
 
   /*!
    * \brief Changes the internal settings of the sensor.
@@ -178,7 +179,7 @@ public:
 
 private:
   ip_address_t m_sensor_ip;
-  uint16_t m_sensor_port;
+  uint16_t m_sensor_tcp_port;
   io_service_ptr m_io_service;
   CommSettings m_comm_settings;
   sick::cola2::Cola2Session m_session;
@@ -186,20 +187,18 @@ private:
   // dataReceivedCb m_newPacketReceivedCallbackFunction;
 
   // std::shared_ptr<boost::asio::io_service> m_io_service_ptr;
-  // std::shared_ptr<boost::asio::io_service::work> m_io_work_ptr;
   // std::shared_ptr<sick::communication::AsyncUDPClient> m_async_udp_client_ptr;
   // std::shared_ptr<sick::communication::AsyncTCPClient> m_async_tcp_client_ptr;
-  // boost::scoped_ptr<boost::thread> m_udp_client_thread_ptr;
 
   // std::shared_ptr<sick::cola2::Cola2Session> m_session_ptr;
 
+  // std::shared_ptr<boost::asio::io_service::work> m_io_work_ptr;
+  // boost::scoped_ptr<boost::thread> m_udp_client_thread_ptr;
   // std::shared_ptr<sick::data_processing::UDPPacketMerger> m_packet_merger_ptr;
 
   template <class CommandT, typename... Args>
   void inline createAndExecuteCommand(Args &&... args)
   {
-    // auto cmd = createT<CommandT>(std::forward<Args>(args)...);
-    // CommandT cmd = createT<CommandT>(args...);
     auto cmd = new CommandT(std::forward<Args>(args)...);
     m_session.executeCommand(*cmd);
   }
@@ -217,13 +216,27 @@ class AsyncSickSafetyScanner : public SickSafetyscannersBase
 {
 public:
   // SickSafetyScannerAsync() : SickSafetyscannersBase(){};
+  AsyncSickSafetyScanner() = delete;
+  AsyncSickSafetyScanner(const AsyncSickSafetyScanner &) = delete;
+  AsyncSickSafetyScanner &operator=(const AsyncSickSafetyScanner &) = delete;
+
+  AsyncSickSafetyScanner(ip_address_t sensor_ip, uint16_t sensor_tcp_port, CommSettings comm_settings);
+  AsyncSickSafetyScanner(ip_address_t sensor_ip, uint16_t sensor_tcp_port, CommSettings comm_settings, io_service_ptr io_service);
 
   /*!
    * \brief Start the connection to the sensor and enables output.
    * \return If the setup was correct.
    */
-  void run(sick::types::DataReceivedCb callback);
+  void run(sick::types::ScanDataCb callback);
   void stop();
+
+private:
+  std::unique_ptr<sick::data_processing::UDPPacketMerger> m_packet_merger_ptr;
+  sick::types::ScanDataCb m_scan_data_cb;
+  std::shared_ptr<boost::asio::io_service::work> m_io_work_ptr;
+  boost::scoped_ptr<boost::thread> m_udp_client_thread_ptr;
+
+  void processUDPPacket(const sick::datastructure::PacketBuffer &buffer);
 };
 
 class SyncSickSafetyScanner : public SickSafetyscannersBase

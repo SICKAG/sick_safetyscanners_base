@@ -40,14 +40,13 @@
 
 #include <vector>
 
-#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
+#include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 
-#include <sick_safetyscanners_base/data_processing/ParseTCPPacket.h>
-#include <sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp>
-#include <sick_safetyscanners_base/log.h>
+#include "sick_safetyscanners_base/data_processing/ParseTCPPacket.h"
+#include "sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp"
+#include "sick_safetyscanners_base/log.h"
 
 #include <boost/thread/mutex.hpp>
-#include <boost/optional.hpp>
 
 namespace sick
 {
@@ -121,7 +120,7 @@ public:
    *
    * \param session_id The new session ID.
    */
-  void setSessionID(const uint32_t &session_id);
+  void setSessionID(uint32_t session_id);
 
   /*!
    * \brief Returns if the command was successfully parsed.
@@ -202,7 +201,7 @@ private:
   uint8_t m_command_mode;
   uint8_t m_command_type;
 
-  boost::optional<uint32_t> m_session_id;
+  uint32_t m_session_id;
   uint16_t m_request_id;
 
   std::vector<uint8_t> m_data_vector;

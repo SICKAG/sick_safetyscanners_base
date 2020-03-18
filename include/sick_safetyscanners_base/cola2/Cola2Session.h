@@ -35,17 +35,17 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_COLA2_COLA2SESSION_H
 #define SICK_SAFETYSCANNERS_BASE_COLA2_COLA2SESSION_H
 
-#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
+#include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 
-#include <sick_safetyscanners_base/communication/AsyncTCPClient.h>
-#include <sick_safetyscanners_base/communication/TCPClient.h>
+#include "sick_safetyscanners_base/communication/AsyncTCPClient.h"
+#include "sick_safetyscanners_base/communication/TCPClient.h"
 
-#include <sick_safetyscanners_base/cola2/CloseSession.h>
-#include <sick_safetyscanners_base/cola2/Command.h>
-#include <sick_safetyscanners_base/cola2/CreateSession.h>
+#include "sick_safetyscanners_base/cola2/CloseSession.h"
+#include "sick_safetyscanners_base/cola2/Command.h"
+#include "sick_safetyscanners_base/cola2/CreateSession.h"
 
-#include <sick_safetyscanners_base/data_processing/ParseTCPPacket.h>
-#include <sick_safetyscanners_base/data_processing/TCPPacketMerger.h>
+#include "sick_safetyscanners_base/data_processing/ParseTCPPacket.h"
+#include "sick_safetyscanners_base/data_processing/TCPPacketMerger.h"
 
 #include <boost/bind.hpp>
 #include <boost/optional.hpp>
@@ -65,7 +65,6 @@ class CreateSession;
 class Cola2Session
 {
 public:
-  //TODO pass general TCPClient?
   explicit Cola2Session(communication::TCPClientPtr tcp_client);
   Cola2Session() = delete;
   Cola2Session(const Cola2Session &) = delete;
@@ -73,21 +72,19 @@ public:
 
   void executeCommand(CommandMsg &cmd, long int timeout_ms = 2000);
 
-  // TODO clearify whether this is should be private
-  void open();
-  void close();
-
-  // TODO make this private after CommandMsg has been refactored
   boost::optional<uint32_t> getSessionID() const;
   uint16_t getNextRequestID();
+  void setSessionID(uint32_t session_id);
 
 private:
-
-  void setSessionID(uint32_t session_id);
   uint16_t m_request_id_;
-  boost::mutex m_execution_mutex_;
   boost::optional<uint32_t> m_session_id_;
   communication::TCPClientPtr m_tcp_client_ptr_;
+
+  void open();
+  void close();
+  void sendRequest(CommandMsg &cmd);
+  sick::datastructure::PacketBuffer waitAndProcessResponse(CommandMsg &cmd, int64_t timeout_ms);
 };
 
 } // namespace cola2

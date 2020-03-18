@@ -32,7 +32,7 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners_base/data_processing/TCPPacketMerger.h>
+#include "sick_safetyscanners_base/data_processing/TCPPacketMerger.h"
 
 namespace sick
 {
@@ -67,7 +67,7 @@ sick::datastructure::PacketBuffer TCPPacketMerger::getDeployedPacketBuffer()
 bool TCPPacketMerger::addTCPPacket(const datastructure::PacketBuffer &buffer)
 {
   // Protect the internal memory for duplciate calls
-  std::lock_guard<std::mutex> lock(m_buffer_mutex);
+  // std::lock_guard<std::mutex> lock(m_buffer_mutex);
 
   if (isComplete())
   {

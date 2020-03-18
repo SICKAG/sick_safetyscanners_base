@@ -111,7 +111,7 @@ void ChangeCommSettingsCommand::writeIPAddresstoDataPtr(
 
 void ChangeCommSettingsCommand::writePortToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
 {
-  read_write_helper::writeUint16LittleEndian(data_ptr + 12, m_settings.host_port);
+  read_write_helper::writeUint16LittleEndian(data_ptr + 12, m_settings.host_udp_port);
 }
 
 void ChangeCommSettingsCommand::writeFrequencyToDataPtr(
