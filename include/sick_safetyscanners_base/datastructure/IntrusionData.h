@@ -35,7 +35,7 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_INTRUSIONDATA_H
 #define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_INTRUSIONDATA_H
 
-#include <sick_safetyscanners_base/datastructure/IntrusionDatum.h>
+#include "sick_safetyscanners_base/datastructure/IntrusionDatum.h"
 
 #include <vector>
 

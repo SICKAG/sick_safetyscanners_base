@@ -1,4 +1,4 @@
-#include <sick_safetyscanners_base/communication/TCPClient.h>
+#include "sick_safetyscanners_base/communication/TCPClient.h"
 
 namespace sick
 {

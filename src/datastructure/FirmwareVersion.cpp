@@ -32,7 +32,7 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners_base/datastructure/FirmwareVersion.h>
+#include "sick_safetyscanners_base/datastructure/FirmwareVersion.h"
 
 namespace sick {
 namespace datastructure {

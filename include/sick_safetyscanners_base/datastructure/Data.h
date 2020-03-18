@@ -37,14 +37,14 @@
 
 #include <memory>
 
-#include <sick_safetyscanners_base/datastructure/ApplicationData.h>
-#include <sick_safetyscanners_base/datastructure/ApplicationInputs.h>
-#include <sick_safetyscanners_base/datastructure/ApplicationOutputs.h>
-#include <sick_safetyscanners_base/datastructure/DataHeader.h>
-#include <sick_safetyscanners_base/datastructure/DerivedValues.h>
-#include <sick_safetyscanners_base/datastructure/GeneralSystemState.h>
-#include <sick_safetyscanners_base/datastructure/IntrusionData.h>
-#include <sick_safetyscanners_base/datastructure/MeasurementData.h>
+#include "sick_safetyscanners_base/datastructure/ApplicationData.h"
+#include "sick_safetyscanners_base/datastructure/ApplicationInputs.h"
+#include "sick_safetyscanners_base/datastructure/ApplicationOutputs.h"
+#include "sick_safetyscanners_base/datastructure/DataHeader.h"
+#include "sick_safetyscanners_base/datastructure/DerivedValues.h"
+#include "sick_safetyscanners_base/datastructure/GeneralSystemState.h"
+#include "sick_safetyscanners_base/datastructure/IntrusionData.h"
+#include "sick_safetyscanners_base/datastructure/MeasurementData.h"
 
 namespace sick {
 namespace datastructure {

@@ -32,10 +32,10 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners_base/cola2/OrderNumberVariableCommand.h>
+#include "sick_safetyscanners_base/cola2/OrderNumberVariableCommand.h"
 
-#include <sick_safetyscanners_base/cola2/Cola2Session.h>
-#include <sick_safetyscanners_base/cola2/Command.h>
+#include "sick_safetyscanners_base/cola2/Cola2Session.h"
+#include "sick_safetyscanners_base/cola2/Command.h"
 
 namespace sick {
 namespace cola2 {

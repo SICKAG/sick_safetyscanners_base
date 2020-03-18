@@ -32,38 +32,51 @@
  */
 //----------------------------------------------------------------------
 
+#include "sick_safetyscanners_base/communication/UDPClient.h"
 
-#include <sick_safetyscanners_base/communication/AsyncUDPClient.h>
-
-namespace sick {
-namespace communication {
-AsyncUDPClient::AsyncUDPClient(const PacketHandler& packet_handler,
-                               boost::asio::io_service& io_service,
-                               const uint16_t& local_port)
-  : m_packet_handler(packet_handler)
-  , m_io_service(io_service)
+namespace sick
 {
+namespace communication
+{
+
+UDPClient::UDPClient(
+    boost::asio::ip::udp::socket &&socket,
+    const boost::asio::ip::address_v4 &server_ip,
+    uint16_t server_port)
+    : m_socket(std::move(socket))
+{
+}
+
+UDPClient::UDPClient(
+    // const PacketHandler &packet_handler,
+    boost::asio::io_service &io_service,
+    const boost::asio::ip::address_v4 &server_ip,
+    uint16_t server_port)
+    : m_socket(io_service)
+{
+  // TODO necessary?
   // Keep io_service busy
-  m_io_work_ptr = std::make_shared<boost::asio::io_service::work>(boost::ref(m_io_service));
-  try
-  {
-    m_socket_ptr = std::make_shared<boost::asio::ip::udp::socket>(
-      boost::ref(m_io_service),
-      boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), local_port));
-  }
-  catch (std::exception& e)
-  {
-    LOG_ERROR("Exception while creating socket: %s", e.what());
-  }
+  // m_io_work_ptr = std::make_shared<boost::asio::io_service::work>(boost::ref(m_io_service));
+  // try
+  // {
+  // m_socket_ptr = std::make_shared<boost::asio::ip::udp::socket>(
+  //     boost::ref(m_io_service),
+  //     boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), local_port));
+  // m_socket_ptr = sick::make_unique<boost::asio::ip::udp::socket>(io_service);
+  // }
+  // catch (std::exception &e)
+  // {
+  //   LOG_ERROR("Exception while creating socket: %s", e.what());
+  // }
   LOG_INFO("UDP client is setup");
 }
 
-AsyncUDPClient::~AsyncUDPClient()
+UDPClient::~UDPClient()
 {
   m_io_service.stop();
 }
 
-void AsyncUDPClient::startReceive()
+void UDPClient::startReceive()
 {
   m_socket_ptr->async_receive_from(boost::asio::buffer(m_recv_buffer),
                                    m_remote_endpoint,
@@ -72,8 +85,8 @@ void AsyncUDPClient::startReceive()
                                    });
 }
 
-void AsyncUDPClient::handleReceive(const boost::system::error_code& error,
-                                   const std::size_t& bytes_transferred)
+void UDPClient::handleReceive(const boost::system::error_code &error,
+                              const std::size_t &bytes_transferred)
 {
   if (!error)
   {
@@ -87,17 +100,16 @@ void AsyncUDPClient::handleReceive(const boost::system::error_code& error,
   startReceive();
 }
 
-
-void AsyncUDPClient::runService()
+void UDPClient::run(PacketHandler& packet_handler)
 {
   startReceive();
 }
 
-unsigned short AsyncUDPClient::getLocalPort()
+unsigned short UDPClient::getLocalPort()
 {
-  if (m_socket_ptr)
+  if (m_socket.is_open())
   {
-    return m_socket_ptr->local_endpoint().port();
+    return m_socket.local_endpoint().port();
   }
   return 0;
 }

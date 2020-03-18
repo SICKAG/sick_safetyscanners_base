@@ -5,9 +5,9 @@
 #include <mutex>
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
-#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
-#include <sick_safetyscanners_base/log.h>
-#include <sick_safetyscanners_base/exceptions.h>
+#include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
+#include "sick_safetyscanners_base/log.h"
+#include "sick_safetyscanners_base/exceptions.h"
 
 namespace sick
 {

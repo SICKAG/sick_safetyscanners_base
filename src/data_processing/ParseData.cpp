@@ -32,7 +32,7 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners_base/data_processing/ParseData.h>
+#include "sick_safetyscanners_base/data_processing/ParseData.h"
 
 namespace sick {
 namespace data_processing {

@@ -35,8 +35,8 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_APPLICATIONDATA_H
 #define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_APPLICATIONDATA_H
 
-#include <sick_safetyscanners_base/datastructure/ApplicationInputs.h>
-#include <sick_safetyscanners_base/datastructure/ApplicationOutputs.h>
+#include "sick_safetyscanners_base/datastructure/ApplicationInputs.h"
+#include "sick_safetyscanners_base/datastructure/ApplicationOutputs.h"
 
 namespace sick {
 namespace datastructure {

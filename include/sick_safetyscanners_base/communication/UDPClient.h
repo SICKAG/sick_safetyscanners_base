@@ -40,31 +40,34 @@
 
 #include <functional>
 #include <iostream>
+#include <memory>
 
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/function.hpp>
 
-#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
-#include <sick_safetyscanners_base/log.h>
+#include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
+#include "sick_safetyscanners_base/log.h"
+#include "sick_safetyscanners_base/types.h"
 
-
-namespace sick {
-namespace communication {
+namespace sick
+{
+namespace communication
+{
 
 /*!
  * \brief An asynchronous udp client.
  */
-class AsyncUDPClient
+class UDPClient
 {
 public:
-
-// TODO typedefs fur globale typen auslagern
+  // TODO typedefs fur globale typen auslagern
   /*!
    * \brief Typedef to a reference to a function. Will be used to process the incoming packets.
    */
-  typedef boost::function<void(const sick::datastructure::PacketBuffer&)> PacketHandler;
+  // typedef boost::function<void(const sick::datastructure::PacketBuffer &)> PacketHandler;
+  using PacketHandler = std::function<void(const sick::datastructure::PacketBuffer &)>;
 
   /*!
    * \brief Constructor of the asynchronous udp client.
@@ -73,21 +76,34 @@ public:
    * \param io_service Instance of the boost io_service.
    * \param local_port The local port, where the udp packets will arrive.
    */
-  AsyncUDPClient(const PacketHandler& packet_handler,
-                 boost::asio::io_service& io_service,
-                 const uint16_t& local_port = 0);
+
+  UDPClient(
+      // const PacketHandler &packet_handler,
+      boost::asio::ip::udp::socket &&socket,
+      const boost::asio::ip::address_v4 &server_ip,
+      uint16_t server_port = 0);
+  UDPClient(
+      // const PacketHandler &packet_handler,
+      boost::asio::io_service &io_service,
+      const boost::asio::ip::address_v4 &server_ip,
+      uint16_t server_port = 0);
+
+  UDPClient() = delete;
+  UDPClient(const UDPClient &) = delete;
+  UDPClient &operator=(const UDPClient &) = delete;
 
   /*!
    * \brief The destructor of the asynchronous udp client.
    */
-  virtual ~AsyncUDPClient();
+  virtual ~UDPClient();
 
-
-// TODO Wat furn Service, bessere Namen
+  // TODO Wat furn Service, bessere Namen
   /*!
    * \brief Start the listening loop for the udp data packets.
    */
-  void runService();
+  // void runService();
+
+  void run(PacketHandler &handler);
 
   /*!
    * \brief Returns the actual port assigned to the local machine
@@ -97,21 +113,15 @@ public:
 
 private:
   datastructure::PacketBuffer::ArrayBuffer m_recv_buffer;
-
   PacketHandler m_packet_handler;
-
   std::shared_ptr<boost::asio::io_service::work> m_io_work_ptr;
-  boost::asio::io_service& m_io_service;
-  std::shared_ptr<boost::asio::ip::udp::socket> m_socket_ptr;
+  boost::asio::ip::udp::socket m_socket;
   boost::asio::ip::udp::endpoint m_remote_endpoint;
 
   void startReceive();
 
   // TODO error codes sind boese
-  void handleReceive(const boost::system::error_code& error, const std::size_t& bytes_transferred);
-
-
-  AsyncUDPClient(AsyncUDPClient&); // block default copy constructor
+  void handleReceive(const boost::system::error_code &error, const std::size_t &bytes_transferred);
 };
 } // namespace communication
 } // namespace sick

@@ -236,6 +236,7 @@ void AsyncSickSafetyScanner::processUDPPacket(const sick::datastructure::PacketB
 
 void AsyncSickSafetyScanner::run(sick::types::ScanDataCb callback)
 {
+  m_scan_data_cb. 
   // TODO Start Thread
   // TODO Set data callback?
 }

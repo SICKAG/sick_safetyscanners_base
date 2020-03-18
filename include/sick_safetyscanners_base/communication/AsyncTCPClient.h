@@ -49,8 +49,8 @@
 #include <boost/thread/condition.hpp>
 #include <boost/thread/mutex.hpp>
 
-#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
-#include <sick_safetyscanners_base/log.h>
+#include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
+#include "sick_safetyscanners_base/log.h"
 
 namespace sick {
 namespace communication {

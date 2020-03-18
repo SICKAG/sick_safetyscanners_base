@@ -32,7 +32,7 @@
  */
 //----------------------------------------------------------------------
 
-#include <sick_safetyscanners_base/datastructure/LatestTelegram.h>
+#include "sick_safetyscanners_base/datastructure/LatestTelegram.h"
 
 namespace sick {
 namespace datastructure {

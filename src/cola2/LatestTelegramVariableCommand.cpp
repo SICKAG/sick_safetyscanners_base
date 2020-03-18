@@ -33,9 +33,9 @@
 //----------------------------------------------------------------------
 
 
-#include <sick_safetyscanners_base/cola2/Cola2Session.h>
-#include <sick_safetyscanners_base/cola2/Command.h>
-#include <sick_safetyscanners_base/cola2/LatestTelegramVariableCommand.h>
+#include "sick_safetyscanners_base/cola2/Cola2Session.h"
+#include "sick_safetyscanners_base/cola2/Command.h"
+#include "sick_safetyscanners_base/cola2/LatestTelegramVariableCommand.h"
 
 namespace sick {
 namespace cola2 {

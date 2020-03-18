@@ -1,7 +1,7 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_CONSTANTS_H
 #define SICK_SAFETYSCANNERS_BASE_CONSTANTS_H
 
-#include <sick_safetyscanners_base/types.h>
+#include "sick_safetyscanners_base/types.h"
 
 namespace sick
 {
