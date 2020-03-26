@@ -70,7 +70,7 @@ public:
   Cola2Session(const Cola2Session &) = delete;
   Cola2Session &operator=(const Cola2Session &) = delete;
 
-  void executeCommand(CommandMsg &cmd, long int timeout_ms = 2000);
+  void executeCommand(CommandMsg &cmd, long int timeout_ms = 5000);
 
   boost::optional<uint32_t> getSessionID() const;
   uint16_t getNextRequestID();

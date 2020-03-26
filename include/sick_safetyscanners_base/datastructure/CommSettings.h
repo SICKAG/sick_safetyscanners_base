@@ -62,7 +62,7 @@ struct CommSettings
   float end_angle{0.0};
   SensorFeatures features{sick::all_sensor_features};
   bool enabled{true};
-  uint16_t host_udp_port{0};
+  unsigned short host_udp_port{0};
   boost::asio::ip::address_v4 host_ip{boost::asio::ip::address_v4::from_string("192.168.1.100")};
 };
 

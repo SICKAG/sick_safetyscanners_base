@@ -46,6 +46,7 @@
 #include <boost/asio.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/function.hpp>
+#include <boost/thread.hpp>
 
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 #include "sick_safetyscanners_base/log.h"
@@ -67,7 +68,6 @@ public:
    * \brief Typedef to a reference to a function. Will be used to process the incoming packets.
    */
   // typedef boost::function<void(const sick::datastructure::PacketBuffer &)> PacketHandler;
-  using PacketHandler = std::function<void(const sick::datastructure::PacketBuffer &)>;
 
   /*!
    * \brief Constructor of the asynchronous udp client.
@@ -78,15 +78,8 @@ public:
    */
 
   UDPClient(
-      // const PacketHandler &packet_handler,
-      boost::asio::ip::udp::socket &&socket,
-      const boost::asio::ip::address_v4 &server_ip,
-      uint16_t server_port = 0);
-  UDPClient(
-      // const PacketHandler &packet_handler,
       boost::asio::io_service &io_service,
-      const boost::asio::ip::address_v4 &server_ip,
-      uint16_t server_port = 0);
+      unsigned short server_port);
 
   UDPClient() = delete;
   UDPClient(const UDPClient &) = delete;
@@ -97,13 +90,20 @@ public:
    */
   virtual ~UDPClient();
 
+  void connect();
+  void disconnect();
+
   // TODO Wat furn Service, bessere Namen
   /*!
    * \brief Start the listening loop for the udp data packets.
    */
-  // void runService();
+  template <typename Callable>
+  void run(Callable && callback) {
+    m_packet_handler = callback;
+    beginReceive();
+  }
 
-  void run(PacketHandler &handler);
+  void stop();
 
   /*!
    * \brief Returns the actual port assigned to the local machine
@@ -111,18 +111,22 @@ public:
    */
   unsigned short getLocalPort();
 
-private:
-  datastructure::PacketBuffer::ArrayBuffer m_recv_buffer;
-  PacketHandler m_packet_handler;
-  std::shared_ptr<boost::asio::io_service::work> m_io_work_ptr;
-  boost::asio::ip::udp::socket m_socket;
-  boost::asio::ip::udp::endpoint m_remote_endpoint;
+  bool isConnected();
 
-  void startReceive();
+private:
+  boost::asio::io_service &m_io_service;
+  boost::asio::ip::udp::endpoint m_remote_endpoint;
+  boost::asio::ip::udp::socket m_socket;
+  types::PacketHandler m_packet_handler;
+  datastructure::PacketBuffer::ArrayBuffer m_recv_buffer;
+
+  void handleReceive(boost::system::error_code ec, std::size_t bytes_recv);
+  void beginReceive();
 
   // TODO error codes sind boese
-  void handleReceive(const boost::system::error_code &error, const std::size_t &bytes_transferred);
+  // void handleReceive(const boost::system::error_code &error, const std::size_t &bytes_transferred, PacketHandler &handler);
 };
+
 } // namespace communication
 } // namespace sick
 

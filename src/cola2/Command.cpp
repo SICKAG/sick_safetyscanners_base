@@ -64,9 +64,7 @@ std::vector<uint8_t> CommandMsg::constructTelegram(const std::vector<uint8_t> &t
 void CommandMsg::processReplyBase(const std::vector<uint8_t> &packet)
 {
   m_tcp_parser_ptr->parseTCPSequence(packet, *this);
-  LOG_INFO("process reply stuff");
   m_was_successful = processReply();
-  LOG_INFO("process reply stuff2");
   // m_execution_mutex.unlock();
 }
 

@@ -32,43 +32,59 @@
  */
 //----------------------------------------------------------------------
 
+#include <utility>
 #include "sick_safetyscanners_base/SickSafetyscannersBase.h"
 
 namespace sick
 {
 
 SickSafetyscannersBase::SickSafetyscannersBase(
-    ip_address_t sensor_ip, uint16_t sensor_tcp_port, CommSettings comm_settings)
-    : SickSafetyscannersBase(
-          sensor_ip,
-          sensor_tcp_port,
-          comm_settings,      
-          std::make_shared<boost::asio::io_service>())
+    ip_address_t sensor_ip,
+    unsigned short sensor_tcp_port,
+    CommSettings comm_settings)
+    : m_sensor_tcp_port(sensor_tcp_port),
+      m_sensor_ip(sensor_ip),
+      m_comm_settings(comm_settings),
+      m_io_service_ptr(sick::make_unique<boost::asio::io_service>()),
+      m_io_service(*m_io_service_ptr),
+      m_udp_client(m_io_service, comm_settings.host_udp_port),
+      m_session(
+          std::move(sick::make_unique<sick::communication::TCPClient>(
+              m_sensor_ip, sensor_tcp_port, m_io_service)))
 {
-  LOG_INFO("Started SickSafetyscannersBase");
+  init();
 }
 
 SickSafetyscannersBase::SickSafetyscannersBase(
     ip_address_t sensor_ip,
-    uint16_t sensor_tcp_port,
+    unsigned short sensor_tcp_port,
     CommSettings comm_settings,
-    io_service_ptr io_service)
-    : m_sensor_ip(sensor_ip),
-      m_sensor_tcp_port(sensor_tcp_port),
-      m_io_service(io_service),
+    boost::asio::io_service &io_service)
+    : m_sensor_tcp_port(sensor_tcp_port),
+      m_sensor_ip(sensor_ip),
       m_comm_settings(comm_settings),
-      m_session(sick::make_unique<sick::communication::TCPClient>(m_sensor_ip, m_sensor_tcp_port, boost::asio::ip::tcp::socket(*m_io_service)))
+      m_io_service_ptr(nullptr),
+      m_io_service(io_service),
+      m_udp_client(m_io_service, comm_settings.host_udp_port),
+      m_session(
+          std::move(sick::make_unique<sick::communication::TCPClient>(
+              m_sensor_ip, sensor_tcp_port, m_io_service)))
 {
+  init();
 }
 
-// void SickSafetyscannersBase::processTCPPacket(const sick::datastructure::PacketBuffer &buffer)
-// {
-//   // Not needed for current functionality, inplace for possible future developments
-// }
+void SickSafetyscannersBase::init()
+{
+  LOG_INFO("Started SickSafetyscannersBase");
+  changeSensorSettings(m_comm_settings);
+}
 
 void SickSafetyscannersBase::changeSensorSettings(const CommSettings &settings)
 {
-  createAndExecuteCommand<sick::cola2::ChangeCommSettingsCommand>(m_session, settings);
+  CommSettings _settings = settings;
+  _settings.host_udp_port = m_udp_client.getLocalPort();
+  std::cout << "UDP Port is " << _settings.host_udp_port;
+  createAndExecuteCommand<sick::cola2::ChangeCommSettingsCommand>(m_session, _settings);
 }
 
 void SickSafetyscannersBase::findSensor(uint16_t blink_time)
@@ -215,18 +231,54 @@ void SickSafetyscannersBase::requestRequiredUserAction(
   createAndExecuteCommand<sick::cola2::RequiredUserActionVariableCommand>(m_session, required_user_action);
 }
 
+// ----------------
 
-// Async
-AsyncSickSafetyScanner::AsyncSickSafetyScanner(
-  
-)
+AsyncSickSafetyScanner::AsyncSickSafetyScanner(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback)
+    : SickSafetyscannersBase(sensor_ip, sensor_tcp_port, comm_settings),
+      m_packet_merger(),
+      m_scan_data_cb(callback),
+      m_work(sick::make_unique<boost::asio::io_service::work>(m_io_service))
+{
+  m_service_thread = boost::thread([this] {
+    std::cout << "Started thread" << std::endl;
+    try
+    {
+      m_io_service.run();
+    }
+    catch (const std::exception &e)
+    {
+      std::cout << "Error: " << e.what() << std::endl;
+    }
+    std::cout << "Ended thread" << std::endl;
+  });
+}
+
+AsyncSickSafetyScanner::AsyncSickSafetyScanner(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback, boost::asio::io_service &io_service)
+    : SickSafetyscannersBase(sensor_ip, sensor_tcp_port, comm_settings, io_service),
+      m_packet_merger(),
+      m_scan_data_cb(),
+      m_work()
+{
+}
+
+AsyncSickSafetyScanner::~AsyncSickSafetyScanner()
+{
+  // if (m_service_thread.joinable())
+  // {
+  std::cout << "destructor called!" << std::endl;
+  m_io_service.stop();
+  m_work.reset();
+  m_service_thread.join();
+  std::cout << "Service stopped" << std::endl;
+  // }
+}
 
 void AsyncSickSafetyScanner::processUDPPacket(const sick::datastructure::PacketBuffer &buffer)
 {
-  if (m_packet_merger_ptr->addUDPPacket(buffer))
+  if (m_packet_merger.addUDPPacket(buffer))
   {
     sick::datastructure::PacketBuffer deployed_buffer =
-        m_packet_merger_ptr->getDeployedPacketBuffer();
+        m_packet_merger.getDeployedPacketBuffer();
     sick::data_processing::ParseData data_parser;
     sick::datastructure::Data data = data_parser.parseUDPSequence(deployed_buffer);
 
@@ -234,20 +286,17 @@ void AsyncSickSafetyScanner::processUDPPacket(const sick::datastructure::PacketB
   }
 }
 
-void AsyncSickSafetyScanner::run(sick::types::ScanDataCb callback)
+void AsyncSickSafetyScanner::run()
 {
-  m_scan_data_cb. 
-  // TODO Start Thread
-  // TODO Set data callback?
-}
-
-const Data AsyncSickSafetyScanner::getData()
-{
+  sick::types::PacketHandler callback = [this](const sick::datastructure::PacketBuffer &buffer) {
+    processUDPPacket(buffer);
+  };
+  m_udp_client.run(std::move(callback));
 }
 
 void AsyncSickSafetyScanner::stop()
 {
-  // TODO stop thread
+  m_udp_client.stop();
 }
 
 } // namespace sick

@@ -138,10 +138,10 @@ void Cola2Session::executeCommand(CommandMsg &cmd, long int timeout_ms)
     auto response = waitAndProcessResponse(cmd, timeout_ms);
     cmd.processReplyBase(*response.getBuffer());
 
-    if (!cmd.wasSuccessful())
-    {
-        throw std::runtime_error("Response to command telegram indicated failure.");
-    }
+    // if (!cmd.wasSuccessful())
+    // {
+    //     throw std::runtime_error("Response to command telegram indicated failure.");
+    // }
 
     LOG_INFO("end of executeCommand");
 }

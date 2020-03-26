@@ -40,69 +40,66 @@ namespace communication
 {
 
 UDPClient::UDPClient(
-    boost::asio::ip::udp::socket &&socket,
-    const boost::asio::ip::address_v4 &server_ip,
-    uint16_t server_port)
-    : m_socket(std::move(socket))
-{
-}
-
-UDPClient::UDPClient(
-    // const PacketHandler &packet_handler,
     boost::asio::io_service &io_service,
-    const boost::asio::ip::address_v4 &server_ip,
-    uint16_t server_port)
-    : m_socket(io_service)
+    unsigned short server_port)
+    : m_io_service(io_service),
+      m_socket(boost::ref(io_service), boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port}),
+      m_packet_handler(),
+      m_recv_buffer()
 {
-  // TODO necessary?
-  // Keep io_service busy
-  // m_io_work_ptr = std::make_shared<boost::asio::io_service::work>(boost::ref(m_io_service));
-  // try
-  // {
-  // m_socket_ptr = std::make_shared<boost::asio::ip::udp::socket>(
-  //     boost::ref(m_io_service),
-  //     boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), local_port));
-  // m_socket_ptr = sick::make_unique<boost::asio::ip::udp::socket>(io_service);
-  // }
-  // catch (std::exception &e)
-  // {
-  //   LOG_ERROR("Exception while creating socket: %s", e.what());
-  // }
   LOG_INFO("UDP client is setup");
 }
 
 UDPClient::~UDPClient()
 {
-  m_io_service.stop();
 }
 
-void UDPClient::startReceive()
+void UDPClient::handleReceive(boost::system::error_code ec, std::size_t bytes_recv)
 {
-  m_socket_ptr->async_receive_from(boost::asio::buffer(m_recv_buffer),
-                                   m_remote_endpoint,
-                                   [this](boost::system::error_code ec, std::size_t bytes_recvd) {
-                                     this->handleReceive(ec, bytes_recvd);
-                                   });
-}
-
-void UDPClient::handleReceive(const boost::system::error_code &error,
-                              const std::size_t &bytes_transferred)
-{
-  if (!error)
+  if (!ec)
   {
-    sick::datastructure::PacketBuffer packet_buffer(m_recv_buffer, bytes_transferred);
+    sick::datastructure::PacketBuffer packet_buffer(m_recv_buffer, bytes_recv);
+    std::cout << "packet_buffer ^^" << std::endl;
     m_packet_handler(packet_buffer);
   }
   else
   {
-    LOG_ERROR("Error in UDP handle receive: %i", error.value());
+    LOG_ERROR("Error in UDP handle receive: %i", ec.value());
   }
-  startReceive();
+  beginReceive();
 }
 
-void UDPClient::run(PacketHandler& packet_handler)
+void UDPClient::beginReceive()
 {
-  startReceive();
+  m_socket.async_receive_from(boost::asio::buffer(m_recv_buffer), m_remote_endpoint, [this](boost::system::error_code ec, std::size_t bytes_recvd) {
+    this->handleReceive(ec, bytes_recvd);
+  });
+}
+
+void UDPClient::stop()
+{
+  m_socket.cancel();
+}
+
+void UDPClient::connect()
+{
+  // m_socket.close();
+
+  boost::system::error_code ec = boost::asio::error::host_not_found;
+  // m_socket.connect(m_remote_endpoint, ec);
+  if (ec)
+  {
+    LOG_ERROR("Could not connect to Sensor (UDP). Error code %i", ec.value());
+    throw boost::system::system_error(ec);
+  }
+  else
+  {
+    LOG_INFO("UDP connection successfully established.");
+  }
+}
+
+void UDPClient::disconnect()
+{
 }
 
 unsigned short UDPClient::getLocalPort()
@@ -112,6 +109,11 @@ unsigned short UDPClient::getLocalPort()
     return m_socket.local_endpoint().port();
   }
   return 0;
+}
+
+bool UDPClient::isConnected()
+{
+  return m_socket.is_open();
 }
 
 } // namespace communication

@@ -1,5 +1,3 @@
-// this is for emacs file handling -*- mode: c++; indent-tabs-mode: nil -*-
-
 // -- BEGIN LICENSE BLOCK ----------------------------------------------
 
 /*!
@@ -37,10 +35,6 @@
 
 //#include <ros/ros.h>
 
-#include <boost/function.hpp>
-#include <boost/scoped_ptr.hpp>
-#include <boost/thread.hpp>
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -48,11 +42,18 @@
 #include <chrono>
 #include <memory>
 
+#include <boost/asio.hpp>
+#include <boost/thread.hpp>
+#include <boost/scoped_ptr.hpp>
+// #include <boost/thread/thread.hpp>
+// #include <boost/function.hpp>
+// #include <thread>
+
 #include "sick_safetyscanners_base/log.h"
 #include "sick_safetyscanners_base/types.h"
 
-#include "sick_safetyscanners_base/communication/AsyncTCPClient.h"
-#include "sick_safetyscanners_base/communication/AsyncUDPClient.h"
+#include "sick_safetyscanners_base/communication/TCPClient.h"
+#include "sick_safetyscanners_base/communication/UDPClient.h"
 #include "sick_safetyscanners_base/data_processing/ParseData.h"
 #include "sick_safetyscanners_base/data_processing/UDPPacketMerger.h"
 #include "sick_safetyscanners_base/datastructure/CommSettings.h"
@@ -82,8 +83,6 @@
 #include "sick_safetyscanners_base/cola2/TypeCodeVariableCommand.h"
 #include "sick_safetyscanners_base/cola2/UserNameVariableCommand.h"
 
-#include "sick_safetyscanners_base/communication/TCPClient.h"
-
 namespace sick
 {
 
@@ -111,8 +110,8 @@ public:
 
   SickSafetyscannersBase(const SickSafetyscannersBase &) = delete;
   SickSafetyscannersBase &operator=(const SickSafetyscannersBase &) = delete;
-  SickSafetyscannersBase(ip_address_t sensor_ip, uint16_t sensor_tcp_port, CommSettings comm_settings);
-  SickSafetyscannersBase(ip_address_t sensor_ip, uint16_t sensor_tcp_port, CommSettings comm_settings, io_service_ptr io_service);
+  SickSafetyscannersBase(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings, boost::asio::io_service &io_service);
+  SickSafetyscannersBase(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings);
 
   /*!
    * \brief Destructor
@@ -179,22 +178,9 @@ public:
 
 private:
   ip_address_t m_sensor_ip;
-  uint16_t m_sensor_tcp_port;
-  io_service_ptr m_io_service;
+  unsigned short m_sensor_tcp_port;
   CommSettings m_comm_settings;
-  sick::cola2::Cola2Session m_session;
-
-  // dataReceivedCb m_newPacketReceivedCallbackFunction;
-
-  // std::shared_ptr<boost::asio::io_service> m_io_service_ptr;
-  // std::shared_ptr<sick::communication::AsyncUDPClient> m_async_udp_client_ptr;
-  // std::shared_ptr<sick::communication::AsyncTCPClient> m_async_tcp_client_ptr;
-
-  // std::shared_ptr<sick::cola2::Cola2Session> m_session_ptr;
-
-  // std::shared_ptr<boost::asio::io_service::work> m_io_work_ptr;
-  // boost::scoped_ptr<boost::thread> m_udp_client_thread_ptr;
-  // std::shared_ptr<sick::data_processing::UDPPacketMerger> m_packet_merger_ptr;
+  std::unique_ptr<boost::asio::io_service> m_io_service_ptr;
 
   template <class CommandT, typename... Args>
   void inline createAndExecuteCommand(Args &&... args)
@@ -203,16 +189,15 @@ private:
     m_session.executeCommand(*cmd);
   }
 
-  // void changeCommSettingsInColaSession(const datastructure::CommSettings &settings);
-  // void startTCPConnection();
-  // bool udpClientThread();
-  // void startTCPConnection(const CommSettings &settings);
-  // void processUDPPacket(const PacketBuffer &buffer);
-  // void processTCPPacket(const PacketBuffer &buffer);
-  // void stopTCPConnection();
+  void init();
+
+protected:
+  boost::asio::io_service &m_io_service;
+  sick::cola2::Cola2Session m_session;
+  sick::communication::UDPClient m_udp_client;
 };
 
-class AsyncSickSafetyScanner : public SickSafetyscannersBase
+class AsyncSickSafetyScanner final : public SickSafetyscannersBase
 {
 public:
   // SickSafetyScannerAsync() : SickSafetyscannersBase(){};
@@ -220,26 +205,29 @@ public:
   AsyncSickSafetyScanner(const AsyncSickSafetyScanner &) = delete;
   AsyncSickSafetyScanner &operator=(const AsyncSickSafetyScanner &) = delete;
 
-  AsyncSickSafetyScanner(ip_address_t sensor_ip, uint16_t sensor_tcp_port, CommSettings comm_settings);
-  AsyncSickSafetyScanner(ip_address_t sensor_ip, uint16_t sensor_tcp_port, CommSettings comm_settings, io_service_ptr io_service);
+  AsyncSickSafetyScanner(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback);
 
+  AsyncSickSafetyScanner(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback, boost::asio::io_service &io_service);
+
+  ~AsyncSickSafetyScanner();
   /*!
    * \brief Start the connection to the sensor and enables output.
    * \return If the setup was correct.
    */
-  void run(sick::types::ScanDataCb callback);
+  void run();
   void stop();
 
 private:
-  std::unique_ptr<sick::data_processing::UDPPacketMerger> m_packet_merger_ptr;
-  sick::types::ScanDataCb m_scan_data_cb;
-  std::shared_ptr<boost::asio::io_service::work> m_io_work_ptr;
-  boost::scoped_ptr<boost::thread> m_udp_client_thread_ptr;
-
   void processUDPPacket(const sick::datastructure::PacketBuffer &buffer);
+
+  sick::data_processing::UDPPacketMerger m_packet_merger;
+  sick::types::ScanDataCb m_scan_data_cb;
+  std::unique_ptr<boost::asio::io_service> m_io_service_ptr;
+  boost::thread m_service_thread;
+  std::unique_ptr<boost::asio::io_service::work> m_work;
 };
 
-class SyncSickSafetyScanner : public SickSafetyscannersBase
+class SyncSickSafetyScanner final : public SickSafetyscannersBase
 {
 public:
   void waitForData(long timeout_ms = 1000) const;

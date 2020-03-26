@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 2.8.12)
 project(sick_safetyscanners_base CXX)
 
 ## Use C++11
-add_definitions(-std=c++11)
+add_definitions(-std=c++11 -Wall)
 ## By adding -Wall and -Werror, the compiler does not ignore warnings anymore,
 ## enforcing cleaner code.
 #add_definitions(-std=c++11 -Wall -Werror)
 
 
 ## Find system libraries
-find_package(Boost REQUIRED COMPONENTS system thread)
+find_package(Boost REQUIRED COMPONENTS system thread chrono)
 
 
 
@@ -56,8 +56,7 @@ add_library(sick_safetyscanners_base
   src/cola2/UserNameVariableCommand.cpp
   src/cola2/VariableCommand.cpp
   src/communication/TCPClient.cpp
-  src/communication/AsyncTCPClient.cpp
-  src/communication/AsyncUDPClient.cpp
+  src/communication/UDPClient.cpp
   src/data_processing/ParseApplicationData.cpp
   src/data_processing/ParseApplicationNameData.cpp
   src/data_processing/ParseConfigMetadata.cpp

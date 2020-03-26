@@ -71,7 +71,8 @@ bool MethodCommand::processReply()
   }
   else
   {
-    LOG_WARN("Command Method Not Accepted.");
+    // LOG_WARN("Command Method Not Accepted.");
+    LOG_INFO("Command Method Not Accepted.");
   }
   return result;
 }
