@@ -98,11 +98,23 @@ void UDPClient::connect()
   }
 }
 
+sick::datastructure::PacketBuffer UDPClient::receive()
+{
+  std::size_t bytes_recv = m_socket.receive_from(boost::asio::buffer(m_recv_buffer), m_remote_endpoint);
+  sick::datastructure::PacketBuffer packet_buffer(m_recv_buffer, bytes_recv);
+  return packet_buffer;
+}
+
+bool UDPClient::isDataAvailable() const
+{
+  return m_socket.available();
+}
+
 void UDPClient::disconnect()
 {
 }
 
-unsigned short UDPClient::getLocalPort()
+unsigned short UDPClient::getLocalPort() const
 {
   if (m_socket.is_open())
   {
@@ -111,7 +123,7 @@ unsigned short UDPClient::getLocalPort()
   return 0;
 }
 
-bool UDPClient::isConnected()
+bool UDPClient::isConnected() const
 {
   return m_socket.is_open();
 }

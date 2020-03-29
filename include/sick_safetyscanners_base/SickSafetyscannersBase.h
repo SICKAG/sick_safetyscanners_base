@@ -195,6 +195,7 @@ protected:
   boost::asio::io_service &m_io_service;
   sick::cola2::Cola2Session m_session;
   sick::communication::UDPClient m_udp_client;
+  sick::data_processing::UDPPacketMerger m_packet_merger;
 };
 
 class AsyncSickSafetyScanner final : public SickSafetyscannersBase
@@ -220,7 +221,6 @@ public:
 private:
   void processUDPPacket(const sick::datastructure::PacketBuffer &buffer);
 
-  sick::data_processing::UDPPacketMerger m_packet_merger;
   sick::types::ScanDataCb m_scan_data_cb;
   std::unique_ptr<boost::asio::io_service> m_io_service_ptr;
   boost::thread m_service_thread;
@@ -230,10 +230,11 @@ private:
 class SyncSickSafetyScanner final : public SickSafetyscannersBase
 {
 public:
-  void waitForData(long timeout_ms = 1000) const;
+  using SickSafetyscannersBase::SickSafetyscannersBase;
+
+  bool isDataAvailable() const;
   // poll?
-  const Data getData();
-  void stop();
+  const Data receive();
 };
 
 } // namespace sick

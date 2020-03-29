@@ -109,9 +109,12 @@ public:
    * \brief Returns the actual port assigned to the local machine
    * \return Local port number
    */
-  unsigned short getLocalPort();
+  unsigned short getLocalPort() const;
 
-  bool isConnected();
+  bool isConnected() const;
+  bool isDataAvailable() const;
+
+  sick::datastructure::PacketBuffer receive();
 
 private:
   boost::asio::io_service &m_io_service;
