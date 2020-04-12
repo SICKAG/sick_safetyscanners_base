@@ -43,8 +43,8 @@ SickSafetyscannersBase::SickSafetyscannersBase(
     ip_address_t sensor_ip,
     unsigned short sensor_tcp_port,
     CommSettings comm_settings)
-    : m_sensor_tcp_port(sensor_tcp_port),
-      m_sensor_ip(sensor_ip),
+    : m_sensor_ip(sensor_ip),
+      m_sensor_tcp_port(sensor_tcp_port),
       m_comm_settings(comm_settings),
       m_io_service_ptr(sick::make_unique<boost::asio::io_service>()),
       m_io_service(*m_io_service_ptr),
@@ -62,8 +62,8 @@ SickSafetyscannersBase::SickSafetyscannersBase(
     unsigned short sensor_tcp_port,
     CommSettings comm_settings,
     boost::asio::io_service &io_service)
-    : m_sensor_tcp_port(sensor_tcp_port),
-      m_sensor_ip(sensor_ip),
+    : m_sensor_ip(sensor_ip),
+      m_sensor_tcp_port(sensor_tcp_port),
       m_comm_settings(comm_settings),
       m_io_service_ptr(nullptr),
       m_io_service(io_service),
@@ -84,9 +84,14 @@ void SickSafetyscannersBase::init()
 
 void SickSafetyscannersBase::changeSensorSettings(const CommSettings &settings)
 {
+  // if (settings.host_udp_port != m_udp_client->getLocalPort())
+  // {
+  //   // TODO re-open port on demanded UDP Port
+  //   m_udp_client->disconnect();
+  //   m_udp_client.reset(new sick::communication::UDPClient(m_io_service, settings.host_udp_port));
+  // }
   CommSettings _settings = settings;
   _settings.host_udp_port = m_udp_client.getLocalPort();
-  std::cout << "UDP Port is " << _settings.host_udp_port;
   createAndExecuteCommand<sick::cola2::ChangeCommSettingsCommand>(m_session, _settings);
 }
 
@@ -234,24 +239,20 @@ void SickSafetyscannersBase::requestRequiredUserAction(
   createAndExecuteCommand<sick::cola2::RequiredUserActionVariableCommand>(m_session, required_user_action);
 }
 
-// ----------------
-
 AsyncSickSafetyScanner::AsyncSickSafetyScanner(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback)
     : SickSafetyscannersBase(sensor_ip, sensor_tcp_port, comm_settings),
       m_scan_data_cb(callback),
       m_work(sick::make_unique<boost::asio::io_service::work>(m_io_service))
 {
   m_service_thread = boost::thread([this] {
-    std::cout << "Started thread" << std::endl;
     try
     {
       m_io_service.run();
     }
     catch (const std::exception &e)
     {
-      std::cout << "Error: " << e.what() << std::endl;
+      LOG_ERROR("%s", e.what());
     }
-    std::cout << "Ended thread" << std::endl;
   });
 }
 
@@ -264,14 +265,12 @@ AsyncSickSafetyScanner::AsyncSickSafetyScanner(ip_address_t sensor_ip, unsigned 
 
 AsyncSickSafetyScanner::~AsyncSickSafetyScanner()
 {
-  // if (m_service_thread.joinable())
-  // {
-  std::cout << "destructor called!" << std::endl;
   m_io_service.stop();
   m_work.reset();
-  m_service_thread.join();
-  std::cout << "Service stopped" << std::endl;
-  // }
+  if (m_service_thread.joinable())
+  {
+    m_service_thread.join();
+  }
 }
 
 void AsyncSickSafetyScanner::processUDPPacket(const sick::datastructure::PacketBuffer &buffer)
@@ -305,12 +304,19 @@ bool SyncSickSafetyScanner::isDataAvailable() const
   return m_udp_client.isDataAvailable();
 }
 
-const Data SyncSickSafetyScanner::receive()
+const Data SyncSickSafetyScanner::receive(int timeout_ms)
 {
   sick::data_processing::ParseData data_parser;
   while (!m_packet_merger.isComplete())
   {
-    auto buffer = m_udp_client.receive();
+    sick::datastructure::PacketBuffer buffer;
+    m_udp_client.receive(buffer, boost::posix_time::seconds(2));
+    // if (bytes_recv == 0) {
+    //   timeval timeout;
+    //   timeout.tv_sec = 2;
+    //   timeout.tv_usec = 0;
+    //   throw sick::timeout_error("Timeout during receiving sensor data", timeout);
+    // }
     m_packet_merger.addUDPPacket(buffer);
   }
   sick::datastructure::PacketBuffer deployed_buffer =

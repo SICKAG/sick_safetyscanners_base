@@ -37,24 +37,24 @@
 
 #include <iostream>
 
-
-namespace sick {
-namespace datastructure {
-
-enum e_interface_type
+namespace sick
 {
-  E_EFIPRO,
-  E_ETHERNET_IP,
-  E_PROFINET         = 3,
+namespace datastructure
+{
+
+enum e_interface_type 
+{
+  E_EFIPRO = 0,
+  E_ETHERNET_IP = 1,
+  E_PROFINET = 3,
   E_NONSAFE_ETHERNET = 4
 };
 
 enum e_ranges
 {
   E_NORMAL_RANGE = 40,
-  E_LONG_RANGE   = 64
+  E_LONG_RANGE = 64
 };
-
 
 /*!
  * \brief Class containing the type code of a laser scanner.
@@ -78,7 +78,7 @@ public:
    *
    * \param type_code The type code for the scanner.
    */
-  void setTypeCode(const std::string& type_code);
+  void setTypeCode(const std::string &type_code);
   /*!
    * \brief Gets the interface type for the scanner.
    *
@@ -90,7 +90,7 @@ public:
    *
    * \param interface_type The interface type for the scanner.
    */
-  void setInterfaceType(const uint8_t& interface_type);
+  void setInterfaceType(const uint8_t &interface_type);
 
   /*!
    * \brief Gets the max range for the scanner.
@@ -103,14 +103,13 @@ public:
    *
    * \param max_distance The max range for the scanner.
    */
-  void setMaxRange(const float& max_distance);
+  void setMaxRange(const float &max_distance);
 
 private:
   std::string m_type_code;
   uint8_t m_interface_type;
   float m_max_range;
 };
-
 
 } // namespace datastructure
 } // namespace sick

@@ -98,7 +98,8 @@ public:
    * \brief Start the listening loop for the udp data packets.
    */
   template <typename Callable>
-  void run(Callable && callback) {
+  void run(Callable &&callback)
+  {
     m_packet_handler = callback;
     beginReceive();
   }
@@ -114,7 +115,7 @@ public:
   bool isConnected() const;
   bool isDataAvailable() const;
 
-  sick::datastructure::PacketBuffer receive();
+  std::size_t receive(sick::datastructure::PacketBuffer &buffer, boost::posix_time::time_duration timeout);
 
 private:
   boost::asio::io_service &m_io_service;
@@ -122,9 +123,19 @@ private:
   boost::asio::ip::udp::socket m_socket;
   types::PacketHandler m_packet_handler;
   datastructure::PacketBuffer::ArrayBuffer m_recv_buffer;
+  boost::asio::deadline_timer m_deadline;
 
+  void checkDeadline();
   void handleReceive(boost::system::error_code ec, std::size_t bytes_recv);
   void beginReceive();
+
+  static void handleReceiveDeadline(
+      const boost::system::error_code &ec, std::size_t length,
+      boost::system::error_code *out_ec, std::size_t *out_length)
+  {
+    *out_ec = ec;
+    *out_length = length;
+  }
 
   // TODO error codes sind boese
   // void handleReceive(const boost::system::error_code &error, const std::size_t &bytes_transferred, PacketHandler &handler);

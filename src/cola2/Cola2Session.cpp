@@ -71,7 +71,7 @@ void Cola2Session::setSessionID(uint32_t session_id)
 void Cola2Session::open()
 {
     m_tcp_client_ptr_->connect();
-    assert(m_tcp_client_ptr_->isConnected());
+    assert(isOpen());
     CreateSession cmd(*this);
     executeCommand(cmd);
     auto sessID = cmd.getSessionID();
@@ -79,9 +79,13 @@ void Cola2Session::open()
     LOG_INFO("Successfully opened Cola2 session with sessionID: %u", sessID);
 }
 
+bool Cola2Session::isOpen() {
+    return m_tcp_client_ptr_->isConnected();
+}
+
 void Cola2Session::close()
 {
-    if (!m_tcp_client_ptr_->isConnected())
+    if (!isOpen())
     {
         return;
     }
@@ -129,7 +133,7 @@ sick::datastructure::PacketBuffer Cola2Session::waitAndProcessResponse(CommandMs
 
 void Cola2Session::executeCommand(CommandMsg &cmd, long int timeout_ms)
 {
-    if (!m_tcp_client_ptr_->isConnected())
+    if (!isOpen())
     {
         open();
     }

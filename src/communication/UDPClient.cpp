@@ -34,10 +34,22 @@
 
 #include "sick_safetyscanners_base/communication/UDPClient.h"
 
+#include <cstdlib>
+#include <iostream>
+#include <string>
+#include <boost/lambda/bind.hpp>
+#include <boost/lambda/lambda.hpp>
+
 namespace sick
 {
 namespace communication
 {
+
+using boost::asio::deadline_timer;
+using boost::asio::ip::tcp;
+using boost::lambda::_1;
+using boost::lambda::bind;
+using boost::lambda::var;
 
 UDPClient::UDPClient(
     boost::asio::io_service &io_service,
@@ -45,13 +57,37 @@ UDPClient::UDPClient(
     : m_io_service(io_service),
       m_socket(boost::ref(io_service), boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port}),
       m_packet_handler(),
-      m_recv_buffer()
+      m_recv_buffer(),
+      m_deadline(io_service)
 {
-  LOG_INFO("UDP client is setup");
+  m_deadline.expires_at(boost::posix_time::pos_infin);
+  checkDeadline();
 }
 
 UDPClient::~UDPClient()
 {
+}
+
+void UDPClient::checkDeadline()
+{
+  // Check whether the deadline has passed. We compare the deadline against
+  // the current time since a new asynchronous operation may have moved the
+  // deadline before this actor had a chance to run.
+  if (m_deadline.expires_at() <= deadline_timer::traits_type::now())
+  {
+    // The deadline has passed. The socket is closed so that any outstanding
+    // asynchronous operations are cancelled. This allows the blocked
+    // connect(), read_line() or write_line() functions to return.
+    boost::system::error_code ignored_ec;
+    m_socket.close(ignored_ec);
+
+    // There is no longer an active deadline. The expiry is set to positive
+    // infinity so that the actor takes no action until a new deadline is set.
+    m_deadline.expires_at(boost::posix_time::pos_infin);
+  }
+
+  // Put the actor back to sleep.
+  m_deadline.async_wait(bind(&UDPClient::checkDeadline, this));
 }
 
 void UDPClient::handleReceive(boost::system::error_code ec, std::size_t bytes_recv)
@@ -83,10 +119,8 @@ void UDPClient::stop()
 
 void UDPClient::connect()
 {
-  // m_socket.close();
-
   boost::system::error_code ec = boost::asio::error::host_not_found;
-  // m_socket.connect(m_remote_endpoint, ec);
+
   if (ec)
   {
     LOG_ERROR("Could not connect to Sensor (UDP). Error code %i", ec.value());
@@ -98,22 +132,39 @@ void UDPClient::connect()
   }
 }
 
-sick::datastructure::PacketBuffer UDPClient::receive()
+std::size_t UDPClient::receive(sick::datastructure::PacketBuffer &buffer, boost::posix_time::time_duration timeout)
 {
-  std::size_t bytes_recv = m_socket.receive_from(boost::asio::buffer(m_recv_buffer), m_remote_endpoint);
-  sick::datastructure::PacketBuffer packet_buffer(m_recv_buffer, bytes_recv);
-  return packet_buffer;
+  boost::system::error_code ec = boost::asio::error::would_block;
+  m_deadline.expires_from_now(timeout);
+
+  std::size_t bytes_recv = 0;
+  m_socket.async_receive_from(boost::asio::buffer(m_recv_buffer), m_remote_endpoint,
+                              boost::bind(&UDPClient::handleReceiveDeadline, _1, _2, &ec, &bytes_recv));
+
+  // Block until async_receive_from finishes or the deadline_timer exceeds its timeout.
+  do
+    m_socket.get_io_service().run_one();
+  while (ec == boost::asio::error::would_block);
+
+  if (ec || !m_socket.is_open())
+  {
+    throw boost::system::system_error(ec ? ec : boost::asio::error::operation_aborted);
+  }
+
+  buffer = sick::datastructure::PacketBuffer(m_recv_buffer, bytes_recv);
+  return bytes_recv;
 }
 
 bool UDPClient::isDataAvailable() const
 {
-  return m_socket.available();
+  return m_socket.is_open() && m_socket.available() > 0;
 }
 
 void UDPClient::disconnect()
 {
 }
 
+// TODO optional?
 unsigned short UDPClient::getLocalPort() const
 {
   if (m_socket.is_open())

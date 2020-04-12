@@ -21,11 +21,6 @@ public:
         uint16_t server_port,
         boost::asio::io_service &io_service);
 
-    TCPClient(
-        const boost::asio::ip::address_v4 &server_ip,
-        uint16_t server_port,
-        boost::asio::ip::tcp::socket &&socket);
-
     TCPClient() = delete;
     TCPClient(const TCPClient &) = delete;
     TCPClient &operator=(const TCPClient &) = delete;
@@ -44,6 +39,9 @@ private:
     boost::asio::ip::address_v4 m_server_ip_;
     std::mutex m_mutex_;
     uint16_t m_server_port_;
+    boost::asio::deadline_timer m_deadline;
+
+    void checkDeadline();
 };
 
 using TCPClientPtr = std::unique_ptr<sick::communication::TCPClient>;

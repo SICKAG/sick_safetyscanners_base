@@ -33,8 +33,6 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H
 #define SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H
 
-//#include <ros/ros.h>
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -45,9 +43,6 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include <boost/scoped_ptr.hpp>
-// #include <boost/thread/thread.hpp>
-// #include <boost/function.hpp>
-// #include <thread>
 
 #include "sick_safetyscanners_base/log.h"
 #include "sick_safetyscanners_base/types.h"
@@ -180,6 +175,7 @@ private:
   ip_address_t m_sensor_ip;
   unsigned short m_sensor_tcp_port;
   CommSettings m_comm_settings;
+  bool m_is_initialized;
   std::unique_ptr<boost::asio::io_service> m_io_service_ptr;
 
   template <class CommandT, typename... Args>
@@ -193,15 +189,14 @@ private:
 
 protected:
   boost::asio::io_service &m_io_service;
-  sick::cola2::Cola2Session m_session;
   sick::communication::UDPClient m_udp_client;
+  sick::cola2::Cola2Session m_session;
   sick::data_processing::UDPPacketMerger m_packet_merger;
 };
 
 class AsyncSickSafetyScanner final : public SickSafetyscannersBase
 {
 public:
-  // SickSafetyScannerAsync() : SickSafetyscannersBase(){};
   AsyncSickSafetyScanner() = delete;
   AsyncSickSafetyScanner(const AsyncSickSafetyScanner &) = delete;
   AsyncSickSafetyScanner &operator=(const AsyncSickSafetyScanner &) = delete;
@@ -234,7 +229,7 @@ public:
 
   bool isDataAvailable() const;
   // poll?
-  const Data receive();
+  const Data receive(int timeout_ms);
 };
 
 } // namespace sick
