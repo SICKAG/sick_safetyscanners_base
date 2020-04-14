@@ -3,10 +3,10 @@
 
 #include <functional>
 #include <memory>
+#include <boost/asio/ip/address_v4.hpp>
 #include "sick_safetyscanners_base/datastructure/Data.h"
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 #include "sick_safetyscanners_base/generics.h"
-// #include "flagset.h"
 
 namespace sick
 {
@@ -18,8 +18,10 @@ using CallbackT = std::function<void(T)>;
 
 using ScanDataCb = std::function<void(const sick::datastructure::Data &)>;
 using PacketHandler = std::function<void(const sick::datastructure::PacketBuffer &)>;
-// using ScanDataCb = std::function<void(const sick::datastructure::Data&)>;
-
+using ip_address_t = boost::asio::ip::address_v4;
+using port_t = uint16_t;
+using time_duration_t = boost::posix_time::time_duration;
+using SensorFeatures = uint16_t;
 } // namespace types
 
 namespace SensorDataChannels
@@ -66,7 +68,6 @@ constexpr uint16_t toFeatureFlags(
 // };
 
 // using SensorFeatures = flag_set<SensorDataChannels>;
-using SensorFeatures = uint16_t;
 
 } // namespace sick
 

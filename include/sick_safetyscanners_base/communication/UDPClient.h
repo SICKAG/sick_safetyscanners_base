@@ -79,7 +79,7 @@ public:
 
   UDPClient(
       boost::asio::io_service &io_service,
-      unsigned short server_port);
+      sick::types::port_t server_port);
 
   UDPClient() = delete;
   UDPClient(const UDPClient &) = delete;
@@ -89,9 +89,6 @@ public:
    * \brief The destructor of the asynchronous udp client.
    */
   virtual ~UDPClient();
-
-  void connect();
-  void disconnect();
 
   // TODO Wat furn Service, bessere Namen
   /*!
@@ -115,7 +112,7 @@ public:
   bool isConnected() const;
   bool isDataAvailable() const;
 
-  std::size_t receive(sick::datastructure::PacketBuffer &buffer, boost::posix_time::time_duration timeout);
+  sick::datastructure::PacketBuffer receive(sick::types::time_duration_t timeout);
 
 private:
   boost::asio::io_service &m_io_service;

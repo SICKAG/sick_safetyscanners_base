@@ -30,8 +30,8 @@
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H
-#define SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H
+#ifndef SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERS_H
+#define SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERS_H
 
 #include <iostream>
 #include <string>
@@ -55,36 +55,16 @@
 #include "sick_safetyscanners_base/datastructure/ConfigData.h"
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 
-#include "sick_safetyscanners_base/cola2/ApplicationNameVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/ChangeCommSettingsCommand.h"
+#include "sick_safetyscanners_base/cola2/commands.h"
 #include "sick_safetyscanners_base/cola2/Cola2Session.h"
-#include "sick_safetyscanners_base/cola2/ConfigMetadataVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/DeviceNameVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/DeviceStatusVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/FieldGeometryVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/FieldHeaderVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/FindMeCommand.h"
-#include "sick_safetyscanners_base/cola2/FirmwareVersionVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/LatestTelegramVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/MeasurementCurrentConfigVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/MeasurementPersistentConfigVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/MonitoringCaseTableHeaderVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/MonitoringCaseVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/OrderNumberVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/ProjectNameVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/RequiredUserActionVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/SerialNumberVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/StatusOverviewVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/TypeCodeVariableCommand.h"
-#include "sick_safetyscanners_base/cola2/UserNameVariableCommand.h"
 
 namespace sick
 {
 
-using ip_address_t = boost::asio::ip::address_v4;
 using io_service_ptr = std::shared_ptr<boost::asio::io_service>;
 
 using namespace sick::datastructure;
+
 /*!
  * \brief Class managing the algorithmic part of the package.
  */
@@ -105,8 +85,8 @@ public:
 
   SickSafetyscannersBase(const SickSafetyscannersBase &) = delete;
   SickSafetyscannersBase &operator=(const SickSafetyscannersBase &) = delete;
-  SickSafetyscannersBase(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings, boost::asio::io_service &io_service);
-  SickSafetyscannersBase(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings);
+  SickSafetyscannersBase(sick::types::ip_address_t sensor_ip, sick::types::port_t sensor_tcp_port, CommSettings comm_settings, boost::asio::io_service &io_service);
+  SickSafetyscannersBase(sick::types::ip_address_t sensor_ip, sick::types::port_t sensor_tcp_port, CommSettings comm_settings);
 
   /*!
    * \brief Destructor
@@ -119,7 +99,7 @@ public:
    */
   void changeSensorSettings(const CommSettings &settings);
 
-  /*!
+  /**
    * \brief Requests the typecode of the sensor.
    * \param settings Settings containing information to establish a connection to the sensor.
    * \param type_code Returned typecode.
@@ -172,8 +152,8 @@ public:
   requestMonitoringCases(std::vector<MonitoringCaseData> &monitoring_cases);
 
 private:
-  ip_address_t m_sensor_ip;
-  unsigned short m_sensor_tcp_port;
+  sick::types::ip_address_t m_sensor_ip;
+  sick::types::port_t m_sensor_tcp_port;
   CommSettings m_comm_settings;
   bool m_is_initialized;
   std::unique_ptr<boost::asio::io_service> m_io_service_ptr;
@@ -185,7 +165,7 @@ private:
     m_session.executeCommand(*cmd);
   }
 
-  void init();
+  // void init();
 
 protected:
   boost::asio::io_service &m_io_service;
@@ -201,9 +181,9 @@ public:
   AsyncSickSafetyScanner(const AsyncSickSafetyScanner &) = delete;
   AsyncSickSafetyScanner &operator=(const AsyncSickSafetyScanner &) = delete;
 
-  AsyncSickSafetyScanner(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback);
+  AsyncSickSafetyScanner(sick::types::ip_address_t sensor_ip, sick::types::port_t sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback);
 
-  AsyncSickSafetyScanner(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback, boost::asio::io_service &io_service);
+  AsyncSickSafetyScanner(sick::types::ip_address_t sensor_ip, sick::types::port_t sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback, boost::asio::io_service &io_service);
 
   ~AsyncSickSafetyScanner();
   /*!
@@ -229,9 +209,9 @@ public:
 
   bool isDataAvailable() const;
   // poll?
-  const Data receive(int timeout_ms);
+  const Data receive(sick::types::time_duration_t timeout = boost::posix_time::seconds(5));
 };
 
 } // namespace sick
 
-#endif // SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERSBASE_H
+#endif // SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERS_H

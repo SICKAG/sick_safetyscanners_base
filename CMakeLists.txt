@@ -12,9 +12,6 @@ add_definitions(-std=c++11 -Wall)
 find_package(Boost REQUIRED COMPONENTS system thread chrono)
 
 
-
-
-
 ###########
 ## Build ##
 ###########
@@ -26,7 +23,7 @@ endif()
 
 ## Declare a cpp library
 add_library(sick_safetyscanners_base SHARED
-  src/SickSafetyscannersBase.cpp
+  src/SickSafetyscanners.cpp
   src/cola2/ApplicationNameVariableCommand.cpp
   src/cola2/ChangeCommSettingsCommand.cpp
   src/cola2/CloseSession.cpp

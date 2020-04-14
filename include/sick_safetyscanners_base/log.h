@@ -19,6 +19,11 @@
 #pragma once
 #include <inttypes.h>
 
+namespace sick
+{
+namespace logging
+{
+
 #ifdef ROS_BUILD
 #include <ros/ros.h>
 
@@ -30,6 +35,7 @@
 
 #else
 
+// TODO make this conflict free with other macros of the same name (e.g. in isaac)
 #define LOG_DEBUG(format, ...) printf("[DEBUG]: " format "\n", ##__VA_ARGS__)
 #define LOG_WARN(format, ...) printf("[WARNING]: " format "\n", ##__VA_ARGS__)
 #define LOG_INFO(format, ...) printf("[INFO]: " format "\n", ##__VA_ARGS__)
@@ -37,3 +43,6 @@
 #define LOG_FATAL(format, ...) printf("[FATAL]: " format "\n", ##__VA_ARGS__)
 
 #endif
+
+} // namespace logging
+} // namespace sick

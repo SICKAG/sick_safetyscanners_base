@@ -53,7 +53,7 @@ using boost::lambda::var;
 
 UDPClient::UDPClient(
     boost::asio::io_service &io_service,
-    unsigned short server_port)
+    sick::types::port_t server_port)
     : m_io_service(io_service),
       m_socket(boost::ref(io_service), boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port}),
       m_packet_handler(),
@@ -95,7 +95,6 @@ void UDPClient::handleReceive(boost::system::error_code ec, std::size_t bytes_re
   if (!ec)
   {
     sick::datastructure::PacketBuffer packet_buffer(m_recv_buffer, bytes_recv);
-    std::cout << "packet_buffer ^^" << std::endl;
     m_packet_handler(packet_buffer);
   }
   else
@@ -117,22 +116,8 @@ void UDPClient::stop()
   m_socket.cancel();
 }
 
-void UDPClient::connect()
-{
-  boost::system::error_code ec = boost::asio::error::host_not_found;
 
-  if (ec)
-  {
-    LOG_ERROR("Could not connect to Sensor (UDP). Error code %i", ec.value());
-    throw boost::system::system_error(ec);
-  }
-  else
-  {
-    LOG_INFO("UDP connection successfully established.");
-  }
-}
-
-std::size_t UDPClient::receive(sick::datastructure::PacketBuffer &buffer, boost::posix_time::time_duration timeout)
+sick::datastructure::PacketBuffer UDPClient::receive(sick::types::time_duration_t timeout)
 {
   boost::system::error_code ec = boost::asio::error::would_block;
   m_deadline.expires_from_now(timeout);
@@ -148,20 +133,17 @@ std::size_t UDPClient::receive(sick::datastructure::PacketBuffer &buffer, boost:
 
   if (ec || !m_socket.is_open())
   {
+    LOG_ERROR("Timeout on receiving UDP sensor data. Error code %i", ec.value());
     throw boost::system::system_error(ec ? ec : boost::asio::error::operation_aborted);
   }
 
-  buffer = sick::datastructure::PacketBuffer(m_recv_buffer, bytes_recv);
-  return bytes_recv;
+  auto buffer = sick::datastructure::PacketBuffer(m_recv_buffer, bytes_recv);
+  return buffer;
 }
 
 bool UDPClient::isDataAvailable() const
 {
   return m_socket.is_open() && m_socket.available() > 0;
-}
-
-void UDPClient::disconnect()
-{
 }
 
 // TODO optional?

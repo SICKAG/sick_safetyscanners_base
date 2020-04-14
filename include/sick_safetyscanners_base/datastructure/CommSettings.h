@@ -62,11 +62,11 @@ struct CommSettings
   uint8_t e_interface_type{0};
   float start_angle{0.0};
   float end_angle{0.0};
-  sick::SensorFeatures features{sick::SensorDataChannels::ALL};
+  sick::types::SensorFeatures features{sick::SensorDataChannels::ALL};
   bool enabled{true};
 
   unsigned short host_udp_port{0};
-  boost::asio::ip::address_v4 host_ip{boost::asio::ip::address_v4::from_string("192.168.1.100")};
+  sick::types::ip_address_t host_ip{boost::asio::ip::address_v4::from_string("192.168.1.100")};
 };
 
 std::ostream &operator<<(std::ostream &os, const CommSettings &settings);

@@ -25,7 +25,7 @@
 
 //----------------------------------------------------------------------
 /*!
- * \file SickSafetyscannersBase.cpp
+ * \file SickSafetyscanners.cpp
  *
  * \author  Lennart Puck <puck@fzi.de>
  * \date    2018-09-24
@@ -34,14 +34,14 @@
 
 #include <utility>
 #include <chrono>
-#include "sick_safetyscanners_base/SickSafetyscannersBase.h"
+#include "sick_safetyscanners_base/SickSafetyscanners.h"
 
 namespace sick
 {
 
 SickSafetyscannersBase::SickSafetyscannersBase(
-    ip_address_t sensor_ip,
-    unsigned short sensor_tcp_port,
+    sick::types::ip_address_t sensor_ip,
+    sick::types::port_t sensor_tcp_port,
     CommSettings comm_settings)
     : m_sensor_ip(sensor_ip),
       m_sensor_tcp_port(sensor_tcp_port),
@@ -51,15 +51,15 @@ SickSafetyscannersBase::SickSafetyscannersBase(
       m_udp_client(m_io_service, comm_settings.host_udp_port),
       m_session(
           std::move(sick::make_unique<sick::communication::TCPClient>(
-              m_sensor_ip, sensor_tcp_port, m_io_service))),
+              m_sensor_ip, sensor_tcp_port))),
       m_packet_merger()
 {
-  init();
+  // init();
 }
 
 SickSafetyscannersBase::SickSafetyscannersBase(
-    ip_address_t sensor_ip,
-    unsigned short sensor_tcp_port,
+    sick::types::ip_address_t sensor_ip,
+    sick::types::port_t sensor_tcp_port,
     CommSettings comm_settings,
     boost::asio::io_service &io_service)
     : m_sensor_ip(sensor_ip),
@@ -70,26 +70,19 @@ SickSafetyscannersBase::SickSafetyscannersBase(
       m_udp_client(m_io_service, comm_settings.host_udp_port),
       m_session(
           std::move(sick::make_unique<sick::communication::TCPClient>(
-              m_sensor_ip, sensor_tcp_port, m_io_service))),
+              m_sensor_ip, sensor_tcp_port))),
       m_packet_merger()
 {
-  init();
+  // init();
 }
 
-void SickSafetyscannersBase::init()
-{
-  LOG_INFO("Started SickSafetyscannersBase");
-  changeSensorSettings(m_comm_settings);
-}
+// void SickSafetyscannersBase::init()
+// {
+//   changeSensorSettings(m_comm_settings);
+// }
 
 void SickSafetyscannersBase::changeSensorSettings(const CommSettings &settings)
 {
-  // if (settings.host_udp_port != m_udp_client->getLocalPort())
-  // {
-  //   // TODO re-open port on demanded UDP Port
-  //   m_udp_client->disconnect();
-  //   m_udp_client.reset(new sick::communication::UDPClient(m_io_service, settings.host_udp_port));
-  // }
   CommSettings _settings = settings;
   _settings.host_udp_port = m_udp_client.getLocalPort();
   createAndExecuteCommand<sick::cola2::ChangeCommSettingsCommand>(m_session, _settings);
@@ -239,7 +232,7 @@ void SickSafetyscannersBase::requestRequiredUserAction(
   createAndExecuteCommand<sick::cola2::RequiredUserActionVariableCommand>(m_session, required_user_action);
 }
 
-AsyncSickSafetyScanner::AsyncSickSafetyScanner(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback)
+AsyncSickSafetyScanner::AsyncSickSafetyScanner(sick::types::ip_address_t sensor_ip, sick::types::port_t sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback)
     : SickSafetyscannersBase(sensor_ip, sensor_tcp_port, comm_settings),
       m_scan_data_cb(callback),
       m_work(sick::make_unique<boost::asio::io_service::work>(m_io_service))
@@ -256,7 +249,7 @@ AsyncSickSafetyScanner::AsyncSickSafetyScanner(ip_address_t sensor_ip, unsigned 
   });
 }
 
-AsyncSickSafetyScanner::AsyncSickSafetyScanner(ip_address_t sensor_ip, unsigned short sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback, boost::asio::io_service &io_service)
+AsyncSickSafetyScanner::AsyncSickSafetyScanner(sick::types::ip_address_t sensor_ip, sick::types::port_t sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback, boost::asio::io_service &io_service)
     : SickSafetyscannersBase(sensor_ip, sensor_tcp_port, comm_settings, io_service),
       m_scan_data_cb(),
       m_work()
@@ -304,19 +297,12 @@ bool SyncSickSafetyScanner::isDataAvailable() const
   return m_udp_client.isDataAvailable();
 }
 
-const Data SyncSickSafetyScanner::receive(int timeout_ms)
+const Data SyncSickSafetyScanner::receive(boost::posix_time::time_duration timeout)
 {
   sick::data_processing::ParseData data_parser;
   while (!m_packet_merger.isComplete())
   {
-    sick::datastructure::PacketBuffer buffer;
-    m_udp_client.receive(buffer, boost::posix_time::seconds(2));
-    // if (bytes_recv == 0) {
-    //   timeval timeout;
-    //   timeout.tv_sec = 2;
-    //   timeout.tv_usec = 0;
-    //   throw sick::timeout_error("Timeout during receiving sensor data", timeout);
-    // }
+    auto buffer = m_udp_client.receive(timeout);
     m_packet_merger.addUDPPacket(buffer);
   }
   sick::datastructure::PacketBuffer deployed_buffer =

@@ -47,12 +47,7 @@
 #include "sick_safetyscanners_base/data_processing/ParseTCPPacket.h"
 #include "sick_safetyscanners_base/data_processing/TCPPacketMerger.h"
 
-#include <boost/bind.hpp>
 #include <boost/optional.hpp>
-#include <chrono>
-#include <limits>
-#include <map>
-#include <mutex>
 
 namespace sick
 {
@@ -70,22 +65,22 @@ public:
   Cola2Session(const Cola2Session &) = delete;
   Cola2Session &operator=(const Cola2Session &) = delete;
 
-  void executeCommand(CommandMsg &cmd, long int timeout_ms = 2000);
+  void executeCommand(CommandMsg &cmd, sick::types::time_duration_t timeout = boost::posix_time::seconds(2));
 
   boost::optional<uint32_t> getSessionID() const;
   uint16_t getNextRequestID();
   void setSessionID(uint32_t session_id);
 
 private:
-  uint16_t m_request_id_;
-  boost::optional<uint32_t> m_session_id_;
-  communication::TCPClientPtr m_tcp_client_ptr_;
+  uint16_t m_request_id;
+  boost::optional<uint32_t> m_session_id;
+  communication::TCPClientPtr m_tcp_client_ptr;
 
   void open();
   void close();
   void sendRequest(CommandMsg &cmd);
   bool isOpen();
-  sick::datastructure::PacketBuffer waitAndProcessResponse(CommandMsg &cmd, int64_t timeout_ms);
+  sick::datastructure::PacketBuffer receiveAndProcessResponse(CommandMsg &cmd, sick::types::time_duration_t timeout);
 };
 
 } // namespace cola2
