@@ -3,8 +3,8 @@
 // -- BEGIN LICENSE BLOCK ----------------------------------------------
 
 /*!
-*  Copyright (C) 2018, SICK AG, Waldkirch
-*  Copyright (C) 2018, FZI Forschungszentrum Informatik, Karlsruhe, Germany
+*  Copyright (C) 2020, SICK AG, Waldkirch
+*  Copyright (C) 2020, FZI Forschungszentrum Informatik, Karlsruhe, Germany
 *
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,8 @@
  *
  * \author  Lennart Puck <puck@fzi.de>
  * \date    2018-09-24
+ * \author  Martin Schulze <schulze@fzi.de>
+ * \date    2020-04-15
  */
 //----------------------------------------------------------------------
 
@@ -54,7 +56,6 @@ SickSafetyscannersBase::SickSafetyscannersBase(
               m_sensor_ip, sensor_tcp_port))),
       m_packet_merger()
 {
-  // init();
 }
 
 SickSafetyscannersBase::SickSafetyscannersBase(
@@ -73,13 +74,8 @@ SickSafetyscannersBase::SickSafetyscannersBase(
               m_sensor_ip, sensor_tcp_port))),
       m_packet_merger()
 {
-  // init();
 }
 
-// void SickSafetyscannersBase::init()
-// {
-//   changeSensorSettings(m_comm_settings);
-// }
 
 void SickSafetyscannersBase::changeSensorSettings(const CommSettings &settings)
 {

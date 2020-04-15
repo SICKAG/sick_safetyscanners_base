@@ -1,8 +1,10 @@
+// this is for emacs file handling -*- mode: c++; indent-tabs-mode: nil -*-
+
 // -- BEGIN LICENSE BLOCK ----------------------------------------------
 
 /*!
-*  Copyright (C) 2018, SICK AG, Waldkirch
-*  Copyright (C) 2018, FZI Forschungszentrum Informatik, Karlsruhe, Germany
+*  Copyright (C) 2020, SICK AG, Waldkirch
+*  Copyright (C) 2020, FZI Forschungszentrum Informatik, Karlsruhe, Germany
 *
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,12 +25,15 @@
 
 //----------------------------------------------------------------------
 /*!
- * \file SickSafetyscannersBase.h
+ * \file SickSafetyscanners.h
  *
  * \author  Lennart Puck <puck@fzi.de>
  * \date    2018-09-24
+ * \author  Martin Schulze <schulze@fzi.de>
+ * \date    2020-04-15
  */
 //----------------------------------------------------------------------
+
 
 #ifndef SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERS_H
 #define SICK_SAFETYSCANNERS_BASE_SICKSAFETYSCANNERS_H
@@ -44,7 +49,7 @@
 #include <boost/thread.hpp>
 #include <boost/scoped_ptr.hpp>
 
-#include "sick_safetyscanners_base/log.h"
+#include "sick_safetyscanners_base/logging.h"
 #include "sick_safetyscanners_base/types.h"
 
 #include "sick_safetyscanners_base/communication/TCPClient.h"
@@ -164,8 +169,6 @@ private:
     auto cmd = new CommandT(std::forward<Args>(args)...);
     m_session.executeCommand(*cmd);
   }
-
-  // void init();
 
 protected:
   boost::asio::io_service &m_io_service;

@@ -3,8 +3,8 @@
 // -- BEGIN LICENSE BLOCK ----------------------------------------------
 
 /*!
-*  Copyright (C) 2018, SICK AG, Waldkirch
-*  Copyright (C) 2018, FZI Forschungszentrum Informatik, Karlsruhe, Germany
+*  Copyright (C) 2020, SICK AG, Waldkirch
+*  Copyright (C) 2020, FZI Forschungszentrum Informatik, Karlsruhe, Germany
 *
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,18 +25,17 @@
 
 //----------------------------------------------------------------------
 /*!
- * \file AsyncUDPClient.h
+ * \file UDPClient.h
  *
  * \author  Lennart Puck <puck@fzi.de>
  * \date    2018-09-24
+ * \author  Martin Schulze <schulze@fzi.de>
+ * \date    2020-04-15
  */
 //----------------------------------------------------------------------
 
 #ifndef SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCUDPCLIENT_H
 #define SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCUDPCLIENT_H
-
-//#include <ros/ros.h>
-// #include <sick_safetyscanners_base/log.h>
 
 #include <functional>
 #include <iostream>
@@ -133,9 +132,6 @@ private:
     *out_ec = ec;
     *out_length = length;
   }
-
-  // TODO error codes sind boese
-  // void handleReceive(const boost::system::error_code &error, const std::size_t &bytes_transferred, PacketHandler &handler);
 };
 
 } // namespace communication

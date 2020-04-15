@@ -1,6 +1,6 @@
 /*
+ * Copyright 2020  Martin Schulze (adjustments)
  * Copyright 2017, 2018 Simon Rasmussen (refactor)
- *
  * Copyright 2015, 2016 Thomas Timm Andersen (original version)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef SICK_SAFETYSCANNERS_BASE_LOGGING_H
+#define SICK_SAFETYSCANNERS_BASE_LOGGING_H
 
-#pragma once
 #include <inttypes.h>
 
 namespace sick
@@ -46,3 +47,5 @@ namespace logging
 
 } // namespace logging
 } // namespace sick
+
+#endif // SICK_SAFETYSCANNERS_BASE_LOGGING_H

@@ -3,8 +3,8 @@
 // -- BEGIN LICENSE BLOCK ----------------------------------------------
 
 /*!
-*  Copyright (C) 2018, SICK AG, Waldkirch
-*  Copyright (C) 2018, FZI Forschungszentrum Informatik, Karlsruhe, Germany
+*  Copyright (C) 2020, SICK AG, Waldkirch
+*  Copyright (C) 2020, FZI Forschungszentrum Informatik, Karlsruhe, Germany
 *
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,10 +29,13 @@
  *
  * \author  Lennart Puck <puck@fzi.de>
  * \date    2018-09-24
+ * \author  Martin Schulze <schulze@fzi.de>
+ * \date    2020-04-15
  */
 //----------------------------------------------------------------------
 
 #include "sick_safetyscanners_base/communication/UDPClient.h"
+#include "sick_safetyscanners_base/exceptions.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -116,7 +119,6 @@ void UDPClient::stop()
   m_socket.cancel();
 }
 
-
 sick::datastructure::PacketBuffer UDPClient::receive(sick::types::time_duration_t timeout)
 {
   boost::system::error_code ec = boost::asio::error::would_block;
@@ -134,7 +136,8 @@ sick::datastructure::PacketBuffer UDPClient::receive(sick::types::time_duration_
   if (ec || !m_socket.is_open())
   {
     LOG_ERROR("Timeout on receiving UDP sensor data. Error code %i", ec.value());
-    throw boost::system::system_error(ec ? ec : boost::asio::error::operation_aborted);
+    // throw boost::system::system_error(ec ? ec : boost::asio::error::operation_aborted);
+    throw timeout_error("Timeout exceeded", {timeout.total_seconds(), timeout.total_milliseconds()});
   }
 
   auto buffer = sick::datastructure::PacketBuffer(m_recv_buffer, bytes_recv);
