@@ -301,7 +301,7 @@ public:
                          CommSettings comm_settings,
                          sick::types::ScanDataCb callback);
 
-  /*!
+  /*!find . -regex '.*\.\(cpp\|hpp\|cc\|cxx\)' -exec clang-format -style=file -i {} \;
    * \brief Constructor of the AsyncSickSafetyScanner class.
    *
    * \param sensor_ip The IP4 address of the sensor.

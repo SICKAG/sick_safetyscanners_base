@@ -39,7 +39,6 @@
 
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 
-#include "sick_safetyscanners_base/communication/AsyncTCPClient.h"
 #include "sick_safetyscanners_base/communication/TCPClient.h"
 
 #include "sick_safetyscanners_base/cola2/CloseSession.h"

@@ -37,7 +37,6 @@
 
 #include "sick_safetyscanners_base/datastructure/Data.h"
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
-#include "sick_safetyscanners_base/generics.h"
 #include <boost/asio/ip/address_v4.hpp>
 #include <functional>
 #include <memory>
