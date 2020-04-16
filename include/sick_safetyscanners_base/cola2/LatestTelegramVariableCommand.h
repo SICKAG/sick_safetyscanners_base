@@ -37,10 +37,9 @@
 
 #include <string>
 
-#include <sick_safetyscanners_base/cola2/VariableCommand.h>
-#include <sick_safetyscanners_base/data_processing/ParseData.h>
-#include <sick_safetyscanners_base/datastructure/CommSettings.h>
-#include <sick_safetyscanners_base/datastructure/Data.h>
+#include "sick_safetyscanners_base/cola2/VariableCommand.h"
+#include "sick_safetyscanners_base/data_processing/ParseData.h"
+#include "sick_safetyscanners_base/datastructure/Data.h"
 
 namespace sick {
 namespace cola2 {

@@ -35,10 +35,10 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_UDPPACKETMERGER_H
 #define SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_UDPPACKETMERGER_H
 
-#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
-#include <sick_safetyscanners_base/datastructure/ParsedPacketBuffer.h>
+#include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
+#include "sick_safetyscanners_base/datastructure/ParsedPacketBuffer.h"
 
-#include <sick_safetyscanners_base/data_processing/ParseDatagramHeader.h>
+#include "sick_safetyscanners_base/data_processing/ParseDatagramHeader.h"
 
 #include <algorithm>
 #include <mutex>

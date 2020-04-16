@@ -35,11 +35,11 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEFIRMWAREVERSION_H
 #define SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEFIRMWAREVERSION_H
 
-#include <sick_safetyscanners_base/datastructure/Data.h>
-#include <sick_safetyscanners_base/datastructure/FirmwareVersion.h>
-#include <sick_safetyscanners_base/datastructure/PacketBuffer.h>
+#include "sick_safetyscanners_base/datastructure/Data.h"
+#include "sick_safetyscanners_base/datastructure/FirmwareVersion.h"
+#include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 
-#include <sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp>
+#include "sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp"
 
 #include <string>
 

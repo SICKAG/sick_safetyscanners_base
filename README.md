@@ -50,8 +50,8 @@ export CMAKE_PREFIX_PATH=<path to install folder>
 
 Afterwards the driver and the settings for the driver can be included with:
 ```
-#include <sick_safetyscanners_base/SickSafetyscannersBase.h> 
-#include <sick_safetyscanners_base/datastructure/CommSettings.h>
+#include "sick_safetyscanners_base/SickSafetyscannersBase.h" 
+#include "sick_safetyscanners_base/datastructure/CommSettings.h"
 ```
 
 To setup the driver one has to invoke the constructor and pass a function and the settings for communication. The function then will be executed everytime a new scan from the sensor arrives and gives access to the data.
