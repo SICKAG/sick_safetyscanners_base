@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 2.8.12)
 project(sick_safetyscanners_base CXX)
 
 ## Use C++11
-add_definitions(-std=c++11 -Wall)
+#add_definitions(-std=c++11 -Wall)
 ## By adding -Wall and -Werror, the compiler does not ignore warnings anymore,
 ## enforcing cleaner code.
-#add_definitions(-std=c++11 -Wall -Werror)
+add_definitions(-std=c++11 -Wall -Werror)
 
 
 ## Find system libraries
