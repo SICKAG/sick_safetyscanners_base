@@ -40,7 +40,7 @@ namespace sick
 namespace cola2
 {
 
-CommandMsg::CommandMsg(Cola2Session &session, uint16_t command_type, uint16_t command_mode)
+Command::Command(Cola2Session &session, uint16_t command_type, uint16_t command_mode)
     : m_session(session),
       m_command_mode(command_mode),
       m_command_type(command_type),
@@ -50,75 +50,75 @@ CommandMsg::CommandMsg(Cola2Session &session, uint16_t command_type, uint16_t co
   m_tcp_parser_ptr = std::make_shared<sick::data_processing::ParseTCPPacket>();
 }
 
-void CommandMsg::lockExecutionMutex()
+void Command::lockExecutionMutex()
 {
   m_execution_mutex.lock();
 }
 
-std::vector<uint8_t> CommandMsg::constructTelegram(const std::vector<uint8_t> &telegram) const
+std::vector<uint8_t> Command::constructTelegram(const std::vector<uint8_t> &telegram) const
 {
   auto v = addTelegramData(telegram);
   return addTelegramHeader(v);
 }
 
-void CommandMsg::processReplyBase(const std::vector<uint8_t> &packet)
+void Command::processReplyBase(const std::vector<uint8_t> &packet)
 {
   m_tcp_parser_ptr->parseTCPSequence(packet, *this);
   m_was_successful = processReply();
   // m_execution_mutex.unlock();
 }
 
-void CommandMsg::waitForCompletion()
+void Command::waitForCompletion()
 {
   boost::mutex::scoped_lock lock(m_execution_mutex);
 }
 
-bool CommandMsg::wasSuccessful() const
+bool Command::wasSuccessful() const
 {
   return m_was_successful;
 }
 
-uint8_t CommandMsg::getCommandType() const
+uint8_t Command::getCommandType() const
 {
   return m_command_type;
 }
 
-void CommandMsg::setCommandType(const uint8_t &command_type)
+void Command::setCommandType(const uint8_t &command_type)
 {
   m_command_type = command_type;
 }
 
-uint8_t CommandMsg::getCommandMode() const
+uint8_t Command::getCommandMode() const
 {
   return m_command_mode;
 }
 
-void CommandMsg::setCommandMode(const uint8_t &command_mode)
+void Command::setCommandMode(const uint8_t &command_mode)
 {
   m_command_mode = command_mode;
 }
 
-uint32_t CommandMsg::getSessionID() const
+uint32_t Command::getSessionID() const
 {
   return m_session_id;
 }
 
-void CommandMsg::setSessionID(uint32_t session_id)
+void Command::setSessionID(uint32_t session_id)
 {
   m_session_id = session_id;
 }
 
-uint16_t CommandMsg::getRequestID() const
+uint16_t Command::getRequestID() const
 {
   return m_request_id;
 }
 
-void CommandMsg::setRequestID(const uint16_t &request_id)
+void Command::setRequestID(const uint16_t &request_id)
 {
   m_request_id = request_id;
 }
 
-std::vector<uint8_t> CommandMsg::expandTelegram(const std::vector<uint8_t> &telegram,
+std::vector<uint8_t> Command::expandTelegram(const std::vector<uint8_t> &telegram,
                                                 size_t additional_bytes) const
 {
   // Allocate memory to the desired final size
@@ -129,7 +129,7 @@ std::vector<uint8_t> CommandMsg::expandTelegram(const std::vector<uint8_t> &tele
   return output;
 }
 
-std::vector<uint8_t> CommandMsg::addTelegramHeader(const std::vector<uint8_t> &telegram) const
+std::vector<uint8_t> Command::addTelegramHeader(const std::vector<uint8_t> &telegram) const
 {
   std::vector<uint8_t> header = prepareHeader();
   std::vector<uint8_t>::iterator data_ptr = header.begin();
@@ -139,22 +139,22 @@ std::vector<uint8_t> CommandMsg::addTelegramHeader(const std::vector<uint8_t> &t
   return header;
 }
 
-std::vector<uint8_t> CommandMsg::prepareHeader() const
+std::vector<uint8_t> Command::prepareHeader() const
 {
   return std::vector<uint8_t>(18);
 }
 
-std::vector<uint8_t> CommandMsg::getDataVector() const
+std::vector<uint8_t> Command::getDataVector() const
 {
   return m_data_vector;
 }
 
-void CommandMsg::setDataVector(const std::vector<uint8_t> &data)
+void Command::setDataVector(const std::vector<uint8_t> &data)
 {
   m_data_vector = data;
 }
 
-void CommandMsg::writeDataToDataPtr(std::vector<uint8_t>::iterator data_ptr,
+void Command::writeDataToDataPtr(std::vector<uint8_t>::iterator data_ptr,
                                     const std::vector<uint8_t> &telegram) const
 {
   writeCola2StxToDataPtr(data_ptr);
@@ -167,47 +167,47 @@ void CommandMsg::writeDataToDataPtr(std::vector<uint8_t>::iterator data_ptr,
   writeCommandModeToDataPtr(data_ptr);
 }
 
-void CommandMsg::writeCola2StxToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
+void Command::writeCola2StxToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
 {
   uint32_t cola2_stx = 0x02020202;
   read_write_helper::writeUint32BigEndian(data_ptr + 0, cola2_stx);
 }
 
-void CommandMsg::writeLengthToDataPtr(std::vector<uint8_t>::iterator data_ptr,
+void Command::writeLengthToDataPtr(std::vector<uint8_t>::iterator data_ptr,
                                       const std::vector<uint8_t> &telegram) const
 {
   uint32_t length = 10 + telegram.size();
   read_write_helper::writeUint32BigEndian(data_ptr + 4, length);
 }
 
-void CommandMsg::writeCola2HubCntrToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
+void Command::writeCola2HubCntrToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
 {
   uint8_t cola2_hub_cntr = 0x00;
   read_write_helper::writeUint8BigEndian(data_ptr + 8, cola2_hub_cntr);
 }
 
-void CommandMsg::writeCola2NoCToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
+void Command::writeCola2NoCToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
 {
   uint8_t cola2_noc = 0x00;
   read_write_helper::writeUint8BigEndian(data_ptr + 9, cola2_noc);
 }
 
-void CommandMsg::writeSessionIdToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
+void Command::writeSessionIdToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
 {
   read_write_helper::writeUint32BigEndian(data_ptr + 10, getSessionID());
 }
 
-void CommandMsg::writeRequestIdToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
+void Command::writeRequestIdToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
 {
   read_write_helper::writeUint16BigEndian(data_ptr + 14, getRequestID());
 }
 
-void CommandMsg::writeCommandTypeToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
+void Command::writeCommandTypeToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
 {
   read_write_helper::writeUint8BigEndian(data_ptr + 16, getCommandType());
 }
 
-void CommandMsg::writeCommandModeToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
+void Command::writeCommandModeToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
 {
   read_write_helper::writeUint8BigEndian(data_ptr + 17, getCommandMode());
 }

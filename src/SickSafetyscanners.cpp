@@ -37,6 +37,7 @@
 #include <utility>
 #include <chrono>
 #include "sick_safetyscanners_base/SickSafetyscanners.h"
+#include "sick_safetyscanners_base/cola2/Cola2.h"
 
 namespace sick
 {
@@ -212,14 +213,14 @@ void SickSafetyscannersBase::requestDeviceStatus(
 
 void SickSafetyscannersBase::requestLatestTelegram(
     sick::datastructure::Data &data,
-    int8_t index)
+    int8_t channel_index)
 {
-  if (index < 0 || index > 3)
+  if (channel_index < 0 || channel_index > 3)
   {
     LOG_WARN("Index is out of bounds, returning default channel 0");
-    index = 0;
+    channel_index = 0;
   }
-  createAndExecuteCommand<sick::cola2::LatestTelegramVariableCommand>(m_session, data, index);
+  createAndExecuteCommand<sick::cola2::LatestTelegramVariableCommand>(m_session, data, channel_index);
 }
 
 void SickSafetyscannersBase::requestRequiredUserAction(
@@ -247,7 +248,7 @@ AsyncSickSafetyScanner::AsyncSickSafetyScanner(sick::types::ip_address_t sensor_
 
 AsyncSickSafetyScanner::AsyncSickSafetyScanner(sick::types::ip_address_t sensor_ip, sick::types::port_t sensor_tcp_port, CommSettings comm_settings, sick::types::ScanDataCb callback, boost::asio::io_service &io_service)
     : SickSafetyscannersBase(sensor_ip, sensor_tcp_port, comm_settings, io_service),
-      m_scan_data_cb(),
+      m_scan_data_cb(callback),
       m_work()
 {
 }
@@ -293,7 +294,7 @@ bool SyncSickSafetyScanner::isDataAvailable() const
   return m_udp_client.isDataAvailable();
 }
 
-const Data SyncSickSafetyScanner::receive(boost::posix_time::time_duration timeout)
+const Data SyncSickSafetyScanner::receive(sick::types::time_duration_t timeout)
 {
   sick::data_processing::ParseData data_parser;
   while (!m_packet_merger.isComplete())

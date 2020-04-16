@@ -43,7 +43,7 @@ namespace cola2
 {
 
 CreateSession::CreateSession(Cola2Session &session)
-    : CommandMsg(session, 0x4F, 0x58) // see cola2 manual 0x4F = O, 0x58 = X
+    : Command(session, 0x4F, 0x58) // see cola2 manual 0x4F = O, 0x58 = X
 {
 }
 

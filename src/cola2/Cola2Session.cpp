@@ -33,8 +33,9 @@
 //----------------------------------------------------------------------
 
 #include "sick_safetyscanners_base/cola2/Cola2Session.h"
-#include "sick_safetyscanners_base/types.h"
+#include "sick_safetyscanners_base/Types.h"
 #include <boost/bind.hpp>
+#include <boost/asio.hpp>
 
 namespace sick
 {
@@ -74,13 +75,14 @@ void Cola2Session::open()
     m_tcp_client_ptr->connect();
     assert(isOpen());
     CreateSession cmd(*this);
-    executeCommand(cmd);
+    sendCommand(cmd);
     auto sessID = cmd.getSessionID();
     setSessionID(sessID);
     LOG_DEBUG("Successfully opened Cola2 session with sessionID: %u", sessID);
 }
 
-bool Cola2Session::isOpen() {
+bool Cola2Session::isOpen() const
+{
     return m_tcp_client_ptr->isConnected();
 }
 
@@ -92,13 +94,13 @@ void Cola2Session::close()
     }
 
     CloseSession cmd(*this);
-    executeCommand(cmd);
+    sendCommand(cmd);
     m_tcp_client_ptr->disconnect();
     auto sessID = cmd.getSessionID();
     LOG_DEBUG("Closed Cola2 session with sessionID: %u", sessID);
 }
 
-void Cola2Session::sendRequest(CommandMsg &cmd)
+void Cola2Session::assembleAndSendTelegram(Command &cmd)
 {
     cmd.setSessionID(getSessionID().get_value_or(0));
     std::vector<uint8_t> telegram;
@@ -106,14 +108,14 @@ void Cola2Session::sendRequest(CommandMsg &cmd)
     m_tcp_client_ptr->send(telegram);
 }
 
-sick::datastructure::PacketBuffer Cola2Session::receiveAndProcessResponse(CommandMsg &cmd, boost::posix_time::time_duration timeout)
+sick::datastructure::PacketBuffer Cola2Session::receiveAndProcessResponse(Command &cmd, boost::posix_time::time_duration timeout)
 {
     sick::data_processing::TCPPacketMerger packet_merger(0);
     sick::data_processing::ParseTCPPacket tcp_packet_parser;
 
     while (!packet_merger.isComplete())
     {
-        sick::datastructure::PacketBuffer packet_buffer = m_tcp_client_ptr->receive();
+        sick::datastructure::PacketBuffer packet_buffer = m_tcp_client_ptr->receive(timeout);
         if (packet_merger.isEmpty())
         {
             auto expectedPacketLength = tcp_packet_parser.getExpectedPacketLength(packet_buffer);
@@ -125,14 +127,14 @@ sick::datastructure::PacketBuffer Cola2Session::receiveAndProcessResponse(Comman
     return response;
 }
 
-void Cola2Session::executeCommand(CommandMsg &cmd, boost::posix_time::time_duration timeout)
+void Cola2Session::sendCommand(Command &cmd, boost::posix_time::time_duration timeout)
 {
     if (!isOpen())
     {
         open();
     }
 
-    sendRequest(cmd);
+    assembleAndSendTelegram(cmd);
     auto response = receiveAndProcessResponse(cmd, timeout);
     cmd.processReplyBase(*response.getBuffer());
 }

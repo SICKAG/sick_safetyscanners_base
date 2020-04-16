@@ -35,9 +35,6 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCTCPCLIENT_H
 #define SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCTCPCLIENT_H
 
-//#include <ros/ros.h>
-// #include <sick_safetyscanners_base/log.h>
-
 #include <functional>
 #include <iostream>
 #include <thread>

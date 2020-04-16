@@ -149,8 +149,7 @@ bool UDPClient::isDataAvailable() const
   return m_socket.is_open() && m_socket.available() > 0;
 }
 
-// TODO optional?
-unsigned short UDPClient::getLocalPort() const
+sick::types::port_t UDPClient::getLocalPort() const
 {
   if (m_socket.is_open())
   {

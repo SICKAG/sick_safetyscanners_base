@@ -59,7 +59,7 @@ uint16_t ParseTCPPacket::getRequestID(const datastructure::PacketBuffer& buffer)
 
 
 bool ParseTCPPacket::parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                                      sick::cola2::CommandMsg& command) const
+                                      sick::cola2::Command& command) const
 {
   setCommandValuesFromPacket(buffer, command);
 
@@ -70,7 +70,7 @@ bool ParseTCPPacket::parseTCPSequence(const datastructure::PacketBuffer& buffer,
 }
 
 void ParseTCPPacket::setCommandValuesFromPacket(const sick::datastructure::PacketBuffer& buffer,
-                                                sick::cola2::CommandMsg& command) const
+                                                sick::cola2::Command& command) const
 {
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();

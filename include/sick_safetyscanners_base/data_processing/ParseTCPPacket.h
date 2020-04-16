@@ -47,7 +47,7 @@ namespace cola2 {
 /*!
  * \brief Forward declaration of Command class.
  */
-class CommandMsg;
+class Command;
 } // namespace cola2
 
 namespace data_processing {
@@ -73,7 +73,7 @@ public:
    * \returns If parsing was successful.
    */
   bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
-                        sick::cola2::CommandMsg& command) const;
+                        sick::cola2::Command& command) const;
 
   /*!
    * \brief Gets the expected packet length for a buffer.
@@ -105,7 +105,7 @@ private:
   uint16_t readErrorCode(std::vector<uint8_t>::const_iterator data_ptr) const;
   std::vector<uint8_t> readData(const datastructure::PacketBuffer& buffer) const;
   void setCommandValuesFromPacket(const sick::datastructure::PacketBuffer& buffer,
-                                  sick::cola2::CommandMsg& command) const;
+                                  sick::cola2::Command& command) const;
 };
 
 } // namespace data_processing

@@ -25,36 +25,36 @@
 
 //----------------------------------------------------------------------
 /*!
- * \file generics.h
+ * \file types.h
  *
- * \author  Lennart Puck <puck@fzi.de>
- * \date    2018-09-24
  * \author  Martin Schulze <schulze@fzi.de>
  * \date    2020-04-15
  */
 //----------------------------------------------------------------------
 
-#ifndef SICK_SAFETYSCANNERS_BASE_GENERICS_H
-#define SICK_SAFETYSCANNERS_BASE_GENERICS_H
+#ifndef SICK_SAFETYSCANNERS_BASE_TYPES_H
+#define SICK_SAFETYSCANNERS_BASE_TYPES_H
 
+#include <functional>
 #include <memory>
 
 namespace sick
 {
 
-template <typename T, typename... Args>
-T createT(Args &&... ARGS)
-{
-    return T(std::forward<Args>(ARGS)...);
-}
+// enum class SensorDataChannels : uint16_t
+// {
+//     SYSTEM_STATE,
+//     DERIVED_SETTINGS,
+//     MEASUREMENT_DATA,
+//     INTRUSION_DATA,
+//     APPLICATION_DATA,
+//     _ // Sentinel to restrict the range of possible domain values
+// };
 
-// C++11 does not come with a make_unique function, so here it is.
-// Borrowed from Scott Meyers' Effective C++ page 139.
-template <typename T, typename... Ts>
-std::unique_ptr<T> make_unique(Ts &&... params)
-{
-    return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
-}
+// using SensorFeatures = flag_set<SensorDataChannels>;
 
 } // namespace sick
-#endif // SICK_SAFETYSCANNERS_BASE_GENERICS_H
+
+// ENABLE_BITMASK_OPERATORS(sick::SensorFeatures);
+
+#endif // SICK_SAFETYSCANNERS_TYPES_H

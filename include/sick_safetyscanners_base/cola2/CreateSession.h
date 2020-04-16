@@ -44,7 +44,7 @@ namespace cola2 {
 /*!
  * \brief Command to create a new cola2 session.
  */
-class CreateSession : public CommandMsg
+class CreateSession : public Command
 {
 public:
   /*!

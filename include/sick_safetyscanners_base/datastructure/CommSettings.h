@@ -43,29 +43,32 @@
 #include <string>
 #include <bitset>
 
-#include "sick_safetyscanners_base/types.h"
-#include "sick_safetyscanners_base/constants.h"
+#include "sick_safetyscanners_base/Types.h"
 
 namespace sick
 {
 namespace datastructure
 {
 
-// Aggregate Initialization, do not add constructors, default-initializers etc.
-// see https://en.cppreference.com/w/cpp/language/aggregate_initialization
+/*!
+ * \brief The communication settings which is used to configure the sensor.
+ * 
+ */
 struct CommSettings
 {
   CommSettings() = default;
 
+  // Aggregate Initialization, do not add constructors, default-initializers etc.
+  // see https://en.cppreference.com/w/cpp/language/aggregate_initialization
   uint8_t channel{0};
   uint16_t publishing_frequency{1};
   uint8_t e_interface_type{0};
   float start_angle{0.0};
   float end_angle{0.0};
-  sick::types::SensorFeatures features{sick::SensorDataChannels::ALL};
+  sick::types::SensorFeatures features{sick::SensorDataFeatures::ALL};
   bool enabled{true};
 
-  unsigned short host_udp_port{0};
+  sick::types::port_t host_udp_port{0};
   sick::types::ip_address_t host_ip{boost::asio::ip::address_v4::from_string("192.168.1.100")};
 };
 

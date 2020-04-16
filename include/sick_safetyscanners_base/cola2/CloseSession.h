@@ -44,7 +44,7 @@ namespace cola2 {
 /*!
  * \brief Command to close a cola2 session between host and sensor.
  */
-class CloseSession : public CommandMsg
+class CloseSession : public Command
 {
 public:
   /*!

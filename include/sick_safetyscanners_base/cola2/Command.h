@@ -41,7 +41,7 @@
 
 #include "sick_safetyscanners_base/data_processing/ParseTCPPacket.h"
 #include "sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp"
-#include "sick_safetyscanners_base/log.h"
+#include "sick_safetyscanners_base/Logging.h"
 
 #include <boost/thread/mutex.hpp>
 
@@ -58,7 +58,7 @@ class Cola2Session;
 /*!
  * \brief Base class for commands. Defines the base interface and does the common tasks.
  */
-class CommandMsg
+class Command
 {
 public:
   /*!
@@ -69,14 +69,14 @@ public:
    * Invoking a method).
    * \param command_mode Specifies the mode of the command. If the request is by index or name.
    */
-  CommandMsg(sick::cola2::Cola2Session &session,
+  Command(sick::cola2::Cola2Session &session,
              uint16_t command_type,
              uint16_t command_mode);
 
   /*!
    * \brief We have virtual member functions, so a virtual destructor is needed.
    */
-  virtual ~CommandMsg() {}
+  virtual ~Command() {}
 
   /*!
    * \brief Locks a mutex to prevent other commands being executed in parallel.
