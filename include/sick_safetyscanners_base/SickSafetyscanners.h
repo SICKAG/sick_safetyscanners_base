@@ -116,7 +116,7 @@ public:
   /*!
    * \brief Virtual destructor of this base class.
    */
-  virtual ~SickSafetyscannersBase();
+  // virtual ~SickSafetyscannersBase();
 
   /*!
    * \brief Changes the internal settings of the sensor.

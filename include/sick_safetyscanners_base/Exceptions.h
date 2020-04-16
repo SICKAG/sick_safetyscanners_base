@@ -35,7 +35,7 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_EXCEPTIONS_H
 #define SICK_SAFETYSCANNERS_BASE_EXCEPTIONS_H
 
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <chrono>
 #include <exception>
 #include <sstream>
