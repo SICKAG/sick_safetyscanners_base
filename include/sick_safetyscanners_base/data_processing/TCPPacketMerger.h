@@ -42,10 +42,8 @@
 #include <mutex>
 #include <vector>
 
-namespace sick
-{
-namespace data_processing
-{
+namespace sick {
+namespace data_processing {
 
 /*!
  * \brief Merges incoming tcp packets together to get a complete data packet.
@@ -58,8 +56,8 @@ public:
    */
   TCPPacketMerger() = delete;
   TCPPacketMerger(std::size_t target_size);
-  TCPPacketMerger(const TCPPacketMerger &) = delete;
-  TCPPacketMerger &operator=(const TCPPacketMerger &) = delete;
+  TCPPacketMerger(const TCPPacketMerger&) = delete;
+  TCPPacketMerger& operator=(const TCPPacketMerger&) = delete;
 
   /*!
    * \brief Check if the packet is complete.
@@ -83,7 +81,7 @@ public:
    *
    * \returns True if the data packet is complete with the new packet.
    */
-  bool addTCPPacket(const sick::datastructure::PacketBuffer &buffer);
+  bool addTCPPacket(const sick::datastructure::PacketBuffer& buffer);
 
   /*!
    * \brief Gets the latest complete data packet.
@@ -116,7 +114,7 @@ private:
   std::mutex m_buffer_mutex;
   std::size_t m_target_size;
 
-  bool addToMap(const sick::datastructure::PacketBuffer &new_packet);
+  bool addToMap(const sick::datastructure::PacketBuffer& new_packet);
   bool deployPacketIfComplete();
 
   std::size_t getCurrentSize();

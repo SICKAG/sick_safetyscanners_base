@@ -35,9 +35,9 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_CONFIGDATA_H
 #define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_CONFIGDATA_H
 
+#include "sick_safetyscanners_base/datastructure/DerivedValues.h"
 #include <boost/asio/ip/address_v4.hpp>
 #include <iostream>
-#include "sick_safetyscanners_base/datastructure/DerivedValues.h"
 #include <vector>
 
 namespace sick {

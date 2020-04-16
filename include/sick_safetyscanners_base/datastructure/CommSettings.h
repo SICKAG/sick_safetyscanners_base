@@ -35,24 +35,22 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_COMMSETTINGS_H
 #define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_COMMSETTINGS_H
 
+#include <bitset>
 #include <boost/asio.hpp>
+#include <cstdint>
 #include <iostream>
 #include <ostream>
 #include <sstream>
-#include <cstdint>
 #include <string>
-#include <bitset>
 
 #include "sick_safetyscanners_base/Types.h"
 
-namespace sick
-{
-namespace datastructure
-{
+namespace sick {
+namespace datastructure {
 
 /*!
  * \brief The communication settings which is used to configure the sensor.
- * 
+ *
  */
 struct CommSettings
 {
@@ -72,7 +70,7 @@ struct CommSettings
   sick::types::ip_address_t host_ip{boost::asio::ip::address_v4::from_string("192.168.1.100")};
 };
 
-std::ostream &operator<<(std::ostream &os, const CommSettings &settings);
+std::ostream& operator<<(std::ostream& os, const CommSettings& settings);
 
 } // namespace datastructure
 } // namespace sick

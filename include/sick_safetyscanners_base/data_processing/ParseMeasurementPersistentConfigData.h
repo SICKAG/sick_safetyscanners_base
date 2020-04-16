@@ -35,10 +35,10 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEMEASUREMENTPERSISTENTCONFIGDATA_H
 #define SICK_SAFETYSCANNERS_BASE_DATA_PROCESSING_PARSEMEASUREMENTPERSISTENTCONFIGDATA_H
 
-#include <boost/asio/ip/address_v4.hpp>
 #include "sick_safetyscanners_base/datastructure/ConfigData.h"
 #include "sick_safetyscanners_base/datastructure/Data.h"
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
+#include <boost/asio/ip/address_v4.hpp>
 
 #include "sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp"
 

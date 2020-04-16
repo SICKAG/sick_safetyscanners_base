@@ -38,8 +38,7 @@
 #include <functional>
 #include <memory>
 
-namespace sick
-{
+namespace sick {
 
 // enum class SensorDataChannels : uint16_t
 // {

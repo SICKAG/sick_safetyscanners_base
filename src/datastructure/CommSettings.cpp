@@ -37,12 +37,10 @@
 #include "sick_safetyscanners_base/datastructure/CommSettings.h"
 #include <sstream>
 
-namespace sick
-{
-namespace datastructure
-{
+namespace sick {
+namespace datastructure {
 
-std::ostream &operator<<(std::ostream &os, const CommSettings &settings)
+std::ostream& operator<<(std::ostream& os, const CommSettings& settings)
 {
   std::string channel_enabled{settings.enabled ? "true" : "false"};
   os << "channel = " << static_cast<int>(settings.channel) << "\r\n"
@@ -54,11 +52,26 @@ std::ostream &operator<<(std::ostream &os, const CommSettings &settings)
      << "host_ip = " << settings.host_ip.to_string() << "\r\n"
      << "host_udp_port = " << settings.host_udp_port << "\r\n"
      << "features (as int) = " << settings.features << "\r\n"
-     << "features.ApplicationData = " << sick::SensorDataFeatures::isFlagSet(settings.features, sick::SensorDataFeatures::APPLICATION_DATA) << "\r\n"
-     << "features.DerivedValues = " << sick::SensorDataFeatures::isFlagSet(settings.features, sick::SensorDataFeatures::DERIVED_SETTINGS) << "\r\n"
-     << "features.GeneralSystemState = " << sick::SensorDataFeatures::isFlagSet(settings.features, sick::SensorDataFeatures::GENERAL_SYSTEM_STATE) << "\r\n"
-     << "features.IntrusionData = " << sick::SensorDataFeatures::isFlagSet(settings.features, sick::SensorDataFeatures::INTRUSION_DATA) << "\r\n"
-     << "features.MeasurementData = " << sick::SensorDataFeatures::isFlagSet(settings.features, sick::SensorDataFeatures::MEASUREMENT_DATA) << "\r\n";
+     << "features.ApplicationData = "
+     << sick::SensorDataFeatures::isFlagSet(settings.features,
+                                            sick::SensorDataFeatures::APPLICATION_DATA)
+     << "\r\n"
+     << "features.DerivedValues = "
+     << sick::SensorDataFeatures::isFlagSet(settings.features,
+                                            sick::SensorDataFeatures::DERIVED_SETTINGS)
+     << "\r\n"
+     << "features.GeneralSystemState = "
+     << sick::SensorDataFeatures::isFlagSet(settings.features,
+                                            sick::SensorDataFeatures::GENERAL_SYSTEM_STATE)
+     << "\r\n"
+     << "features.IntrusionData = "
+     << sick::SensorDataFeatures::isFlagSet(settings.features,
+                                            sick::SensorDataFeatures::INTRUSION_DATA)
+     << "\r\n"
+     << "features.MeasurementData = "
+     << sick::SensorDataFeatures::isFlagSet(settings.features,
+                                            sick::SensorDataFeatures::MEASUREMENT_DATA)
+     << "\r\n";
   return os;
 }
 

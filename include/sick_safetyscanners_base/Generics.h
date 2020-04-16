@@ -39,23 +39,22 @@
 
 #include <memory>
 
-namespace sick
-{
+namespace sick {
 
 /*!
  * \brief Generic helper function to create std::unique_ptr similar to the C++14 standard.
- * 
+ *
  * 	param T Target Object type.
  * 	param Ts Argument list type.
  * \param params Arguments forwarded to the object's constructor.
  * \return std::unique_ptr<T> Returns a std::unique_ptr instance.
  */
 template <typename T, typename... Ts>
-std::unique_ptr<T> make_unique(Ts &&... params)
+std::unique_ptr<T> make_unique(Ts&&... params)
 {
-    // C++11 does not come with a make_unique function, so here it is.
-    // Borrowed from Scott Meyers' Effective C++ page 139.
-    return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
+  // C++11 does not come with a make_unique function, so here it is.
+  // Borrowed from Scott Meyers' Effective C++ page 139.
+  return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
 }
 
 } // namespace sick

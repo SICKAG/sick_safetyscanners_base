@@ -35,9 +35,9 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_LATESTTELEGRAM_H
 #define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_LATESTTELEGRAM_H
 
+#include "sick_safetyscanners_base/datastructure/MeasurementData.h"
 #include <iostream>
 #include <memory>
-#include "sick_safetyscanners_base/datastructure/MeasurementData.h"
 
 
 namespace sick {

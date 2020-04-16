@@ -39,16 +39,14 @@
 
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 
+#include "sick_safetyscanners_base/Logging.h"
 #include "sick_safetyscanners_base/data_processing/ParseTCPPacket.h"
 #include "sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp"
-#include "sick_safetyscanners_base/Logging.h"
 
 #include <boost/thread/mutex.hpp>
 
-namespace sick
-{
-namespace cola2
-{
+namespace sick {
+namespace cola2 {
 
 /*!
  * \brief Forward declaration of the cola2session class.
@@ -69,9 +67,7 @@ public:
    * Invoking a method).
    * \param command_mode Specifies the mode of the command. If the request is by index or name.
    */
-  Command(sick::cola2::Cola2Session &session,
-             uint16_t command_type,
-             uint16_t command_mode);
+  Command(sick::cola2::Cola2Session& session, uint16_t command_type, uint16_t command_mode);
 
   /*!
    * \brief We have virtual member functions, so a virtual destructor is needed.
@@ -89,7 +85,7 @@ public:
    * \param telegram The telegram, which will be modified with the data and header.
    * \returns Completed telegram.
    */
-  std::vector<uint8_t> constructTelegram(const std::vector<uint8_t> &telegram) const;
+  std::vector<uint8_t> constructTelegram(const std::vector<uint8_t>& telegram) const;
 
   /*!
    * \brief Parses the da incoming data package and then processes it with the inherited
@@ -98,7 +94,7 @@ public:
    *
    * \param packet The incoming data package which will be processed.
    */
-  void processReplyBase(const std::vector<uint8_t> &packet);
+  void processReplyBase(const std::vector<uint8_t>& packet);
 
   /*!
    * \brief Scooped call to the mutex, which will block until the reply was processed.
@@ -138,7 +134,7 @@ public:
    *
    * \param command_type The new command type.
    */
-  void setCommandType(const uint8_t &command_type);
+  void setCommandType(const uint8_t& command_type);
 
   /*!
    * \brief Returns the command mode.
@@ -152,7 +148,7 @@ public:
    *
    * \param command_mode The new command mode.
    */
-  void setCommandMode(const uint8_t &command_mode);
+  void setCommandMode(const uint8_t& command_mode);
 
   /*!
    * \brief Returns the request id of the command.
@@ -166,7 +162,7 @@ public:
    *
    * \param request_id The new request id.
    */
-  void setRequestID(const uint16_t &request_id);
+  void setRequestID(const uint16_t& request_id);
 
   /*!
    * \brief Returns the data vector.
@@ -180,12 +176,12 @@ public:
    *
    * \param data The new data vector.
    */
-  void setDataVector(const std::vector<uint8_t> &data);
+  void setDataVector(const std::vector<uint8_t>& data);
 
 protected:
-  sick::cola2::Cola2Session &m_session;
+  sick::cola2::Cola2Session& m_session;
 
-  std::vector<uint8_t> expandTelegram(const std::vector<uint8_t> &telegram,
+  std::vector<uint8_t> expandTelegram(const std::vector<uint8_t>& telegram,
                                       size_t additional_bytes) const;
 
 private:
@@ -203,14 +199,14 @@ private:
 
   std::vector<uint8_t> m_data_vector;
 
-  virtual bool processReply() = 0;
-  virtual std::vector<uint8_t> addTelegramData(const std::vector<uint8_t> &telegram) const = 0;
+  virtual bool processReply()                                                              = 0;
+  virtual std::vector<uint8_t> addTelegramData(const std::vector<uint8_t>& telegram) const = 0;
 
-  std::vector<uint8_t> addTelegramHeader(const std::vector<uint8_t> &telegram) const;
+  std::vector<uint8_t> addTelegramHeader(const std::vector<uint8_t>& telegram) const;
   std::vector<uint8_t> prepareHeader() const;
   void writeCola2StxToDataPtr(std::vector<uint8_t>::iterator data_ptr) const;
   void writeLengthToDataPtr(std::vector<uint8_t>::iterator data_ptr,
-                            const std::vector<uint8_t> &telegram) const;
+                            const std::vector<uint8_t>& telegram) const;
   void writeCola2HubCntrToDataPtr(std::vector<uint8_t>::iterator data_ptr) const;
   void writeCola2NoCToDataPtr(std::vector<uint8_t>::iterator data_ptr) const;
   void writeSessionIdToDataPtr(std::vector<uint8_t>::iterator data_ptr) const;
@@ -218,7 +214,7 @@ private:
   void writeCommandTypeToDataPtr(std::vector<uint8_t>::iterator data_ptr) const;
   void writeCommandModeToDataPtr(std::vector<uint8_t>::iterator data_ptr) const;
   void writeDataToDataPtr(std::vector<uint8_t>::iterator data_ptr,
-                          const std::vector<uint8_t> &telegram) const;
+                          const std::vector<uint8_t>& telegram) const;
 };
 
 } // namespace cola2

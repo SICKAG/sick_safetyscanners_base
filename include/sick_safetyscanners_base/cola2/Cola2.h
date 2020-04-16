@@ -61,4 +61,3 @@
 #include "sick_safetyscanners_base/cola2/TypeCodeVariableCommand.h"
 #include "sick_safetyscanners_base/cola2/UserNameVariableCommand.h"
 #include "sick_safetyscanners_base/cola2/VariableCommand.h"
-

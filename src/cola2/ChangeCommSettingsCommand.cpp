@@ -93,8 +93,7 @@ void ChangeCommSettingsCommand::writeChannelToDataPtr(std::vector<uint8_t>::iter
 
 void ChangeCommSettingsCommand::writeEnabledToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
 {
-  read_write_helper::writeUint8LittleEndian(data_ptr + 4,
-                                            static_cast<uint8_t>(m_settings.enabled));
+  read_write_helper::writeUint8LittleEndian(data_ptr + 4, static_cast<uint8_t>(m_settings.enabled));
 }
 
 void ChangeCommSettingsCommand::writeEInterfaceTypeToDataPtr(
@@ -135,7 +134,8 @@ void ChangeCommSettingsCommand::writeEndAngleToDataPtr(
 void ChangeCommSettingsCommand::writeFeaturesToDataPtr(
   std::vector<uint8_t>::iterator data_ptr) const
 {
-  read_write_helper::writeUint16LittleEndian(data_ptr + 24, static_cast<uint16_t>(m_settings.features));
+  read_write_helper::writeUint16LittleEndian(data_ptr + 24,
+                                             static_cast<uint16_t>(m_settings.features));
 }
 
 

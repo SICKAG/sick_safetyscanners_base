@@ -37,16 +37,14 @@
 #include "sick_safetyscanners_base/communication/UDPClient.h"
 #include "sick_safetyscanners_base/exceptions.h"
 
+#include <boost/lambda/bind.hpp>
+#include <boost/lambda/lambda.hpp>
 #include <cstdlib>
 #include <iostream>
 #include <string>
-#include <boost/lambda/bind.hpp>
-#include <boost/lambda/lambda.hpp>
 
-namespace sick
-{
-namespace communication
-{
+namespace sick {
+namespace communication {
 
 using boost::asio::deadline_timer;
 using boost::asio::ip::tcp;
@@ -54,22 +52,19 @@ using boost::lambda::_1;
 using boost::lambda::bind;
 using boost::lambda::var;
 
-UDPClient::UDPClient(
-    boost::asio::io_service &io_service,
-    sick::types::port_t server_port)
-    : m_io_service(io_service),
-      m_socket(boost::ref(io_service), boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port}),
-      m_packet_handler(),
-      m_recv_buffer(),
-      m_deadline(io_service)
+UDPClient::UDPClient(boost::asio::io_service& io_service, sick::types::port_t server_port)
+  : m_io_service(io_service)
+  , m_socket(boost::ref(io_service),
+             boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port})
+  , m_packet_handler()
+  , m_recv_buffer()
+  , m_deadline(io_service)
 {
   m_deadline.expires_at(boost::posix_time::pos_infin);
   checkDeadline();
 }
 
-UDPClient::~UDPClient()
-{
-}
+UDPClient::~UDPClient() {}
 
 void UDPClient::checkDeadline()
 {
@@ -109,9 +104,11 @@ void UDPClient::handleReceive(boost::system::error_code ec, std::size_t bytes_re
 
 void UDPClient::beginReceive()
 {
-  m_socket.async_receive_from(boost::asio::buffer(m_recv_buffer), m_remote_endpoint, [this](boost::system::error_code ec, std::size_t bytes_recvd) {
-    this->handleReceive(ec, bytes_recvd);
-  });
+  m_socket.async_receive_from(boost::asio::buffer(m_recv_buffer),
+                              m_remote_endpoint,
+                              [this](boost::system::error_code ec, std::size_t bytes_recvd) {
+                                this->handleReceive(ec, bytes_recvd);
+                              });
 }
 
 void UDPClient::stop()
@@ -125,8 +122,10 @@ sick::datastructure::PacketBuffer UDPClient::receive(sick::types::time_duration_
   m_deadline.expires_from_now(timeout);
 
   std::size_t bytes_recv = 0;
-  m_socket.async_receive_from(boost::asio::buffer(m_recv_buffer), m_remote_endpoint,
-                              boost::bind(&UDPClient::handleReceiveDeadline, _1, _2, &ec, &bytes_recv));
+  m_socket.async_receive_from(
+    boost::asio::buffer(m_recv_buffer),
+    m_remote_endpoint,
+    boost::bind(&UDPClient::handleReceiveDeadline, _1, _2, &ec, &bytes_recv));
 
   // Block until async_receive_from finishes or the deadline_timer exceeds its timeout.
   do
@@ -137,7 +136,8 @@ sick::datastructure::PacketBuffer UDPClient::receive(sick::types::time_duration_
   {
     LOG_ERROR("Timeout on receiving UDP sensor data. Error code %i", ec.value());
     // throw boost::system::system_error(ec ? ec : boost::asio::error::operation_aborted);
-    throw timeout_error("Timeout exceeded", {timeout.total_seconds(), timeout.total_milliseconds()});
+    throw timeout_error("Timeout exceeded",
+                        {timeout.total_seconds(), timeout.total_milliseconds()});
   }
 
   auto buffer = sick::datastructure::PacketBuffer(m_recv_buffer, bytes_recv);
