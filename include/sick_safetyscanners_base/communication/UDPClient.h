@@ -37,19 +37,12 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCUDPCLIENT_H
 #define SICK_SAFETYSCANNERS_BASE_COMMUNICATION_ASYNCUDPCLIENT_H
 
-#include <functional>
 #include <iostream>
-#include <memory>
 
-#include <boost/array.hpp>
 #include <boost/asio.hpp>
-#include <boost/cstdint.hpp>
-#include <boost/function.hpp>
-#include <boost/thread.hpp>
 
+#include "sick_safetyscanners_base/Types.h"
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
-#include "sick_safetyscanners_base/log.h"
-#include "sick_safetyscanners_base/types.h"
 
 namespace sick {
 namespace communication {

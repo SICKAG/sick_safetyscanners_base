@@ -35,14 +35,13 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_COMMUNICATION_SYNCTCPCLIENT_H
 #define SICK_SAFETYSCANNERS_BASE_COMMUNICATION_SYNCTCPCLIENT_H
 
-#include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
-#include "sick_safetyscanners_base/exceptions.h"
-#include "sick_safetyscanners_base/logging.h"
-#include "sick_safetyscanners_base/types.h"
-#include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <vector>
+
+#include "sick_safetyscanners_base/Types.h"
+#include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
+
 
 namespace sick {
 namespace communication {

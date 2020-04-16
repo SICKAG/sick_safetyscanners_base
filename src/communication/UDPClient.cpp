@@ -35,12 +35,19 @@
 //----------------------------------------------------------------------
 
 #include "sick_safetyscanners_base/communication/UDPClient.h"
-#include "sick_safetyscanners_base/exceptions.h"
+#include "sick_safetyscanners_base/Exceptions.h"
+#include "sick_safetyscanners_base/Logging.h"
 
+#include <boost/array.hpp>
+#include <boost/cstdint.hpp>
+#include <boost/function.hpp>
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
+#include <boost/thread.hpp>
 #include <cstdlib>
+#include <functional>
 #include <iostream>
+#include <memory>
 #include <string>
 
 namespace sick {

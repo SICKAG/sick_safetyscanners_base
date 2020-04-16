@@ -33,8 +33,10 @@
 //----------------------------------------------------------------------
 
 #include "sick_safetyscanners_base/communication/TCPClient.h"
-#include "sick_safetyscanners_base/exceptions.h"
+#include "sick_safetyscanners_base/Exceptions.h"
+#include "sick_safetyscanners_base/Logging.h"
 
+#include <boost/array.hpp>
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <cstdlib>

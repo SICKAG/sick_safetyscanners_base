@@ -51,6 +51,7 @@
 
 #include "sick_safetyscanners_base/Logging.h"
 #include "sick_safetyscanners_base/Types.h"
+#include "sick_safetyscanners_base/Generics.h"
 
 #include "sick_safetyscanners_base/communication/TCPClient.h"
 #include "sick_safetyscanners_base/communication/UDPClient.h"
@@ -113,10 +114,9 @@ public:
                          CommSettings comm_settings);
 
   /*!
-   * \brief Destructor
+   * \brief Virtual destructor of this base class.
    */
-  // TODO check if necessary
-  // virtual ~SickSafetyscannersBase();
+  virtual ~SickSafetyscannersBase();
 
   /*!
    * \brief Changes the internal settings of the sensor.
