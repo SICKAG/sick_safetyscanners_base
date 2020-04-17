@@ -49,9 +49,9 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread.hpp>
 
+#include "sick_safetyscanners_base/Generics.h"
 #include "sick_safetyscanners_base/Logging.h"
 #include "sick_safetyscanners_base/Types.h"
-#include "sick_safetyscanners_base/Generics.h"
 
 #include "sick_safetyscanners_base/communication/TCPClient.h"
 #include "sick_safetyscanners_base/communication/UDPClient.h"
