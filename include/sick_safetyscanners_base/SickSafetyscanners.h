@@ -49,9 +49,9 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread.hpp>
 
+#include "sick_safetyscanners_base/Generics.h"
 #include "sick_safetyscanners_base/Logging.h"
 #include "sick_safetyscanners_base/Types.h"
-#include "sick_safetyscanners_base/Generics.h"
 
 #include "sick_safetyscanners_base/communication/TCPClient.h"
 #include "sick_safetyscanners_base/communication/UDPClient.h"
@@ -364,6 +364,12 @@ public:
   // initialization like default construction would do.
   using SickSafetyscannersBase::SickSafetyscannersBase;
 
+
+  // Deleted constructor
+  SyncSickSafetyScanner(sick::types::ip_address_t sensor_ip,
+                        sick::types::port_t sensor_tcp_port,
+                        CommSettings comm_settings,
+                        boost::asio::io_service& io_service) = delete;
   /*!
    * \brief Indicates whether sensor data is available in the receiving buffers.
    *

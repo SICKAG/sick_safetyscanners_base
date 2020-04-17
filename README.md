@@ -36,7 +36,7 @@ cd sick_safetyscanners_base
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=<path to install folder> ..
-make -j9
+make -j8
 make install
 ```
 
@@ -50,9 +50,15 @@ export CMAKE_PREFIX_PATH=<path to install folder>
 
 Afterwards the driver and the settings for the driver can be included with:
 ```
-#include "sick_safetyscanners_base/SickSafetyscannersBase.h" 
-#include "sick_safetyscanners_base/datastructure/CommSettings.h"
+#include <sick_safetyscanners_base/SickSafetyscanners.h>
+#include <sick_safetyscanners_base/Exceptions.h>
+#include <sick_safetyscanners_base/Types.h>
+#include <sick_safetyscanners_base/datastructure/CommSettings.h>
 ```
+
+To get the driver up and running you need first to choose between the synchronous and asynchronous APIs based on your needs.
+
+In the latter case you can also pass an instance of boost::asio::io_service to the constructor of the AsyncSickSafetyScanner. 
 
 To setup the driver one has to invoke the constructor and pass a function and the settings for communication. The function then will be executed everytime a new scan from the sensor arrives and gives access to the data.
 
@@ -77,6 +83,32 @@ void your_function(const sick::datastructure::Data& data) ;
 An Example can be found in the sick_safetyscanners ROS Driver: https://github.com/SICKAG/sick_safetyscanners/blob/master/src/SickSafetyscannersRos.cpp
 
 ## API
+
+### Synchronous Client
+
+In cases where you do not want the driver to spawn internal child threads to asynchronously process incomming sensor data you can use the ```SyncSickSafetyScanner``` class.
+
+Example
+```
+// Sensor IP and Port
+sick::types::ip_address_t sensor_ip {"192.168.1.11"};
+sick::types::port_t tcp_port {2122};
+
+// Prepare the CommSettings for Sensor streaming data
+sick::datastructures::CommSettings comm_settings;
+comm_settings.host_ip = boost::asio::ip::address_v4::from_string("192.168.1.100");
+comm_settings.host_udp_port = 0;
+auto safety_scanner = sick::SyncSickSafetyScanner(sensor_ip, tcp_port, comm_settings);
+
+// Receive one sensor data packet
+auto timeout = boost::posix_time::seconds(5);
+sick::datastructure::Data data = safety_scanner->receive(timeout);
+...
+...
+...
+```
+
+### Asynchronous Client
 
 ### Parameters of Communication Settings
 
@@ -139,6 +171,7 @@ Thd Library allows to access variables of the sensor and invoke methods to chang
 ## Creators
 
 **Lennart Puck** 
+**Martin Schulze**
 
 FZI Forschungszentrum Informatik
 
