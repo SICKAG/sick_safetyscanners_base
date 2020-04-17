@@ -385,7 +385,7 @@ public:
    * \param timeout Timeout in [seconds].
    * \return const Data Returned sensor data.
    */
-  const Data receive(sick::types::time_duration_t timeout = boost::posix_time::seconds(5));
+  const Data receive(sick::types::time_duration_t timeout = boost::posix_time::pos_infin);
 };
 } // namespace sick
 
