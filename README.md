@@ -12,7 +12,7 @@ A CPP standalone Driver which reads the raw data from the SICK Safety Scanners a
 ## Supported Hardware
 Supported are all microScan3, nanoScan3 and outdoorScan3 variants with Ethernet connection.
 
-![ ](docs/images/safetyscanners.jpeg  "Sick microScan3")
+![ ](docs/images/safetyscanners.png  "Sick microScan3")
 
 
 
