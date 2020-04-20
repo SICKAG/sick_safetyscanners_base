@@ -54,6 +54,7 @@ SickSafetyscannersBase::SickSafetyscannersBase(sick::types::ip_address_t sensor_
       std::move(sick::make_unique<sick::communication::TCPClient>(m_sensor_ip, sensor_tcp_port)))
   , m_packet_merger()
 {
+  changeSensorSettings(comm_settings);
 }
 
 SickSafetyscannersBase::SickSafetyscannersBase(sick::types::ip_address_t sensor_ip,
@@ -70,6 +71,7 @@ SickSafetyscannersBase::SickSafetyscannersBase(sick::types::ip_address_t sensor_
       std::move(sick::make_unique<sick::communication::TCPClient>(m_sensor_ip, sensor_tcp_port)))
   , m_packet_merger()
 {
+  changeSensorSettings(comm_settings);
 }
 
 

@@ -364,6 +364,12 @@ public:
   // initialization like default construction would do.
   using SickSafetyscannersBase::SickSafetyscannersBase;
 
+
+  // Deleted constructor
+  SyncSickSafetyScanner(sick::types::ip_address_t sensor_ip,
+                        sick::types::port_t sensor_tcp_port,
+                        CommSettings comm_settings,
+                        boost::asio::io_service& io_service) = delete;
   /*!
    * \brief Indicates whether sensor data is available in the receiving buffers.
    *
@@ -379,7 +385,7 @@ public:
    * \param timeout Timeout in [seconds].
    * \return const Data Returned sensor data.
    */
-  const Data receive(sick::types::time_duration_t timeout = boost::posix_time::seconds(5));
+  const Data receive(sick::types::time_duration_t timeout = boost::posix_time::pos_infin);
 };
 } // namespace sick
 
