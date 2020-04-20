@@ -161,7 +161,7 @@ m_communication_settings.setHostIp("192.168.1.100");
 
 ### COLA2 Functions (available on both driver API variants)
 
-Thd Library allows to access variables of the sensor and invoke methods to change settings using the COLA2 protocol. The following methods can be called:
+The Library allows to access variables of the sensor and invoke methods to change settings using the COLA2 protocol. The following methods can be called:
 
 | Function                                                                                                                                                         | Information                                                                                                                                                                                  |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
