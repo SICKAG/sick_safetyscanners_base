@@ -167,7 +167,8 @@ sick::datastructure::PacketBuffer TCPClient::receive(sick::types::time_duration_
     m_socket.get_io_service().run_one();
   while (ec == boost::asio::error::would_block);
 
-  if (ec || !m_socket.is_open())
+  // if (ec || !m_socket.is_open())
+  if (ec)
   {
     LOG_ERROR("Error while receiving TCP message: %s", ec.message().c_str());
     throw timeout_error("Timeout exceeded",
