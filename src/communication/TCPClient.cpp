@@ -108,10 +108,6 @@ void TCPClient::connect(sick::types::time_duration_t timeout)
   {
     throw runtime_error(ec.message());
   }
-  else
-  {
-    LOG_DEBUG("TCP connection successfully established.");
-  }
 }
 
 void TCPClient::disconnect()
@@ -121,7 +117,6 @@ void TCPClient::disconnect()
   if (ec == boost::asio::error::eof)
   {
     // Peer closed connection as expected
-    LOG_DEBUG("TCP connection has been closed.");
     return;
   }
   else if (ec)

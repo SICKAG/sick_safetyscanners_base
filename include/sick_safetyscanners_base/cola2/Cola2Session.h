@@ -37,6 +37,7 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_COLA2_COLA2SESSION_H
 #define SICK_SAFETYSCANNERS_BASE_COLA2_COLA2SESSION_H
 
+#include "sick_safetyscanners_base/Exceptions.h"
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 
 #include "sick_safetyscanners_base/communication/TCPClient.h"
