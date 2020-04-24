@@ -88,6 +88,7 @@ void UDPClient::checkDeadline()
 
     // There is no longer an active deadline. The expiry is set to positive
     // infinity so that the actor takes no action until a new deadline is set.
+    m_deadline.cancel();
     m_deadline.expires_at(boost::posix_time::pos_infin);
   }
 
@@ -104,7 +105,7 @@ void UDPClient::handleReceive(boost::system::error_code ec, std::size_t bytes_re
   }
   else
   {
-    LOG_ERROR("Error in UDP handle receive: %i", ec.value());
+    throw runtime_error(ec.message());
   }
   beginReceive();
 }
@@ -139,12 +140,12 @@ sick::datastructure::PacketBuffer UDPClient::receive(sick::types::time_duration_
     m_socket.get_io_service().run_one();
   while (ec == boost::asio::error::would_block);
 
-  if (ec || !m_socket.is_open())
+  if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted) {
+    throw timeout_error("Timeout exceeded while waiting for sensor data", timeout);
+  }
+  if (ec)
   {
-    LOG_ERROR("Timeout on receiving UDP sensor data. Error code %i", ec.value());
-    // throw boost::system::system_error(ec ? ec : boost::asio::error::operation_aborted);
-    throw timeout_error("Timeout exceeded",
-                        {timeout.total_seconds(), timeout.total_milliseconds()});
+    throw runtime_error(ec.message());
   }
 
   auto buffer = sick::datastructure::PacketBuffer(m_recv_buffer, bytes_recv);

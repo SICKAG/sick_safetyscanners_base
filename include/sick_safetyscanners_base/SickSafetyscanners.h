@@ -261,8 +261,10 @@ private:
   template <class CommandT, typename... Args>
   void inline createAndExecuteCommand(Args&&... args)
   {
+    m_session.open();
     auto cmd = new CommandT(std::forward<Args>(args)...);
     m_session.sendCommand(*cmd);
+    m_session.close();
   }
 
 protected:

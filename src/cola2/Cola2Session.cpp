@@ -70,13 +70,16 @@ void Cola2Session::setSessionID(uint32_t session_id)
 
 void Cola2Session::open()
 {
+  if (isOpen())
+  {
+    close();
+  }
   m_tcp_client_ptr->connect();
-  assert(isOpen());
   CreateSession cmd(*this);
   sendCommand(cmd);
   auto sessID = cmd.getSessionID();
   setSessionID(sessID);
-  LOG_DEBUG("Successfully opened Cola2 session with sessionID: %u", sessID);
+  // LOG_DEBUG("Successfully opened Cola2 session with sessionID: %u", sessID);
 }
 
 bool Cola2Session::isOpen() const
@@ -88,18 +91,21 @@ void Cola2Session::close()
 {
   if (!isOpen())
   {
+    LOG_DEBUG("Attempt to close Cola2 session in closed state.");
     return;
   }
-
   CloseSession cmd(*this);
   sendCommand(cmd);
+  // auto sessID = cmd.getSessionID();
   m_tcp_client_ptr->disconnect();
-  auto sessID = cmd.getSessionID();
-  LOG_DEBUG("Closed Cola2 session with sessionID: %u", sessID);
 }
 
 void Cola2Session::assembleAndSendTelegram(Command& cmd)
 {
+  if (!isOpen())
+  {
+    throw runtime_error("Attempt to send a telegram in closed Cola2 session state.");
+  }
   cmd.setSessionID(getSessionID().get_value_or(0));
   std::vector<uint8_t> telegram;
   telegram = cmd.constructTelegram(telegram);
@@ -128,11 +134,6 @@ Cola2Session::receiveAndProcessResponse(Command& cmd, boost::posix_time::time_du
 
 void Cola2Session::sendCommand(Command& cmd, boost::posix_time::time_duration timeout)
 {
-  if (!isOpen())
-  {
-    open();
-  }
-
   assembleAndSendTelegram(cmd);
   auto response = receiveAndProcessResponse(cmd, timeout);
   cmd.processReplyBase(*response.getBuffer());

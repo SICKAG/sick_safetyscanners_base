@@ -95,22 +95,18 @@ void TCPClient::connect(sick::types::time_duration_t timeout)
   boost::system::error_code ec = boost::asio::error::would_block;
 
   m_deadline.expires_from_now(timeout);
-
   m_socket.async_connect(remote_endpoint, var(ec) = _1);
 
   do
     m_socket.get_io_service().run_one();
   while (ec == boost::asio::error::would_block);
 
-  if (ec || !m_socket.is_open())
-  {
-    LOG_ERROR("Could not connect to TCP server. Error code %i", ec.value());
-    throw timeout_error("Timeout exceeded",
-                        {timeout.total_seconds(), timeout.total_milliseconds()});
+  if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted) {
+    throw timeout_error("Timeout exceeded while connecting to the SICK sensor", timeout);
   }
-  else
+  if (ec)
   {
-    LOG_DEBUG("TCP connection successfully established.");
+    throw runtime_error(ec.message());
   }
 }
 
@@ -121,12 +117,10 @@ void TCPClient::disconnect()
   if (ec == boost::asio::error::eof)
   {
     // Peer closed connection as expected
-    LOG_INFO("TCP connection has been closed.");
     return;
   }
   else if (ec)
   {
-    // Some other error occured
     LOG_ERROR("An error occured during disconnecting from the server: %s. This error is internally "
               "ignored and socket has been closed",
               ec.message().c_str());
@@ -135,19 +129,18 @@ void TCPClient::disconnect()
 
 bool TCPClient::isConnected()
 {
+  boost::system::error_code err;
   return m_socket.is_open();
 }
 
 void TCPClient::send(const std::vector<uint8_t>& buf)
 {
-  // std::lock_guard<std::mutex> guard(m_mutex_);
   boost::system::error_code ec;
   boost::asio::write(m_socket, boost::asio::buffer(buf), boost::asio::transfer_all(), ec);
 
   if (ec)
   {
-    LOG_ERROR("Error while sending a TCP message: %s", ec.message().c_str());
-    throw boost::system::system_error(ec);
+    throw sick::runtime_error(ec.message());
   }
 }
 
@@ -167,12 +160,12 @@ sick::datastructure::PacketBuffer TCPClient::receive(sick::types::time_duration_
     m_socket.get_io_service().run_one();
   while (ec == boost::asio::error::would_block);
 
-  // if (ec || !m_socket.is_open())
+  if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted) {
+    throw timeout_error("Timeout exceeded while waiting for a response from the SICK sensor", timeout);
+  }
   if (ec)
   {
-    LOG_ERROR("Error while receiving TCP message: %s", ec.message().c_str());
-    throw timeout_error("Timeout exceeded",
-                        {timeout.total_seconds(), timeout.total_milliseconds()});
+    throw runtime_error(ec.message());
   }
   sick::datastructure::PacketBuffer buffer(m_recv_buffer, bytes_recv);
   return buffer;

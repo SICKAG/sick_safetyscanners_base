@@ -37,6 +37,7 @@
 #ifndef SICK_SAFETYSCANNERS_BASE_COLA2_COLA2SESSION_H
 #define SICK_SAFETYSCANNERS_BASE_COLA2_COLA2SESSION_H
 
+#include "sick_safetyscanners_base/Exceptions.h"
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 
 #include "sick_safetyscanners_base/communication/TCPClient.h"
@@ -109,11 +110,6 @@ public:
    */
   void setSessionID(uint32_t session_id);
 
-private:
-  uint16_t m_request_id;
-  boost::optional<uint32_t> m_session_id;
-  communication::TCPClientPtr m_tcp_client_ptr;
-
   /*!
    * \brief Opens a COLA2 session.
    *
@@ -126,6 +122,12 @@ private:
    *
    */
   void close();
+
+private:
+  uint16_t m_request_id;
+  boost::optional<uint32_t> m_session_id;
+  communication::TCPClientPtr m_tcp_client_ptr;
+
 
   /*!
    * \brief Creates and transmits a telegram in COLA2 format to the sensor.
