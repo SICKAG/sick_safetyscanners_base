@@ -101,7 +101,8 @@ void TCPClient::connect(sick::types::time_duration_t timeout)
     m_socket.get_io_service().run_one();
   while (ec == boost::asio::error::would_block);
 
-  if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted) {
+  if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted)
+  {
     throw timeout_error("Timeout exceeded while connecting to the SICK sensor", timeout);
   }
   if (ec)
@@ -160,8 +161,10 @@ sick::datastructure::PacketBuffer TCPClient::receive(sick::types::time_duration_
     m_socket.get_io_service().run_one();
   while (ec == boost::asio::error::would_block);
 
-  if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted) {
-    throw timeout_error("Timeout exceeded while waiting for a response from the SICK sensor", timeout);
+  if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted)
+  {
+    throw timeout_error("Timeout exceeded while waiting for a response from the SICK sensor",
+                        timeout);
   }
   if (ec)
   {

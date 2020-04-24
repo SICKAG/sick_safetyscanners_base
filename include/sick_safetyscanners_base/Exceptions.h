@@ -157,8 +157,7 @@ public:
   explicit timeout_error(const std::string& msg, boost::posix_time::time_duration timeout)
   {
     std::stringstream ss;
-    ss << msg << " [timeout: " << timeout.total_milliseconds() * 1e-3
-       << "seconds]";
+    ss << msg << " [timeout: " << timeout.total_milliseconds() * 1e-3 << "seconds]";
     msg_ = ss.str();
   }
 
