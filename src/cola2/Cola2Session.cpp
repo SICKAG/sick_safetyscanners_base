@@ -71,7 +71,6 @@ void Cola2Session::setSessionID(uint32_t session_id)
 void Cola2Session::open()
 {
   m_tcp_client_ptr->connect();
-  assert(isOpen());
   CreateSession cmd(*this);
   sendCommand(cmd);
   auto sessID = cmd.getSessionID();
@@ -86,16 +85,14 @@ bool Cola2Session::isOpen() const
 
 void Cola2Session::close()
 {
-  if (!isOpen())
-  {
-    return;
-  }
-
-  CloseSession cmd(*this);
-  sendCommand(cmd);
+  // if (isOpen())
+  // {
+    CloseSession cmd(*this);
+    sendCommand(cmd);
+    auto sessID = cmd.getSessionID();
+    LOG_DEBUG("Closed Cola2 session with sessionID: %u", sessID);
+  // }
   m_tcp_client_ptr->disconnect();
-  auto sessID = cmd.getSessionID();
-  LOG_DEBUG("Closed Cola2 session with sessionID: %u", sessID);
 }
 
 void Cola2Session::assembleAndSendTelegram(Command& cmd)
@@ -128,10 +125,10 @@ Cola2Session::receiveAndProcessResponse(Command& cmd, boost::posix_time::time_du
 
 void Cola2Session::sendCommand(Command& cmd, boost::posix_time::time_duration timeout)
 {
-  if (!isOpen())
-  {
-    open();
-  }
+  // if (isOpen())
+  // {
+    // close();
+  // }
 
   assembleAndSendTelegram(cmd);
   auto response = receiveAndProcessResponse(cmd, timeout);

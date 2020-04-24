@@ -109,11 +109,6 @@ public:
    */
   void setSessionID(uint32_t session_id);
 
-private:
-  uint16_t m_request_id;
-  boost::optional<uint32_t> m_session_id;
-  communication::TCPClientPtr m_tcp_client_ptr;
-
   /*!
    * \brief Opens a COLA2 session.
    *
@@ -126,6 +121,12 @@ private:
    *
    */
   void close();
+
+private:
+  uint16_t m_request_id;
+  boost::optional<uint32_t> m_session_id;
+  communication::TCPClientPtr m_tcp_client_ptr;
+
 
   /*!
    * \brief Creates and transmits a telegram in COLA2 format to the sensor.
