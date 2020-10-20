@@ -139,6 +139,11 @@ target_link_libraries(sick_safetyscanners_base PUBLIC ${Boost_LIBRARIES}
 
 add_library(sick_safetyscanners_base::sick_safetyscanners_base ALIAS sick_safetyscanners_base)
 
+add_executable(test_async
+  examples/test_async.cpp
+)
+target_link_libraries(test_async sick_safetyscanners_base)
+
 #############
 ## Install ##
 #############
