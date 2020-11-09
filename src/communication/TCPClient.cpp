@@ -98,7 +98,7 @@ void TCPClient::connect(sick::types::time_duration_t timeout)
   m_socket.async_connect(remote_endpoint, var(ec) = _1);
 
   do
-    m_socket.get_io_service().run_one();
+    m_io_service.run_one();
   while (ec == boost::asio::error::would_block);
 
   if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted)
@@ -158,7 +158,7 @@ sick::datastructure::PacketBuffer TCPClient::receive(sick::types::time_duration_
 
   // Block until async_receive_from finishes or the deadline_timer exceeds its timeout.
   do
-    m_socket.get_io_service().run_one();
+    m_io_service.run_one();
   while (ec == boost::asio::error::would_block);
 
   if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted)

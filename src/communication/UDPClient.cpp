@@ -61,7 +61,7 @@ using boost::lambda::var;
 
 UDPClient::UDPClient(boost::asio::io_service& io_service, sick::types::port_t server_port)
   : m_io_service(io_service)
-  , m_socket(boost::ref(io_service),
+  , m_socket(io_service,
              boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port})
   , m_packet_handler()
   , m_recv_buffer()
@@ -137,7 +137,7 @@ sick::datastructure::PacketBuffer UDPClient::receive(sick::types::time_duration_
 
   // Block until async_receive_from finishes or the deadline_timer exceeds its timeout.
   do
-    m_socket.get_io_service().run_one();
+    m_io_service.run_one();
   while (ec == boost::asio::error::would_block);
 
   if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted)
