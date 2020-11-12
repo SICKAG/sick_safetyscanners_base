@@ -25,7 +25,7 @@ The driver will be released on this github repository, and can then be installed
 * Linux
 * Correctly setup SICK Safety Scanner
 * Connected SICK Safety Scanner and a correctly setup ethernet network. Both the host and the sensor have to be in the same network.
-* Installed libboost with a version <= 1.69 (There have been breaking changes in version 1.70 for asio) 
+* Installed libboost
 
 ### Installation
 
