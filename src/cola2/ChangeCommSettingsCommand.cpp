@@ -122,13 +122,15 @@ void ChangeCommSettingsCommand::writeFrequencyToDataPtr(
 void ChangeCommSettingsCommand::writeStartAngleToDataPtr(
   std::vector<uint8_t>::iterator data_ptr) const
 {
-  read_write_helper::writeUint32LittleEndian(data_ptr + 16, m_settings.start_angle);
+  // multiply by constant which is required by the sensor
+  read_write_helper::writeUint32LittleEndian(data_ptr + 16, m_settings.start_angle * 4194304.0);
 }
 
 void ChangeCommSettingsCommand::writeEndAngleToDataPtr(
   std::vector<uint8_t>::iterator data_ptr) const
 {
-  read_write_helper::writeUint32LittleEndian(data_ptr + 20, m_settings.end_angle);
+  // multiply by constant which is required by the sensor
+  read_write_helper::writeUint32LittleEndian(data_ptr + 20, m_settings.end_angle * 4194304.0);
 }
 
 void ChangeCommSettingsCommand::writeFeaturesToDataPtr(
