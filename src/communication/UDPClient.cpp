@@ -61,8 +61,7 @@ using boost::lambda::var;
 
 UDPClient::UDPClient(boost::asio::io_service& io_service, sick::types::port_t server_port)
   : m_io_service(io_service)
-  , m_socket(io_service,
-             boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port})
+  , m_socket(io_service, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port})
   , m_packet_handler()
   , m_recv_buffer()
   , m_deadline(io_service)
