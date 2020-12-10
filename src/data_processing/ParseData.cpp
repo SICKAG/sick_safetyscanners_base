@@ -67,6 +67,35 @@ void ParseData::setDataBlocksInData(const datastructure::PacketBuffer& buffer,
                                     datastructure::Data& data) const
 {
   setDataHeaderInData(buffer, data);
+
+  auto dataHeadPtr = data.getDataHeaderPtr();
+  uint32_t expected_size =
+    dataHeadPtr->getDerivedValuesBlockSize() + dataHeadPtr->getMeasurementDataBlockSize() +
+    dataHeadPtr->getGeneralSystemStateBlockSize() + dataHeadPtr->getIntrusionDataBlockSize() +
+    dataHeadPtr->getApplicationDataBlockSize();
+  uint32_t actual_size = buffer.getLength();
+  if (actual_size < expected_size)
+  {
+    LOG_WARN("Skipping data, sizes do not match, actual size is smaller then expected "
+             "size! If this occurs please report with a stacktrace if the driver crashes at some "
+             "other place. ");
+    LOG_WARN("Expected minimum size: %i", expected_size);
+    LOG_WARN("Actual size: %i", actual_size);
+    LOG_WARN("Skipping all data for this message.");
+
+    dataHeadPtr->setDerivedValuesBlockSize(0);
+    dataHeadPtr->setDerivedValuesBlockOffset(0);
+    dataHeadPtr->setMeasurementDataBlockSize(0);
+    dataHeadPtr->setMeasurementDataBlockOffset(0);
+    dataHeadPtr->setGeneralSystemStateBlockSize(0);
+    dataHeadPtr->setGeneralSystemStateBlockOffset(0);
+    dataHeadPtr->setIntrusionDataBlockSize(0);
+    dataHeadPtr->setIntrusionDataBlockOffset(0);
+    dataHeadPtr->setApplicationDataBlockSize(0);
+    dataHeadPtr->setApplicationDataBlockOffset(0);
+  }
+
+
   setDerivedValuesInData(buffer, data);
   setMeasurementDataInData(buffer, data);
   setGeneralSystemStateInData(buffer, data);
