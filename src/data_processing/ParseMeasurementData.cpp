@@ -116,7 +116,21 @@ void ParseMeasurementData::setStartAngleAndDelta(const datastructure::Data& data
 void ParseMeasurementData::setScanPointsInMeasurementData(
   std::vector<uint8_t>::const_iterator data_ptr, datastructure::MeasurementData& measurement_data)
 {
-  for (size_t i = 0; i < measurement_data.getNumberOfBeams(); i++)
+  uint32_t numBeams = measurement_data.getNumberOfBeams();
+
+  uint32_t maxexpectedbeams = 2751;
+  if (numBeams > maxexpectedbeams)
+  {
+    LOG_WARN("Field Number Beams has a value larger then the expected Number of Beams for the "
+             "laserscanners. Skipping this measurement.");
+    LOG_WARN("Max expected beams: %i", maxexpectedbeams);
+    LOG_WARN("Number beams according to the datafield: %i", numBeams);
+    measurement_data.setNumberOfBeams(0);
+    measurement_data.setIsEmpty(true);
+    return;
+  }
+
+  for (uint32_t i = 0; i < numBeams; i++)
   {
     addScanPointToMeasurementData(i, data_ptr, measurement_data);
     m_angle += m_angle_delta;

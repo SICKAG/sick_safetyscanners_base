@@ -39,6 +39,7 @@
 #include "sick_safetyscanners_base/datastructure/MeasurementData.h"
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 
+#include "sick_safetyscanners_base/Logging.h"
 #include "sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp"
 
 #include <string>
