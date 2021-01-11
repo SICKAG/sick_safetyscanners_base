@@ -2,46 +2,7 @@
 Changelog for package sick_safetyscanners_base
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.0.3 (2019-07-15)
-------------------
-* erasing completed frames from map. 
-* Fixed error on startup that no scan was visualised
-  The fix should prevent the node from starting without
-  publishing any data. The error appears to be related to
-  minor rounding errors, thus setting the resolution smaller then
-  the lowest resolution. But not equal start and end angles.
-  This should fix issue #11 and #12
-* added initialisation of use_pers_config
-* Merge Pull Request #9
-  Removing the possibilities to use the angles from the sensor it self.
-  Since dynamic reconfigure can only be set up for one frame.
-* removed tcp port from configuration since it can not be configured in the sensor
-* added parameter to use persistent config
-* Added methods to request persistent data from sensor
-* added all parameters to launch file
-* updated persistent and current config command and parser to use config data instead of field data
-* removed unused end angle from field data
-* added datastructure for configs
-* Fix issue with m_angle_offset.  Remove use_sick_angles
-* Use C++ STL to reduce risk of memory corruption
-* Change ReadWriteHelper to namespace functions instead of a stateless class
-* Contributors: Chad Rockey, Jonathan Meyer, Lennart Puck, NicolasLoeffler
-
-1.0.2 (2019-01-15)
-------------------
-* Read the start angle of the field data from the persistent config instead of the current config
-* Changed to 0 angle being at the front of the scan
-* Allow system to choose the host udp port from the ephemeral range.  Resolve typo -> IPAdress to IPAddress
-* Changed default frame_id name to scan
-* Change publish_frequency parameter to be skip parameter. 
-* Add time_offset parameter to adjust scan system timestamps
-* Added median reflector bit in message and code
-* Added active case number to the service call
-* Field data is returned as a vector for all fields
-* Added publisher und service server for field data and output paths
-* Added Start angle and beam resolution to field data
-
-1.0.1 (2018-10-31)
+Forthcoming
 ------------------
 
 * Initial Release
