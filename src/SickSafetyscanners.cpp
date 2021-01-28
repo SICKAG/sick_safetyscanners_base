@@ -99,12 +99,9 @@ void SickSafetyscannersBase::requestApplicationName(
   createAndExecuteCommand<sick::cola2::ApplicationNameVariableCommand>(m_session, application_name);
   LOG_INFO("Application name: %s", application_name.getApplicationName().c_str());
 }
+
 void SickSafetyscannersBase::requestFieldData(std::vector<sick::datastructure::FieldData>& fields)
 {
-  sick::datastructure::ConfigData config_data;
-  createAndExecuteCommand<sick::cola2::MeasurementCurrentConfigVariableCommand>(m_session,
-                                                                                config_data);
-
   for (int i = 0; i < 128; i++)
   {
     sick::datastructure::FieldData field_data;
@@ -113,8 +110,6 @@ void SickSafetyscannersBase::requestFieldData(std::vector<sick::datastructure::F
     if (field_data.getIsValid())
     {
       createAndExecuteCommand<sick::cola2::FieldGeometryVariableCommand>(m_session, field_data, i);
-      field_data.setStartAngleDegrees(config_data.getDerivedStartAngle());
-      field_data.setAngularBeamResolutionDegrees(config_data.getDerivedAngularBeamResolution());
       fields.push_back(field_data);
     }
     else if (i > 0) // index 0 is reserved for contour data
