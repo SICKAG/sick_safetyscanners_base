@@ -114,6 +114,22 @@ public:
                          CommSettings comm_settings);
 
   /*!
+   * \brief Constructor of the SickSafetyscannersBase class.
+   *
+   * \param sensor_ip The IP4 address of the sensor.
+   * \param sensor_tcp_port The TCP port of the sensor (COLA2).
+   * \param comm_settings A CommSettings object containing parameters to be sent to the sensor. The
+   * host (client) UDP port, if not available for allocation, might be overwritten by an
+   * automatically choosen one.
+   * \param interface_ip If multicast IP adresses are used for the host_ip, the corresponding
+   * interface of the host has to be defined for the socket to allow joining the multicast group.
+   */
+  SickSafetyscannersBase(sick::types::ip_address_t sensor_ip,
+                         sick::types::port_t sensor_tcp_port,
+                         CommSettings comm_settings,
+                         boost::asio::ip::address_v4 interface_ip);
+
+  /*!
    * \brief Virtual destructor of this base class.
    */
   // virtual ~SickSafetyscannersBase();
@@ -301,6 +317,24 @@ public:
   AsyncSickSafetyScanner(sick::types::ip_address_t sensor_ip,
                          sick::types::port_t sensor_tcp_port,
                          CommSettings comm_settings,
+                         sick::types::ScanDataCb callback);
+
+  /*!
+   * \brief Constructor of the AsyncSickSafetyScanner class.
+   *
+   * \param sensor_ip The IP4 address of the sensor.
+   * \param sensor_tcp_port The TCP port of the sensor (COLA2).
+   * \param comm_settings A CommSettings object containing parameters to be sent to the sensor. The
+   * host (client) UDP port, if not available for allocation, might be overwritten by an
+   * automatically choosen one.
+   * \param interface_ip If multicast IP adresses are used for the host_ip, the corresponding
+   * interface of the host has to be defined for the socket to allow joining the multicast group.
+   * \param callback A callback to process incomming sensor data.
+   */
+  AsyncSickSafetyScanner(sick::types::ip_address_t sensor_ip,
+                         sick::types::port_t sensor_tcp_port,
+                         CommSettings comm_settings,
+                         boost::asio::ip::address_v4 interface_ip,
                          sick::types::ScanDataCb callback);
 
   /*!find . -regex '.*\.\(cpp\|hpp\|cc\|cxx\)' -exec clang-format -style=file -i {} \;
