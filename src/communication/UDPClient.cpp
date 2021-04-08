@@ -70,6 +70,27 @@ UDPClient::UDPClient(boost::asio::io_service& io_service, sick::types::port_t se
   checkDeadline();
 }
 
+UDPClient::UDPClient(boost::asio::io_service& io_service,
+                     sick::types::port_t server_port,
+                     boost::asio::ip::address_v4 host_ip,
+                     boost::asio::ip::address_v4 interface_ip)
+  : m_io_service(io_service)
+  , m_socket(io_service, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port})
+  , m_packet_handler()
+  , m_recv_buffer()
+  , m_deadline(io_service)
+{
+  if (interface_ip.is_unspecified())
+  {
+    LOG_ERROR("Multicast IP specified, however the interface IP is undefined.");
+    exit(-1);
+  }
+  m_socket.set_option(boost::asio::ip::multicast::join_group(host_ip, interface_ip));
+
+  m_deadline.expires_at(boost::posix_time::pos_infin);
+  checkDeadline();
+}
+
 UDPClient::~UDPClient() {}
 
 void UDPClient::checkDeadline()

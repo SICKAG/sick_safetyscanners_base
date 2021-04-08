@@ -62,6 +62,20 @@ public:
    */
   UDPClient(boost::asio::io_service& io_service, sick::types::port_t server_port);
 
+  /*!
+   * \brief Constructor of a UDPClient object
+   *
+   * \param io_service Instance of the boost::asio io_service
+   * \param server_port The local port number on the receiver (this client's) side.
+   * \param host_ip The multicast ip to enable the multicast registration.
+   * \param interface_ip The used host (client's) interface IP  which is needed to join the
+   * multicast group.
+   */
+  UDPClient(boost::asio::io_service& io_service,
+            sick::types::port_t server_port,
+            boost::asio::ip::address_v4 host_ip,
+            boost::asio::ip::address_v4 interface_ip);
+
   UDPClient()                 = delete;
   UDPClient(const UDPClient&) = delete;
   UDPClient& operator=(const UDPClient&) = delete;
