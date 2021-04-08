@@ -107,6 +107,7 @@ void callback(const sick::datastructure::Data& data);
 | Function                                                                                                                                                  | Information                                                                                                                                          |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | AsyncSickSafetyScanner<br>(sick::types::ip_address_t sensor_ip, <br>sick::types::port_t sensor_port, <br>sick::datastructure::CommSettings comm_settings, <br>sick::types::ScanDataCb callback); | Constructor call with custom data sensor callback.                                
+| AsyncSickSafetyScanner<br>(sick::types::ip_address_t sensor_ip, <br>sick::types::port_t sensor_port, <br>sick::datastructure::CommSettings comm_settings,<br> boost::asio::ip::address_v4 interface_ip, <br>sick::types::ScanDataCb callback); | Constructor call with custom data sensor callback for multicast ip addresses.                                
 | AsyncSickSafetyScanner<br>(sick::types::ip_address_t sensor_ip, <br>sick::types::port_t sensor_port, <br>sick::datastructure::CommSettings comm_settings, <br>sick::types::ScanDataCb callback, <br>boost::asio::io_service& io_service); | Constructor call. This variant allows the user to pass through an instance of boost::asio::io_service to get full control over the thread execution. In this case the driver is not spawning an internal child thread but relies on the user to perform regular io_service.run() operations and keep the service busy.
 | void run(); | Starts to receive sensor data via UDP and passes the data to the callback as specified in the constructor.
 | void stop(); | Stops all asynchronous receiving and processing operations.
@@ -132,6 +133,13 @@ sick::types::ScanDataCb cb = [](const sick::datastructure::Data &data) {
 
 // Create a sensor instance
 auto safety_scanner = std::make_unique<sick::AsyncSickSafetyScanner>(sensor_ip, tcp_port, comm_settings, cb);
+
+// Special case if a multicast IP is seltected as host_ip
+// std::string host_ip_str = "235.235.235.2"
+// comm_settings.host_ip = boost::asio::ip::address_v4::from_string(host_ip_str);
+// std::string interface_ip_str = "192.168.1.9"
+// auto interface_ip = boost::asio::ip::address_v4::from_string(interface_ip_str);
+// auto safety_scanner = std::make_unique<sick::AsyncSickSafetyScanner>(sensor_ip, tcp_port, comm_settings, interface_ip, cb);
 
 // Start async receiving and processing of sensor data
 safety_scanner->run();
