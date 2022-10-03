@@ -42,6 +42,7 @@
 
 #include <algorithm>
 #include <mutex>
+#include <map>
 
 namespace sick {
 namespace data_processing {
