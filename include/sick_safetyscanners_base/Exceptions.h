@@ -43,6 +43,13 @@
 
 namespace sick {
 
+#ifdef _WIN32_WINNT
+  typedef struct timeval {
+    long tv_sec;
+    long tv_usec;
+  } TIMEVAL, *PTIMEVAL, *LPTIMEVAL;
+#endif
+
 /*!
  * \brief Represents a generic runtime error.
  *

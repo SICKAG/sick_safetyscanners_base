@@ -1,12 +1,21 @@
-cmake_minimum_required(VERSION 2.8.12) 
+cmake_minimum_required(VERSION 2.8.12)
 project(sick_safetyscanners_base CXX)
+set(CMAKE_CXX_STANDARD 11)
 
-## Use C++11
-#add_definitions(-std=c++11 -Wall)
-## By adding -Wall and -Werror, the compiler does not ignore warnings anymore,
-## enforcing cleaner code.
-add_definitions(-std=c++11 -Wall -Werror)
-
+if(CMAKE_GENERATOR MATCHES "Visual Studio")
+  add_definitions(-D_WIN32_WINNT=0x0601) # Target Windows 7 and later
+  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+else(CMAKE_GENERATOR MATCHES "Visual Studio")
+  # By adding -Wall and -Werror, the compiler does not ignore warnings anymore,
+  # enforcing cleaner code.
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    # Currently the code does not work without warnings when we use Clang/LLVM:
+    # - https://github.com/SICKAG/sick_safetyscanners_base/issues/9
+    add_definitions(-Wall)
+  else(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_definitions(-Wall -Werror)
+  endif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+endif(CMAKE_GENERATOR MATCHES "Visual Studio")
 
 ## Find system libraries
 find_package(Boost REQUIRED COMPONENTS system thread chrono)
@@ -117,9 +126,12 @@ add_library(sick_safetyscanners_base SHARED
   src/datastructure/UserName.cpp
 )
 
-target_compile_options(sick_safetyscanners_base
-  PUBLIC ${CXX11_FLAG}
-  PRIVATE -Wall)
+if(NOT (CMAKE_GENERATOR MATCHES "Visual Studio"))
+  target_compile_options(
+    sick_safetyscanners_base
+    PUBLIC ${CXX11_FLAG}
+    PRIVATE -Wall)
+endif(NOT (CMAKE_GENERATOR MATCHES "Visual Studio"))
 
 option(USE_ROS_LOGGING "Use ROS Logging instead of printf" OFF)
 
@@ -134,8 +146,9 @@ target_include_directories(sick_safetyscanners_base PUBLIC
   ${Boost_INCLUDE_DIR}
   )
 
-target_link_libraries(sick_safetyscanners_base PUBLIC ${Boost_LIBRARIES}
-)
+target_link_libraries(
+  sick_safetyscanners_base PUBLIC Boost::system Boost::thread Boost::chrono
+                                  Boost::dynamic_linking)
 
 add_library(sick_safetyscanners_base::sick_safetyscanners_base ALIAS sick_safetyscanners_base)
 
@@ -164,7 +177,7 @@ install(
 install(
   DIRECTORY include/${PROJECT_NAME}/
   DESTINATION include/${PROJECT_NAME}
-  FILES_MATCHING 
+  FILES_MATCHING
   PATTERN "*.h"
   PATTERN "*.hpp"
 )

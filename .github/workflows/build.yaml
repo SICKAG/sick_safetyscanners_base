@@ -1,0 +1,61 @@
+name: Build
+
+on:
+  - push
+
+jobs:
+
+  linux:
+    name: 🐧 Linux
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@master
+
+    - name: Install Boost
+      run: sudo apt-get install libboost-all-dev ninja-build
+
+    - name: Configure CMake project
+      run: cmake -B build -G Ninja
+
+    - name: Build driver
+      run: cmake --build build
+
+  mac:
+    name: 🍏 macOS
+    runs-on: macos-latest
+
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@master
+
+    - name: Install Boost
+      run: brew install boost ninja
+
+    - name: Configure CMake project
+      run: cmake -B build -G Ninja
+
+    - name: Build driver
+      run: cmake --build build
+
+  windows:
+
+    name: 🪟 Windows
+    runs-on: windows-latest
+
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@master
+
+    - name: Install Boost
+      run: choco install boost-msvc-14.3
+
+    - name: Configure CMake project
+      run: cmake -B build
+
+    - name: Build driver
+      run: cmake --build build
