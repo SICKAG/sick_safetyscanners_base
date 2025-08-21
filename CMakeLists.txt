@@ -21,8 +21,39 @@ if(USE_ROS_LOGGING)
   add_definitions(-DROS_BUILD=1)
 endif()
 
-## Declare a cpp library
-add_library(sick_safetyscanners_base SHARED
+# Decide a sensible default for the project-specific option based on the
+# global BUILD_SHARED_LIBS value so the option preserves backward
+# compatibility with existing behavior.
+if(NOT DEFINED BUILD_SHARED_LIBS)
+  set(_sick_default_shared ON)
+else()
+  set(_sick_default_shared ${BUILD_SHARED_LIBS})
+endif()
+
+option(SICK_SAFETYSCANNERS_BASE_BUILD_SHARED_LIBS
+  "Build shared library for sick_safetyscanners_base (ON = shared, OFF = static)"
+  ${_sick_default_shared})
+
+# Allow caller to explicitly control this project's library type. When
+# FetchContent is used, passing -DSICK_SAFETYSCANNERS_BASE_BUILD_SHARED_LIBS=OFF
+# will reliably select a static build for this project. If that variable is
+# not provided, fall back to the generic BUILD_SHARED_LIBS behavior.
+if(DEFINED SICK_SAFETYSCANNERS_BASE_BUILD_SHARED_LIBS)
+  # Use the caller-provided project-specific flag
+  if(SICK_SAFETYSCANNERS_BASE_BUILD_SHARED_LIBS)
+    set(_sick_build_shared TRUE)
+  else()
+    set(_sick_build_shared FALSE)
+  endif()
+else()
+  # Default to shared library if no option is passed
+  if(NOT DEFINED BUILD_SHARED_LIBS)
+    set(BUILD_SHARED_LIBS ON CACHE BOOL "Build shared libraries")
+  endif()
+  set(_sick_build_shared ${BUILD_SHARED_LIBS})
+endif()
+
+set(SOURCE_FILES
   src/SickSafetyscanners.cpp
   src/cola2/ApplicationNameVariableCommand.cpp
   src/cola2/ChangeCommSettingsCommand.cpp
@@ -116,6 +147,14 @@ add_library(sick_safetyscanners_base SHARED
   src/datastructure/TypeCode.cpp
   src/datastructure/UserName.cpp
 )
+
+# Declare the library based on the resolved choice (_sick_build_shared)
+if(_sick_build_shared)
+  add_library(sick_safetyscanners_base SHARED ${SOURCE_FILES})
+else()
+  add_library(sick_safetyscanners_base STATIC ${SOURCE_FILES})
+  set_target_properties(sick_safetyscanners_base PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif()
 
 target_compile_options(sick_safetyscanners_base
   PUBLIC ${CXX11_FLAG}
