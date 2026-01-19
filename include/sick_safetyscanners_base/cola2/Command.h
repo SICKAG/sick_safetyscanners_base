@@ -36,14 +36,13 @@
 #define SICK_SAFETYSCANNERS_BASE_COLA2_COMMAND_H
 
 #include <vector>
+#include <mutex>
 
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 
 #include "sick_safetyscanners_base/Logging.h"
 #include "sick_safetyscanners_base/data_processing/ParseTCPPacket.h"
 #include "sick_safetyscanners_base/data_processing/ReadWriteHelper.hpp"
-
-#include <boost/thread/mutex.hpp>
 
 namespace sick {
 namespace cola2 {
@@ -187,7 +186,7 @@ protected:
 private:
   std::shared_ptr<sick::data_processing::ParseTCPPacket> m_tcp_parser_ptr;
 
-  boost::mutex m_execution_mutex;
+  std::mutex m_execution_mutex;
 
   bool m_was_successful;
 

@@ -64,7 +64,7 @@
 
 namespace sick {
 
-using io_service_ptr = std::shared_ptr<boost::asio::io_service>;
+using io_service_ptr = std::shared_ptr<boost::asio::io_context>;
 
 using namespace sick::datastructure;
 
@@ -98,7 +98,7 @@ public:
   SickSafetyscannersBase(sick::types::ip_address_t sensor_ip,
                          sick::types::port_t sensor_tcp_port,
                          CommSettings comm_settings,
-                         boost::asio::io_service& io_service);
+                         boost::asio::io_context& io_service);
   /*!
    * \brief Constructor of the SickSafetyscannersBase class.
    *
@@ -262,7 +262,7 @@ public:
 private:
   sick::types::ip_address_t m_sensor_ip;
   CommSettings m_comm_settings;
-  std::unique_ptr<boost::asio::io_service> m_io_service_ptr;
+  std::unique_ptr<boost::asio::io_context> m_io_service_ptr;
 
   /*!
    * \brief Helper function to create command objects generically.
@@ -281,7 +281,7 @@ private:
   }
 
 protected:
-  boost::asio::io_service& m_io_service;
+  boost::asio::io_context& m_io_service;
   sick::communication::UDPClient m_udp_client;
   sick::cola2::Cola2Session m_session;
   sick::data_processing::UDPPacketMerger m_packet_merger;
@@ -350,7 +350,7 @@ public:
                          sick::types::port_t sensor_tcp_port,
                          CommSettings comm_settings,
                          sick::types::ScanDataCb callback,
-                         boost::asio::io_service& io_service);
+                         boost::asio::io_context& io_service);
 
   /*!
    * \brief Destructor of the AsyncSickSafetyScanner object
@@ -381,9 +381,11 @@ private:
   void processUDPPacket(const sick::datastructure::PacketBuffer& buffer);
 
   sick::types::ScanDataCb m_scan_data_cb;
-  std::unique_ptr<boost::asio::io_service> m_io_service_ptr;
+  std::unique_ptr<boost::asio::io_context> m_io_service_ptr;
   boost::thread m_service_thread;
-  std::unique_ptr<boost::asio::io_service::work> m_work;
+
+  using work_guard_t = boost::asio::executor_work_guard<boost::asio::io_context::executor_type>;
+  std::unique_ptr<work_guard_t> m_work;
 };
 
 /*!
@@ -402,7 +404,7 @@ public:
   SyncSickSafetyScanner(sick::types::ip_address_t sensor_ip,
                         sick::types::port_t sensor_tcp_port,
                         CommSettings comm_settings,
-                        boost::asio::io_service& io_service) = delete;
+                        boost::asio::io_context& io_service) = delete;
   /*!
    * \brief Indicates whether sensor data is available in the receiving buffers.
    *

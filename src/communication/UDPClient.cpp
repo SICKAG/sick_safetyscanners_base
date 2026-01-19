@@ -60,7 +60,7 @@ using boost::lambda::_2;
 using boost::lambda::bind;
 using boost::lambda::var;
 
-UDPClient::UDPClient(boost::asio::io_service& io_service, sick::types::port_t server_port)
+UDPClient::UDPClient(boost::asio::io_context& io_service, sick::types::port_t server_port)
   : m_io_service(io_service)
   , m_socket(io_service, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port})
   , m_packet_handler()
@@ -71,7 +71,7 @@ UDPClient::UDPClient(boost::asio::io_service& io_service, sick::types::port_t se
   checkDeadline();
 }
 
-UDPClient::UDPClient(boost::asio::io_service& io_service,
+UDPClient::UDPClient(boost::asio::io_context& io_service,
                      sick::types::port_t server_port,
                      boost::asio::ip::address_v4 host_ip,
                      boost::asio::ip::address_v4 interface_ip)

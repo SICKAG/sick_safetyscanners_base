@@ -36,12 +36,12 @@
 #define SICK_SAFETYSCANNERS_BASE_DATASTRUCTURE_PACKETBUFFER_H
 
 #include <iostream>
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <boost/array.hpp>
-#include <boost/asio.hpp>
 
 #include "sick_safetyscanners_base/datastructure/DatagramHeader.h"
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"

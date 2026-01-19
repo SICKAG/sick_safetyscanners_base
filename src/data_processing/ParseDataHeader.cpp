@@ -43,6 +43,8 @@ datastructure::DataHeader
 ParseDataHeader::parseUDPSequence(const datastructure::PacketBuffer& buffer,
                                   datastructure::Data& data) const
 {
+  (void) data;
+
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
   std::vector<uint8_t>::const_iterator data_ptr             = vec_ptr->begin();

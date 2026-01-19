@@ -46,6 +46,7 @@ MonitoringCaseTableHeaderVariableCommand::MonitoringCaseTableHeaderVariableComma
   Cola2Session& session, datastructure::FieldData& field_data)
   : VariableCommand(session, 2100)
 {
+  (void) field_data;
   m_field_header_parser_ptr = std::make_shared<sick::data_processing::ParseFieldHeaderData>();
 }
 

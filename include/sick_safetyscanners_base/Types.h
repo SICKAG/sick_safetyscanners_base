@@ -38,6 +38,7 @@
 #include "sick_safetyscanners_base/datastructure/Data.h"
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
 #include <boost/asio/ip/address_v4.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <functional>
 #include <memory>
 

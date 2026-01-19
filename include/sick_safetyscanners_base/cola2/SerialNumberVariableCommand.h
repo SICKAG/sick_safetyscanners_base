@@ -39,7 +39,6 @@
 
 #include "sick_safetyscanners_base/cola2/VariableCommand.h"
 #include "sick_safetyscanners_base/data_processing/ParseSerialNumber.h"
-#include "sick_safetyscanners_base/datastructure/CommSettings.h"
 #include "sick_safetyscanners_base/datastructure/SerialNumber.h"
 
 namespace sick {

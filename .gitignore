@@ -5,3 +5,4 @@ build/*
 installed/*
 vscode/
 .vscode/
+build_vrdev_clang/

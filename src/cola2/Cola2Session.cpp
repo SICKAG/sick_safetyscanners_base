@@ -35,6 +35,7 @@
 #include "sick_safetyscanners_base/cola2/Cola2Session.h"
 #include "sick_safetyscanners_base/Types.h"
 #include <boost/asio.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 namespace sick {
 namespace cola2 {
@@ -115,6 +116,8 @@ void Cola2Session::assembleAndSendTelegram(Command& cmd)
 sick::datastructure::PacketBuffer
 Cola2Session::receiveAndProcessResponse(Command& cmd, boost::posix_time::time_duration timeout)
 {
+  (void) cmd;
+
   sick::data_processing::TCPPacketMerger packet_merger(0);
   sick::data_processing::ParseTCPPacket tcp_packet_parser;
 

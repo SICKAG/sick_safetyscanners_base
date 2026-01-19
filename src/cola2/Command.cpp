@@ -68,7 +68,7 @@ void Command::processReplyBase(const std::vector<uint8_t>& packet)
 
 void Command::waitForCompletion()
 {
-  boost::mutex::scoped_lock lock(m_execution_mutex);
+  std::lock_guard<std::mutex> lock(m_execution_mutex);
 }
 
 bool Command::wasSuccessful() const

@@ -1,15 +1,15 @@
-cmake_minimum_required(VERSION 2.8.12) 
+cmake_minimum_required(VERSION 3.5)
 project(sick_safetyscanners_base CXX)
 
 ## Use C++11
 #add_definitions(-std=c++11 -Wall)
 ## By adding -Wall and -Werror, the compiler does not ignore warnings anymore,
 ## enforcing cleaner code.
-add_definitions(-std=c++11 -Wall -Werror)
+add_definitions(-std=c++14 -Wall -Werror)
 
 
 ## Find system libraries
-find_package(Boost REQUIRED COMPONENTS system thread chrono)
+find_package(Boost REQUIRED COMPONENTS thread chrono)
 
 
 ###########
@@ -164,7 +164,7 @@ install(
 install(
   DIRECTORY include/${PROJECT_NAME}/
   DESTINATION include/${PROJECT_NAME}
-  FILES_MATCHING 
+  FILES_MATCHING
   PATTERN "*.h"
   PATTERN "*.hpp"
 )
@@ -187,5 +187,3 @@ install(FILES sick_safetyscanners_baseConfig.cmake
 
 ##Register package in user's package registry
 #export(PACKAGE sick_safetyscanners_base)
-
-
