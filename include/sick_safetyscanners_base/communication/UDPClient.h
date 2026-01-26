@@ -60,7 +60,7 @@ public:
    * \param io_service Instance of the boost::asio io_service
    * \param server_port The local port number on the receiver (this client's) side.
    */
-  UDPClient(boost::asio::io_service& io_service, sick::types::port_t server_port);
+  UDPClient(boost::asio::io_context& io_service, sick::types::port_t server_port);
 
   /*!
    * \brief Constructor of a UDPClient object
@@ -71,7 +71,7 @@ public:
    * \param interface_ip The used host (client's) interface IP  which is needed to join the
    * multicast group.
    */
-  UDPClient(boost::asio::io_service& io_service,
+  UDPClient(boost::asio::io_context& io_service,
             sick::types::port_t server_port,
             boost::asio::ip::address_v4 host_ip,
             boost::asio::ip::address_v4 interface_ip);
@@ -139,7 +139,7 @@ public:
   sick::datastructure::PacketBuffer receive(sick::types::time_duration_t timeout);
 
 private:
-  boost::asio::io_service& m_io_service;
+  boost::asio::io_context& m_io_service;
   boost::asio::ip::udp::endpoint m_remote_endpoint;
   boost::asio::ip::udp::socket m_socket;
   types::PacketHandler m_packet_handler;
