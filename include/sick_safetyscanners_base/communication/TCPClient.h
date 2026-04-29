@@ -60,8 +60,8 @@ public:
    */
   TCPClient(sick::types::ip_address_t server_ip, sick::types::port_t server_port);
 
-  TCPClient()                 = delete;
-  TCPClient(const TCPClient&) = delete;
+  TCPClient()                            = delete;
+  TCPClient(const TCPClient&)            = delete;
   TCPClient& operator=(const TCPClient&) = delete;
 
   /*!

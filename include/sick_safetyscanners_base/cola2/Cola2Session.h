@@ -74,8 +74,8 @@ public:
   explicit Cola2Session(communication::TCPClientPtr tcp_client);
 
   // Deleted default, copy and copy-assignment constructors.
-  Cola2Session()                    = delete;
-  Cola2Session(const Cola2Session&) = delete;
+  Cola2Session()                               = delete;
+  Cola2Session(const Cola2Session&)            = delete;
   Cola2Session& operator=(const Cola2Session&) = delete;
 
   /*!
