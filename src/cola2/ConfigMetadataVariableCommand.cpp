@@ -59,7 +59,7 @@ bool ConfigMetadataVariableCommand::processReply()
   {
     return false;
   }
-  LOG_INFO("blubb");
+  LOG_INFO("Processing reply...");
   m_config_metadata_parser_ptr->parseTCPSequence(getDataVector(), m_config_metadata);
   return true;
 }
