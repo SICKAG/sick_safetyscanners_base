@@ -5,7 +5,8 @@
   <description>Provides an Interface to read the sensor output of a SICK
   Safety Scanner</description>
 
-  <maintainer email="puck@fzi.de">Lennart Puck</maintainer>
+  <maintainer email="eichmann@fzi.de">Christian Eichmann</maintainer>
+  <maintainer email="trapp@fzi.de">Thomas Trapp</maintainer>
 
   <author>Lennart Puck</author>
 
