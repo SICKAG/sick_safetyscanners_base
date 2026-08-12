@@ -86,7 +86,8 @@ uint8_t ParseTypeCodeData::readInterfaceType(std::vector<uint8_t>::const_iterato
   {
     res = sick::datastructure::e_interface_type::E_PROFINET;
   }
-  else if (type_code_interface_1 == 'A' && type_code_interface_2 == 'N')
+  else if ((type_code_interface_1 == 'A' && type_code_interface_2 == 'N') ||
+           (type_code_interface_1 == 'E' && type_code_interface_2 == 'N'))
   {
     res = sick::datastructure::e_interface_type::E_NONSAFE_ETHERNET;
   }
