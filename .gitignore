@@ -1,5 +1,4 @@
 *.swp
-.clang-format
 .clang-tidy
 build/*
 installed/*

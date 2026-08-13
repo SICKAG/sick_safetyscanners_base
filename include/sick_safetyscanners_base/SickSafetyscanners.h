@@ -81,8 +81,8 @@ public:
    * \brief Deleted default, copy and copy-assignment constructors.
    *
    */
-  SickSafetyscannersBase()                              = delete;
-  SickSafetyscannersBase(const SickSafetyscannersBase&) = delete;
+  SickSafetyscannersBase()                                         = delete;
+  SickSafetyscannersBase(const SickSafetyscannersBase&)            = delete;
   SickSafetyscannersBase& operator=(const SickSafetyscannersBase&) = delete;
 
   /*!
@@ -299,8 +299,8 @@ public:
    * \brief Deleted default, copy and copy-assignment constructors.
    *
    */
-  AsyncSickSafetyScanner()                              = delete;
-  AsyncSickSafetyScanner(const AsyncSickSafetyScanner&) = delete;
+  AsyncSickSafetyScanner()                                         = delete;
+  AsyncSickSafetyScanner(const AsyncSickSafetyScanner&)            = delete;
   AsyncSickSafetyScanner& operator=(const AsyncSickSafetyScanner&) = delete;
 
   /*!

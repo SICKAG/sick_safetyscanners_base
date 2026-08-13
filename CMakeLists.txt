@@ -1,13 +1,6 @@
 cmake_minimum_required(VERSION 3.5) 
 project(sick_safetyscanners_base CXX)
 
-## Use C++11
-#add_definitions(-std=c++11 -Wall)
-## By adding -Wall and -Werror, the compiler does not ignore warnings anymore,
-## enforcing cleaner code.
-add_definitions(-std=c++11 -Wall -Werror)
-
-
 ## Find system libraries
 find_package(Boost REQUIRED COMPONENTS system thread chrono)
 
@@ -117,8 +110,13 @@ add_library(sick_safetyscanners_base SHARED
   src/datastructure/UserName.cpp
 )
 
+set_target_properties(sick_safetyscanners_base PROPERTIES
+  CXX_STANDARD 14
+  CXX_STANDARD_REQUIRED OFF
+  CXX_EXTENSIONS OFF
+)
+
 target_compile_options(sick_safetyscanners_base
-  PUBLIC ${CXX11_FLAG}
   PRIVATE -Wall)
 
 option(USE_ROS_LOGGING "Use ROS Logging instead of printf" OFF)

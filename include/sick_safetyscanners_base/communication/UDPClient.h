@@ -76,8 +76,8 @@ public:
             boost::asio::ip::address_v4 host_ip,
             boost::asio::ip::address_v4 interface_ip);
 
-  UDPClient()                 = delete;
-  UDPClient(const UDPClient&) = delete;
+  UDPClient()                            = delete;
+  UDPClient(const UDPClient&)            = delete;
   UDPClient& operator=(const UDPClient&) = delete;
 
   /*!

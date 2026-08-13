@@ -56,7 +56,7 @@ public:
    */
   TCPPacketMerger() = delete;
   TCPPacketMerger(std::size_t target_size);
-  TCPPacketMerger(const TCPPacketMerger&) = delete;
+  TCPPacketMerger(const TCPPacketMerger&)            = delete;
   TCPPacketMerger& operator=(const TCPPacketMerger&) = delete;
 
   /*!
