@@ -2,6 +2,14 @@
 Changelog for package sick_safetyscanners_base
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.4 (2026-08-13)
+------------------
+* Added support for missing I/O scanners and EtherCAT type codes
+* Setting C++14 as target property
+* Fixing warnings for Wpedantic build
+* Adding clang-format file and formatting changes
+* Contributors: Christian Eichmann, jncfa-kin
+
 1.0.3 (2024-08-20)
 ------------------
 * Adding missing includes for ubuntu24 compiler
