@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5) 
+cmake_minimum_required(VERSION 3.5)
 project(sick_safetyscanners_base CXX)
 
 ## Find system libraries
@@ -130,7 +130,7 @@ target_include_directories(sick_safetyscanners_base PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
   ${Boost_INCLUDE_DIR}
-  )
+)
 
 target_link_libraries(sick_safetyscanners_base PUBLIC ${Boost_LIBRARIES}
 )
@@ -156,13 +156,13 @@ install(
   DESTINATION lib/cmake/sick_safetyscanners_base
   FILE sick_safetyscanners_baseTargets.cmake
   NAMESPACE sick_safetyscanners_base::
-  )
+)
 
 # Mark cpp header files for installation
 install(
   DIRECTORY include/${PROJECT_NAME}/
   DESTINATION include/${PROJECT_NAME}
-  FILES_MATCHING 
+  FILES_MATCHING
   PATTERN "*.h"
   PATTERN "*.hpp"
 )

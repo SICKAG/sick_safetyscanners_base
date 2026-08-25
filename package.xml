@@ -8,9 +8,10 @@
   <maintainer email="eichmann@fzi.de">Christian Eichmann</maintainer>
   <maintainer email="trapp@fzi.de">Thomas Trapp</maintainer>
 
+  <license>Apache-2.0</license>
+
   <author>Lennart Puck</author>
 
-  <license>ALv2</license>
   <buildtool_depend>cmake</buildtool_depend>
 
   <depend>libboost-chrono-dev</depend>
