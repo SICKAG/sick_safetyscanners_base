@@ -202,6 +202,20 @@ public:
   void requestStatusOverview(datastructure::StatusOverview& status_overview);
 
   /*!
+   * \brief Requests the contamination measurement of the optics cover.
+   *
+   * This is diagnostic, non-safe information: it must never be used as an
+   * input to a safety function. The reported sector data is only meaningful
+   * while contamination_info.isValid() is true.
+   *
+   * \param variant Device variant, selects the CoLa2 variable to read.
+   * \param contamination_info Returns the contamination measurement.
+   * \return Whether a reply could be parsed.
+   */
+  bool requestContaminationInfo(datastructure::ContaminationVariant variant,
+                                datastructure::ContaminationInfo& contamination_info);
+
+  /*!
    * \brief Requests the sensor's device status (e.g. useful for monitoring errors).
    *
    * \param device_status Returned device status.

@@ -48,6 +48,7 @@ add_library(sick_safetyscanners_base SHARED
   src/cola2/ProjectNameVariableCommand.cpp
   src/cola2/RequiredUserActionVariableCommand.cpp
   src/cola2/SerialNumberVariableCommand.cpp
+  src/cola2/ContaminationInfoVariableCommand.cpp
   src/cola2/StatusOverviewVariableCommand.cpp
   src/cola2/TypeCodeVariableCommand.cpp
   src/cola2/UserNameVariableCommand.cpp
@@ -77,6 +78,7 @@ add_library(sick_safetyscanners_base SHARED
   src/data_processing/ParseProjectName.cpp
   src/data_processing/ParseRequiredUserAction.cpp
   src/data_processing/ParseSerialNumber.cpp
+  src/data_processing/ParseContaminationInfo.cpp
   src/data_processing/ParseStatusOverview.cpp
   src/data_processing/ParseTCPPacket.cpp
   src/data_processing/ParseTypeCodeData.cpp
