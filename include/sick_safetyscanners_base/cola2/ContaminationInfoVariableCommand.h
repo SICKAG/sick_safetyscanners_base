@@ -71,6 +71,35 @@ private:
   datastructure::ContaminationInfo& m_contamination_info;
 };
 
+/*!
+ * \brief Reads the per beam contamination variable (index 282) of the device.
+ *
+ * Only available from firmware 1.7x (microScan3, outdoorScan3) and 1.66
+ * (nanoScan3).
+ */
+class ContaminationScanVariableCommand : public VariableCommand
+{
+public:
+  typedef sick::cola2::VariableCommand base_class;
+
+  /*!
+   * \brief Constructor.
+   *
+   * \param session The current cola2 session.
+   * \param contamination_scan Reference to the object the reply is parsed into.
+   */
+  ContaminationScanVariableCommand(Cola2Session& session,
+                                   datastructure::ContaminationScan& contamination_scan);
+
+  bool canBeExecutedWithoutSessionID() const;
+
+  bool processReply();
+
+private:
+  std::shared_ptr<sick::data_processing::ParseContaminationScan> m_parser_ptr;
+  datastructure::ContaminationScan& m_contamination_scan;
+};
+
 } // namespace cola2
 } // namespace sick
 

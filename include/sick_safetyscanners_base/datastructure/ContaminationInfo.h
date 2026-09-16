@@ -101,6 +101,49 @@ private:
   std::vector<ContaminationSector> m_sectors;
 };
 
+/*!
+ * \brief Contamination of the optics cover projected onto a single
+ * measurement beam.
+ */
+struct ContaminationBeam
+{
+  float level  = 0.f;   /*!< Contamination in percent, 0.0 - 100.0 */
+  bool warning = false; /*!< Pollution detected, warning level */
+  bool error   = false; /*!< Pollution detected, error level */
+};
+
+/*!
+ * \brief Contamination projected onto every measurement beam.
+ *
+ * This is the same measurement as in ContaminationInfo, but projected onto the
+ * individual measurement beams instead of grouped into sectors. The number of
+ * beams depends on the device variant and its configuration.
+ *
+ * Only available from firmware 1.7x (microScan3, outdoorScan3) and 1.66
+ * (nanoScan3).
+ */
+class ContaminationScan
+{
+public:
+  ContaminationScan() = default;
+
+  /*!
+   * \brief Whether the device reported valid content. A zero version
+   * indicator means the variable content must not be evaluated.
+   */
+  bool isValid() const { return m_version_c_version != 0; }
+
+  uint8_t getVersionCVersion() const { return m_version_c_version; }
+  void setVersionCVersion(uint8_t version) { m_version_c_version = version; }
+
+  const std::vector<ContaminationBeam>& getBeams() const { return m_beams; }
+  std::vector<ContaminationBeam>& getBeams() { return m_beams; }
+
+private:
+  uint8_t m_version_c_version = 0;
+  std::vector<ContaminationBeam> m_beams;
+};
+
 } // namespace datastructure
 } // namespace sick
 

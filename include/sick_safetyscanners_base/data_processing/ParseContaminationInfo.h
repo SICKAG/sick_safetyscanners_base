@@ -52,6 +52,25 @@ public:
                         datastructure::ContaminationInfo& contamination_info) const;
 };
 
+/*!
+ * \brief Parser for the per beam contamination CoLa2 variable.
+ */
+class ParseContaminationScan
+{
+public:
+  ParseContaminationScan() = default;
+
+  /*!
+   * \brief Parses a per beam contamination reply.
+   *
+   * \param buffer The reply payload.
+   * \param contamination_scan Output.
+   * \return Whether the buffer held a complete, valid reply.
+   */
+  bool parseTCPSequence(const datastructure::PacketBuffer& buffer,
+                        datastructure::ContaminationScan& contamination_scan) const;
+};
+
 } // namespace data_processing
 } // namespace sick
 

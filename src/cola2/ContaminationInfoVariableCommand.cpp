@@ -61,5 +61,27 @@ bool ContaminationInfoVariableCommand::processReply()
   return m_parser_ptr->parseTCPSequence(getDataVector(), m_variant, m_contamination_info);
 }
 
+ContaminationScanVariableCommand::ContaminationScanVariableCommand(
+  Cola2Session& session, datastructure::ContaminationScan& contamination_scan)
+  : VariableCommand(session, 282)
+  , m_contamination_scan(contamination_scan)
+{
+  m_parser_ptr = std::make_shared<sick::data_processing::ParseContaminationScan>();
+}
+
+bool ContaminationScanVariableCommand::canBeExecutedWithoutSessionID() const
+{
+  return true;
+}
+
+bool ContaminationScanVariableCommand::processReply()
+{
+  if (!base_class::processReply())
+  {
+    return false;
+  }
+  return m_parser_ptr->parseTCPSequence(getDataVector(), m_contamination_scan);
+}
+
 } // namespace cola2
 } // namespace sick

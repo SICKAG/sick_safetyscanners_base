@@ -120,5 +120,65 @@ bool ParseContaminationInfo::parseTCPSequence(
   return true;
 }
 
+bool ParseContaminationScan::parseTCPSequence(
+  const datastructure::PacketBuffer& buffer,
+  datastructure::ContaminationScan& contamination_scan) const
+{
+  // Layout: tVersion (4), numBeams (4), then one 4 byte block per beam
+  // holding the status bitset (2) and the level (2).
+  constexpr size_t kHeaderSize  = 8;
+  constexpr size_t kBeamStride  = 4;
+  constexpr size_t kNumBeamsOfs = 4;
+
+  // Keep our own copy of the shared_ptr to keep the iterators valid
+  const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
+
+  if (vec_ptr->size() < kHeaderSize)
+  {
+    return false;
+  }
+
+  std::vector<uint8_t>::const_iterator data_ptr = vec_ptr->begin();
+
+  const uint8_t version = read_write_helper::readUint8(data_ptr + 0);
+  contamination_scan.setVersionCVersion(version);
+  if (version == 0)
+  {
+    // A zero version indicator means the content is not valid.
+    return false;
+  }
+
+  const uint32_t num_beams =
+    read_write_helper::readUint32LittleEndian(data_ptr + kNumBeamsOfs);
+
+  if (vec_ptr->size() < kHeaderSize + static_cast<size_t>(num_beams) * kBeamStride)
+  {
+    // Truncated reply, do not read past the end of the buffer.
+    return false;
+  }
+
+  std::vector<datastructure::ContaminationBeam>& beams = contamination_scan.getBeams();
+  beams.clear();
+  beams.reserve(num_beams);
+
+  for (uint32_t i = 0; i < num_beams; ++i)
+  {
+    const size_t base = kHeaderSize + static_cast<size_t>(i) * kBeamStride;
+
+    const uint16_t status = read_write_helper::readUint16LittleEndian(data_ptr + base);
+    const int16_t raw_level =
+      read_write_helper::readInt16LittleEndian(data_ptr + base + 2);
+
+    datastructure::ContaminationBeam beam;
+    // r8_8Level is a fixed point number, divide by 256 to get percent.
+    beam.level   = static_cast<float>(raw_level) / 256.f;
+    beam.warning = static_cast<bool>(status & (0x01 << 0));
+    beam.error   = static_cast<bool>(status & (0x01 << 1));
+    beams.push_back(beam);
+  }
+
+  return true;
+}
+
 } // namespace data_processing
 } // namespace sick

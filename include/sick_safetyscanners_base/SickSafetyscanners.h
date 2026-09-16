@@ -216,6 +216,19 @@ public:
                                 datastructure::ContaminationInfo& contamination_info);
 
   /*!
+   * \brief Requests the contamination of the optics cover projected onto every
+   * measurement beam.
+   *
+   * This is diagnostic, non-safe information: it must never be used as an
+   * input to a safety function. Only available from firmware 1.7x (microScan3,
+   * outdoorScan3) and 1.66 (nanoScan3).
+   *
+   * \param contamination_scan Returns the per beam contamination.
+   * \return Whether a valid reply could be parsed.
+   */
+  bool requestContaminationScan(datastructure::ContaminationScan& contamination_scan);
+
+  /*!
    * \brief Requests the sensor's device status (e.g. useful for monitoring errors).
    *
    * \param device_status Returned device status.
