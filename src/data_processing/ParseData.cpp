@@ -52,6 +52,14 @@ sick::datastructure::Data
 ParseData::parseUDPSequence(const datastructure::PacketBuffer& buffer) const
 {
   sick::datastructure::Data data;
+  if (buffer.getLength() < data.getDataHeaderPtr()->HEADER_SIZE) {
+    throw std::length_error(
+        "Malformed data: received " +
+        std::to_string(buffer.getLength()) +
+        " bytes, while header size is " +
+        std::to_string(data.getDataHeaderPtr()->HEADER_SIZE)
+    );
+  }
   setDataBlocksInData(buffer, data);
   return data;
 }

@@ -42,6 +42,14 @@ ParseDatagramHeader::ParseDatagramHeader() {}
 bool ParseDatagramHeader::parseUDPSequence(const datastructure::PacketBuffer& buffer,
                                            datastructure::DatagramHeader& header) const
 {
+  if (buffer.getLength() < header.HEADER_SIZE) {
+    throw std::length_error(
+        "Malformed UDP packet: received " +
+        std::to_string(buffer.getLength()) +
+        " bytes, while header size is " +
+        std::to_string(header.HEADER_SIZE)
+    );
+  }
   // Keep our own copy of the shared_ptr to keep the iterators valid
   const std::shared_ptr<std::vector<uint8_t> const> vec_ptr = buffer.getBuffer();
   std::vector<uint8_t>::const_iterator data_ptr             = vec_ptr->begin();

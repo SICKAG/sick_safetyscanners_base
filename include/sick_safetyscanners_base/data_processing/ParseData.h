@@ -68,6 +68,8 @@ public:
    *
    * \param buffer The incoming data buffer.
    *
+   * \throws std::length_error when data buffer is smaller than data header size.
+   *
    * \returns Parsed data
    */
   sick::datastructure::Data parseUDPSequence(const sick::datastructure::PacketBuffer& buffer) const;

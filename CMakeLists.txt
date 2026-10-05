@@ -168,7 +168,7 @@ install(
 )
 
 include(CMakePackageConfigHelpers)
-write_basic_package_version_file(sick_safetyscanners_baseConfigVersion.cmake VERSION 1.0.0
+write_basic_package_version_file(sick_safetyscanners_baseConfigVersion.cmake VERSION 1.0.5
   COMPATIBILITY SameMajorVersion)
 
 install(FILES sick_safetyscanners_baseConfig.cmake

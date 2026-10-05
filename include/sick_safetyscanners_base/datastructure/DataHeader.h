@@ -47,6 +47,8 @@ namespace datastructure {
 class DataHeader
 {
 public:
+  // 47 bytes of data expected, but final read is a 2 byte uint16_t at offset 50
+  static const uint32_t HEADER_SIZE = 52;
   /*!
    * \brief Constructor of an empty data header.
    */

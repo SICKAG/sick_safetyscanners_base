@@ -417,6 +417,8 @@ public:
    * exceeded.
    *
    * \param timeout Timeout in [seconds].
+   * 
+   * \throws std::length_error when packet size is smaller than header size.
    * \return const Data Returned sensor data.
    */
   const Data receive(sick::types::time_duration_t timeout = boost::posix_time::pos_infin);

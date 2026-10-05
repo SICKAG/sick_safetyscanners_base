@@ -92,7 +92,13 @@ auto safety_scanner = std::make_unique<sick::SyncSickSafetyScanner>(sensor_ip, t
 
 // Receive one sensor data packet
 auto timeout = boost::posix_time::seconds(5);
-sick::datastructure::Data data = safety_scanner->receive(timeout);
+try:
+  sick::datastructure::Data data = safety_scanner->receive(timeout);
+catch (std::length_error& e)
+{
+  LOG_ERROR("%s", e.what());
+  //handle read error or retry
+}
 
 // ...
 ```
