@@ -293,13 +293,19 @@ AsyncSickSafetyScanner::~AsyncSickSafetyScanner()
 
 void AsyncSickSafetyScanner::processUDPPacket(const sick::datastructure::PacketBuffer& buffer)
 {
-  if (m_packet_merger.addUDPPacket(buffer))
-  {
-    sick::datastructure::PacketBuffer deployed_buffer = m_packet_merger.getDeployedPacketBuffer();
-    sick::data_processing::ParseData data_parser;
-    sick::datastructure::Data data = data_parser.parseUDPSequence(deployed_buffer);
+  try {
+    if (m_packet_merger.addUDPPacket(buffer))
+    {
+      sick::datastructure::PacketBuffer deployed_buffer = m_packet_merger.getDeployedPacketBuffer();
+      sick::data_processing::ParseData data_parser;
+      sick::datastructure::Data data = data_parser.parseUDPSequence(deployed_buffer);
 
-    m_scan_data_cb(data);
+      m_scan_data_cb(data);
+    }
+  }
+  catch (std::length_error& e)
+  {
+    LOG_ERROR("%s", e.what());
   }
 }
 

@@ -66,6 +66,8 @@ public:
    * \param buffer The incoming udp datapackets.
    * \param header The parsed datagram header.
    *
+   * \throws std::length_error when packet size is smaller than header size.
+   *
    * \returns If parsing the datagram header was successful.
    */
   bool parseUDPSequence(const datastructure::PacketBuffer& buffer,

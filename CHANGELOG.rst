@@ -2,6 +2,13 @@
 Changelog for package sick_safetyscanners_base
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.5 (2026-10-06)
+------------------
+* Added check for correct Header size in UDP and TCP communication
+* Added throw for error handling on failed packages in the synchronized UDP receive
+* Added try/catch block in examples in README to reflect this change
+* Contributors: Christian Eichmann, Thomas Trapp
+
 1.0.4 (2026-08-13)
 ------------------
 * Added support for missing I/O scanners and EtherCAT type codes

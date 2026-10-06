@@ -124,8 +124,13 @@ Cola2Session::receiveAndProcessResponse(Command& cmd, boost::posix_time::time_du
     sick::datastructure::PacketBuffer packet_buffer = m_tcp_client_ptr->receive(timeout);
     if (packet_merger.isEmpty())
     {
-      auto expectedPacketLength = tcp_packet_parser.getExpectedPacketLength(packet_buffer);
-      packet_merger.setTargetSize(expectedPacketLength);
+      if (packet_buffer.getLength() >= 8) {
+        auto expectedPacketLength = tcp_packet_parser.getExpectedPacketLength(packet_buffer);
+        packet_merger.setTargetSize(expectedPacketLength);
+      } else {
+        LOG_ERROR("Malformed TCP Packet: Received %ld bytes, but expected 4 byte length at offset 4.", packet_buffer.getLength());
+        continue;
+      }
     }
     packet_merger.addTCPPacket(packet_buffer);
   }
