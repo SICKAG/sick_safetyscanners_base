@@ -65,7 +65,7 @@
 
 namespace sick {
 
-using io_service_ptr = std::shared_ptr<boost::asio::io_service>;
+using io_service_ptr = std::shared_ptr<boost::asio::io_context>;
 
 using namespace sick::datastructure;
 
@@ -92,14 +92,14 @@ public:
    * \param sensor_tcp_port The TCP port of the sensor (COLA2).
    * \param comm_settings A CommSettings object containing parameters to be sent to the sensor. The
    * host (client) UDP port, if not available for allocation, might be overwritten by an
-   * automatically choosen one. \param io_service A boost::asio io_service instance used internally
+   * automatically choosen one. \param io_service A boost::asio io_context instance used internally
    * to manage sockets and threads. This constructor variant prevents creating an internal
-   * io_service and relies on the caller to perform run-calls and keep the io_service alive.
+   * io_context and relies on the caller to perform run-calls and keep the io_context alive.
    */
   SickSafetyscannersBase(sick::types::ip_address_t sensor_ip,
                          sick::types::port_t sensor_tcp_port,
                          CommSettings comm_settings,
-                         boost::asio::io_service& io_service);
+                         boost::asio::io_context& io_service);
   /*!
    * \brief Constructor of the SickSafetyscannersBase class.
    *
@@ -263,7 +263,7 @@ public:
 private:
   sick::types::ip_address_t m_sensor_ip;
   CommSettings m_comm_settings;
-  std::unique_ptr<boost::asio::io_service> m_io_service_ptr;
+  std::unique_ptr<boost::asio::io_context> m_io_service_ptr;
 
   /*!
    * \brief Helper function to create command objects generically.
@@ -282,7 +282,7 @@ private:
   }
 
 protected:
-  boost::asio::io_service& m_io_service;
+  boost::asio::io_context& m_io_service;
   sick::communication::UDPClient m_udp_client;
   sick::cola2::Cola2Session m_session;
   sick::data_processing::UDPPacketMerger m_packet_merger;
@@ -343,15 +343,15 @@ public:
    * \param comm_settings A CommSettings object containing parameters to be sent to the sensor. The
    * host (client) UDP port, if not available for allocation, might be overwritten by an
    * automatically choosen one. \param callback A callback to process incomming sensor data. \param
-   * io_service A boost::asio io_service instance used internally to manage sockets and threads.
-   * This constructor variant prevents creating an internal io_service and relies on the caller to
-   * perform run-calls and keep the io_service alive.
+   * io_service A boost::asio io_context instance used internally to manage sockets and threads.
+   * This constructor variant prevents creating an internal io_context and relies on the caller to
+   * perform run-calls and keep the io_context alive.
    */
   AsyncSickSafetyScanner(sick::types::ip_address_t sensor_ip,
                          sick::types::port_t sensor_tcp_port,
                          CommSettings comm_settings,
                          sick::types::ScanDataCb callback,
-                         boost::asio::io_service& io_service);
+                         boost::asio::io_context& io_service);
 
   /*!
    * \brief Destructor of the AsyncSickSafetyScanner object
@@ -382,9 +382,9 @@ private:
   void processUDPPacket(const sick::datastructure::PacketBuffer& buffer);
 
   sick::types::ScanDataCb m_scan_data_cb;
-  std::unique_ptr<boost::asio::io_service> m_io_service_ptr;
+  std::unique_ptr<boost::asio::io_context> m_io_service_ptr;
   boost::thread m_service_thread;
-  std::unique_ptr<boost::asio::io_service::work> m_work;
+  std::unique_ptr<boost::asio::executor_work_guard<boost::asio::io_context::executor_type>> m_work;
 };
 
 /*!
@@ -403,7 +403,7 @@ public:
   SyncSickSafetyScanner(sick::types::ip_address_t sensor_ip,
                         sick::types::port_t sensor_tcp_port,
                         CommSettings comm_settings,
-                        boost::asio::io_service& io_service) = delete;
+                        boost::asio::io_context& io_service) = delete;
   /*!
    * \brief Indicates whether sensor data is available in the receiving buffers.
    *
