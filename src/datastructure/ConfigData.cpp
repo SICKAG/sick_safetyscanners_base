@@ -91,7 +91,7 @@ void ConfigData::setHostIp(const boost::asio::ip::address_v4& host_ip)
 
 void ConfigData::setHostIp(const std::string& host_ip)
 {
-  m_host_ip = boost::asio::ip::address_v4::from_string(host_ip);
+  m_host_ip = boost::asio::ip::make_address_v4(host_ip);
 }
 
 uint16_t ConfigData::getHostUdpPort() const
