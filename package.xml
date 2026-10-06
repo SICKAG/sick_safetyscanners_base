@@ -15,7 +15,6 @@
   <buildtool_depend>cmake</buildtool_depend>
 
   <depend>libboost-chrono-dev</depend>
-  <depend>libboost-system-dev</depend>
   <depend>libboost-thread-dev</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
