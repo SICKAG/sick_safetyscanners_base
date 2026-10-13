@@ -205,6 +205,23 @@ void SickSafetyscannersBase::requestStatusOverview(
   createAndExecuteCommand<sick::cola2::StatusOverviewVariableCommand>(m_session, status_overview);
 }
 
+bool SickSafetyscannersBase::requestContaminationInfo(
+  sick::datastructure::ContaminationVariant variant,
+  sick::datastructure::ContaminationInfo& contamination_info)
+{
+  createAndExecuteCommand<sick::cola2::ContaminationInfoVariableCommand>(
+    m_session, variant, contamination_info);
+  return !contamination_info.getSectors().empty();
+}
+
+bool SickSafetyscannersBase::requestContaminationScan(
+  sick::datastructure::ContaminationScan& contamination_scan)
+{
+  createAndExecuteCommand<sick::cola2::ContaminationScanVariableCommand>(m_session,
+                                                                        contamination_scan);
+  return contamination_scan.isValid() && !contamination_scan.getBeams().empty();
+}
+
 void SickSafetyscannersBase::requestDeviceStatus(sick::datastructure::DeviceStatus& device_status)
 {
   createAndExecuteCommand<sick::cola2::DeviceStatusVariableCommand>(m_session, device_status);

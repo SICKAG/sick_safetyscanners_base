@@ -57,6 +57,7 @@
 #include "sick_safetyscanners_base/cola2/ProjectNameVariableCommand.h"
 #include "sick_safetyscanners_base/cola2/RequiredUserActionVariableCommand.h"
 #include "sick_safetyscanners_base/cola2/SerialNumberVariableCommand.h"
+#include "sick_safetyscanners_base/cola2/ContaminationInfoVariableCommand.h"
 #include "sick_safetyscanners_base/cola2/StatusOverviewVariableCommand.h"
 #include "sick_safetyscanners_base/cola2/TypeCodeVariableCommand.h"
 #include "sick_safetyscanners_base/cola2/UserNameVariableCommand.h"
