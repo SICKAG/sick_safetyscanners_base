@@ -44,6 +44,7 @@
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/thread.hpp>
+#include <chrono>
 #include <cstdlib>
 #include <functional>
 #include <iostream>
@@ -53,33 +54,50 @@
 namespace sick {
 namespace communication {
 
-using boost::asio::deadline_timer;
+using boost::asio::steady_timer;
 using boost::asio::ip::tcp;
 using boost::lambda::_1;
 using boost::lambda::_2;
 using boost::lambda::bind;
 using boost::lambda::var;
 
-UDPClient::UDPClient(boost::asio::io_context& io_service, sick::types::port_t server_port)
-  : m_io_service(io_service)
-  , m_socket(io_service, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port})
+namespace {
+
+void setDeadline(steady_timer& timer, const sick::types::time_duration_t& timeout)
+{
+  if (timeout.is_special())
+  {
+    timer.expires_at(timeout.is_pos_infinity() ? steady_timer::time_point::max()
+                                               : steady_timer::time_point::min());
+    return;
+  }
+
+  timer.expires_after(std::chrono::duration_cast<steady_timer::duration>(
+    std::chrono::microseconds(timeout.total_microseconds())));
+}
+
+} // namespace
+
+UDPClient::UDPClient(boost::asio::io_context& io_context, sick::types::port_t server_port)
+  : m_io_context(io_context)
+  , m_socket(io_context, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port})
   , m_packet_handler()
   , m_recv_buffer()
-  , m_deadline(io_service)
+  , m_deadline(io_context)
 {
-  m_deadline.expires_at(boost::posix_time::pos_infin);
+  m_deadline.expires_at(steady_timer::time_point::max());
   checkDeadline();
 }
 
-UDPClient::UDPClient(boost::asio::io_context& io_service,
+UDPClient::UDPClient(boost::asio::io_context& io_context,
                      sick::types::port_t server_port,
                      boost::asio::ip::address_v4 host_ip,
                      boost::asio::ip::address_v4 interface_ip)
-  : m_io_service(io_service)
-  , m_socket(io_service, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port})
+  : m_io_context(io_context)
+  , m_socket(io_context, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), server_port})
   , m_packet_handler()
   , m_recv_buffer()
-  , m_deadline(io_service)
+  , m_deadline(io_context)
 {
   if (interface_ip.is_unspecified())
   {
@@ -88,7 +106,7 @@ UDPClient::UDPClient(boost::asio::io_context& io_service,
   }
   m_socket.set_option(boost::asio::ip::multicast::join_group(host_ip, interface_ip));
 
-  m_deadline.expires_at(boost::posix_time::pos_infin);
+  m_deadline.expires_at(steady_timer::time_point::max());
   checkDeadline();
 }
 
@@ -99,7 +117,7 @@ void UDPClient::checkDeadline()
   // Check whether the deadline has passed. We compare the deadline against
   // the current time since a new asynchronous operation may have moved the
   // deadline before this actor had a chance to run.
-  if (m_deadline.expires_at() <= deadline_timer::traits_type::now())
+  if (m_deadline.expiry() <= steady_timer::clock_type::now())
   {
     // The deadline has passed. The socket is closed so that any outstanding
     // asynchronous operations are cancelled. This allows the blocked
@@ -109,12 +127,13 @@ void UDPClient::checkDeadline()
 
     // There is no longer an active deadline. The expiry is set to positive
     // infinity so that the actor takes no action until a new deadline is set.
-    m_deadline.cancel();
-    m_deadline.expires_at(boost::posix_time::pos_infin);
+    m_deadline.expires_at(steady_timer::time_point::max());
   }
 
   // Put the actor back to sleep.
-  m_deadline.async_wait(bind(&UDPClient::checkDeadline, this));
+  m_deadline.async_wait([this](const boost::system::error_code&) {
+    checkDeadline();
+  });
 }
 
 void UDPClient::handleReceive(boost::system::error_code ec, std::size_t bytes_recv)
@@ -148,7 +167,7 @@ void UDPClient::stop()
 sick::datastructure::PacketBuffer UDPClient::receive(sick::types::time_duration_t timeout)
 {
   boost::system::error_code ec = boost::asio::error::would_block;
-  m_deadline.expires_from_now(timeout);
+  setDeadline(m_deadline, timeout);
 
   std::size_t bytes_recv = 0;
   m_socket.async_receive_from(
@@ -156,9 +175,9 @@ sick::datastructure::PacketBuffer UDPClient::receive(sick::types::time_duration_
     m_remote_endpoint,
     boost::bind(&UDPClient::handleReceiveDeadline, _1, _2, &ec, &bytes_recv));
 
-  // Block until async_receive_from finishes or the deadline_timer exceeds its timeout.
+  // Block until async_receive_from finishes or the timer exceeds its timeout.
   do
-    m_io_service.run_one();
+    m_io_context.run_one();
   while (ec == boost::asio::error::would_block);
 
   if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted)

@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 project(sick_safetyscanners_base CXX)
 
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 NEW)
+endif()
+
 ## Find system libraries
 find_package(Boost REQUIRED COMPONENTS thread chrono)
 
@@ -131,7 +135,9 @@ target_include_directories(sick_safetyscanners_base PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(sick_safetyscanners_base PUBLIC ${Boost_LIBRARIES}
+target_link_libraries(sick_safetyscanners_base PUBLIC
+  Boost::thread
+  Boost::chrono
 )
 
 add_library(sick_safetyscanners_base::sick_safetyscanners_base ALIAS sick_safetyscanners_base)
@@ -168,6 +174,7 @@ install(
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(sick_safetyscanners_baseConfigVersion.cmake VERSION 1.0.5
+  VERSION ${PROJECT_VERSION}
   COMPATIBILITY SameMajorVersion)
 
 install(FILES sick_safetyscanners_baseConfig.cmake

@@ -39,6 +39,7 @@
 #include <boost/array.hpp>
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
+#include <chrono>
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -46,24 +47,41 @@
 namespace sick {
 namespace communication {
 
-using boost::asio::deadline_timer;
+using boost::asio::steady_timer;
 using boost::asio::ip::tcp;
 using boost::lambda::_1;
 using boost::lambda::_2;
 using boost::lambda::bind;
 using boost::lambda::var;
 
+namespace {
+
+void setDeadline(steady_timer& timer, const sick::types::time_duration_t& timeout)
+{
+  if (timeout.is_special())
+  {
+    timer.expires_at(timeout.is_pos_infinity() ? steady_timer::time_point::max()
+                                               : steady_timer::time_point::min());
+    return;
+  }
+
+  timer.expires_after(std::chrono::duration_cast<steady_timer::duration>(
+    std::chrono::microseconds(timeout.total_microseconds())));
+}
+
+} // namespace
+
 TCPClient::TCPClient(sick::types::ip_address_t server_ip, sick::types::port_t server_port)
-  : m_io_service()
+  : m_io_context()
   , m_recv_buffer()
-  , m_socket(m_io_service)
+  , m_socket(m_io_context)
   , m_server_ip(server_ip)
   , m_server_port(server_port)
-  , m_deadline(m_io_service)
+  , m_deadline(m_io_context)
 {
   // Since synchronous timeout on socket.connect() are not available with boost::asio, this seems to
   // be the most elegant way eventhough asynchronous.
-  m_deadline.expires_at(boost::posix_time::pos_infin);
+  m_deadline.expires_at(steady_timer::time_point::max());
   checkDeadline();
 }
 
@@ -72,7 +90,7 @@ void TCPClient::checkDeadline()
   // Check whether the deadline has passed. We compare the deadline against
   // the current time since a new asynchronous operation may have moved the
   // deadline before this actor had a chance to run.
-  if (m_deadline.expires_at() <= deadline_timer::traits_type::now())
+  if (m_deadline.expiry() <= steady_timer::clock_type::now())
   {
     // The deadline has passed. The socket is closed so that any outstanding
     // asynchronous operations are cancelled. This allows the blocked
@@ -82,11 +100,13 @@ void TCPClient::checkDeadline()
 
     // There is no longer an active deadline. The expiry is set to positive
     // infinity so that the actor takes no action until a new deadline is set.
-    m_deadline.expires_at(boost::posix_time::pos_infin);
+    m_deadline.expires_at(steady_timer::time_point::max());
   }
 
   // Put the actor back to sleep.
-  m_deadline.async_wait(bind(&TCPClient::checkDeadline, this));
+  m_deadline.async_wait([this](const boost::system::error_code&) {
+    checkDeadline();
+  });
 }
 
 void TCPClient::connect(sick::types::time_duration_t timeout)
@@ -94,11 +114,11 @@ void TCPClient::connect(sick::types::time_duration_t timeout)
   auto remote_endpoint         = boost::asio::ip::tcp::endpoint(m_server_ip, m_server_port);
   boost::system::error_code ec = boost::asio::error::would_block;
 
-  m_deadline.expires_from_now(timeout);
+  setDeadline(m_deadline, timeout);
   m_socket.async_connect(remote_endpoint, var(ec) = _1);
 
   do
-    m_io_service.run_one();
+    m_io_context.run_one();
   while (ec == boost::asio::error::would_block);
 
   if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted)
@@ -148,16 +168,16 @@ sick::datastructure::PacketBuffer TCPClient::receive(sick::types::time_duration_
 {
   boost::system::error_code ec = boost::asio::error::would_block;
 
-  m_deadline.expires_from_now(timeout);
+  setDeadline(m_deadline, timeout);
 
   std::size_t bytes_recv = 0;
 
   m_socket.async_receive(boost::asio::buffer(m_recv_buffer),
                          bind(&TCPClient::handleReceiveDeadline, _1, _2, &ec, &bytes_recv));
 
-  // Block until async_receive_from finishes or the deadline_timer exceeds its timeout.
+  // Block until async_receive_from finishes or the timer exceeds its timeout.
   do
-    m_io_service.run_one();
+    m_io_context.run_one();
   while (ec == boost::asio::error::would_block);
 
   if (ec == boost::asio::error::timed_out || ec == boost::asio::error::operation_aborted)
