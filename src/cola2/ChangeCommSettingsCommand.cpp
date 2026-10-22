@@ -105,7 +105,7 @@ void ChangeCommSettingsCommand::writeEInterfaceTypeToDataPtr(
 void ChangeCommSettingsCommand::writeIPAddresstoDataPtr(
   std::vector<uint8_t>::iterator data_ptr) const
 {
-  read_write_helper::writeUint32LittleEndian(data_ptr + 8, m_settings.host_ip.to_uint());
+  read_write_helper::writeUint32LittleEndian(data_ptr + 8, static_cast<unsigned long>(m_settings.host_ip.to_uint()));
 }
 
 void ChangeCommSettingsCommand::writePortToDataPtr(std::vector<uint8_t>::iterator data_ptr) const
