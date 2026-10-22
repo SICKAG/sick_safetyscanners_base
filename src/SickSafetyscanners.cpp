@@ -47,8 +47,8 @@ SickSafetyscannersBase::SickSafetyscannersBase(sick::types::ip_address_t sensor_
   : m_sensor_ip(sensor_ip)
   , m_comm_settings(comm_settings)
   , m_io_context_ptr(sick::make_unique<boost::asio::io_context>())
-  , m_io_context(*m_io_context_ptr)
-  , m_udp_client(m_io_context, comm_settings.host_udp_port)
+  , m_io_service(*m_io_context_ptr)
+  , m_udp_client(m_io_service, comm_settings.host_udp_port)
   , m_session(sick::make_unique<sick::communication::TCPClient>(m_sensor_ip, sensor_tcp_port))
   , m_packet_merger()
 {
@@ -62,8 +62,8 @@ SickSafetyscannersBase::SickSafetyscannersBase(sick::types::ip_address_t sensor_
   : m_sensor_ip(sensor_ip)
   , m_comm_settings(comm_settings)
   , m_io_context_ptr(sick::make_unique<boost::asio::io_context>())
-  , m_io_context(*m_io_context_ptr)
-  , m_udp_client(m_io_context, comm_settings.host_udp_port, comm_settings.host_ip, interface_ip)
+  , m_io_service(*m_io_context_ptr)
+  , m_udp_client(m_io_service, comm_settings.host_udp_port, comm_settings.host_ip, interface_ip)
   , m_session(sick::make_unique<sick::communication::TCPClient>(m_sensor_ip, sensor_tcp_port))
   , m_packet_merger()
 {
@@ -77,8 +77,8 @@ SickSafetyscannersBase::SickSafetyscannersBase(sick::types::ip_address_t sensor_
   : m_sensor_ip(sensor_ip)
   , m_comm_settings(comm_settings)
   , m_io_context_ptr(nullptr)
-  , m_io_context(io_context)
-  , m_udp_client(m_io_context, comm_settings.host_udp_port)
+  , m_io_service(io_context)
+  , m_udp_client(m_io_service, comm_settings.host_udp_port)
   , m_session(sick::make_unique<sick::communication::TCPClient>(m_sensor_ip, sensor_tcp_port))
   , m_packet_merger()
 {
@@ -235,12 +235,12 @@ AsyncSickSafetyScanner::AsyncSickSafetyScanner(sick::types::ip_address_t sensor_
                                                sick::types::ScanDataCb callback)
   : SickSafetyscannersBase(sensor_ip, sensor_tcp_port, comm_settings)
   , m_scan_data_cb(callback)
-  , m_work(sick::make_unique<io_context_work_guard>(m_io_context.get_executor()))
+  , m_work(sick::make_unique<io_context_work_guard>(m_io_service.get_executor()))
 {
   m_service_thread = boost::thread([this] {
     try
     {
-      m_io_context.run();
+      m_io_service.run();
     }
     catch (const std::exception& e)
     {
@@ -256,12 +256,12 @@ AsyncSickSafetyScanner::AsyncSickSafetyScanner(sick::types::ip_address_t sensor_
                                                sick::types::ScanDataCb callback)
   : SickSafetyscannersBase(sensor_ip, sensor_tcp_port, comm_settings, interface_ip)
   , m_scan_data_cb(callback)
-  , m_work(sick::make_unique<io_context_work_guard>(m_io_context.get_executor()))
+  , m_work(sick::make_unique<io_context_work_guard>(m_io_service.get_executor()))
 {
   m_service_thread = boost::thread([this] {
     try
     {
-      m_io_context.run();
+      m_io_service.run();
     }
     catch (const std::exception& e)
     {
@@ -283,7 +283,7 @@ AsyncSickSafetyScanner::AsyncSickSafetyScanner(sick::types::ip_address_t sensor_
 
 AsyncSickSafetyScanner::~AsyncSickSafetyScanner()
 {
-  m_io_context.stop();
+  m_io_service.stop();
   m_work.reset();
   if (m_service_thread.joinable())
   {

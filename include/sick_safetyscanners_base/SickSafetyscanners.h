@@ -66,6 +66,8 @@
 namespace sick {
 
 using io_context_ptr = std::shared_ptr<boost::asio::io_context>;
+// Preserve the original SDK alias without relying on Boost's removed io_service alias.
+using io_service_ptr = io_context_ptr;
 using io_context_work_guard =
   boost::asio::executor_work_guard<boost::asio::io_context::executor_type>;
 
@@ -284,7 +286,7 @@ private:
   }
 
 protected:
-  boost::asio::io_context& m_io_context;
+  boost::asio::io_context& m_io_service;
   sick::communication::UDPClient m_udp_client;
   sick::cola2::Cola2Session m_session;
   sick::data_processing::UDPPacketMerger m_packet_merger;
