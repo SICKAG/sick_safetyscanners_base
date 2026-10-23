@@ -1,8 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 project(sick_safetyscanners_base CXX)
 
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 NEW)
+endif()
+
 ## Find system libraries
-find_package(Boost REQUIRED COMPONENTS system thread chrono)
+find_package(Boost REQUIRED COMPONENTS thread chrono)
 
 
 ###########
@@ -129,10 +133,11 @@ endif()
 target_include_directories(sick_safetyscanners_base PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
-  ${Boost_INCLUDE_DIR}
 )
 
-target_link_libraries(sick_safetyscanners_base PUBLIC ${Boost_LIBRARIES}
+target_link_libraries(sick_safetyscanners_base PUBLIC
+  Boost::thread
+  Boost::chrono
 )
 
 add_library(sick_safetyscanners_base::sick_safetyscanners_base ALIAS sick_safetyscanners_base)

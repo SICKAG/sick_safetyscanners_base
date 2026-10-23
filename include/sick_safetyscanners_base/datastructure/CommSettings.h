@@ -67,7 +67,7 @@ struct CommSettings
   bool enabled{true};
 
   sick::types::port_t host_udp_port{0};
-  sick::types::ip_address_t host_ip{boost::asio::ip::address_v4::from_string("192.168.1.100")};
+  sick::types::ip_address_t host_ip{boost::asio::ip::make_address_v4("192.168.1.100")};
 };
 
 std::ostream& operator<<(std::ostream& os, const CommSettings& settings);
