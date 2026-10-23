@@ -59,7 +59,7 @@ Afterwards the driver and the settings for the driver can be included with:
 
 To get the driver up and running you need first to choose between the synchronous and asynchronous APIs based on your needs.
 
-In the latter case you can also pass an instance of boost::asio::io_context to the constructor of the AsyncSickSafetyScanner. 
+In the latter case you can also pass an instance of boost::asio::io_context to the constructor of the AsyncSickSafetyScanner.
 
 
 ## API

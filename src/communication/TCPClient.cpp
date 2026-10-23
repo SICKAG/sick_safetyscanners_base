@@ -65,8 +65,25 @@ void setDeadline(steady_timer& timer, const sick::types::time_duration_t& timeou
     return;
   }
 
-  timer.expires_after(std::chrono::duration_cast<steady_timer::duration>(
-    std::chrono::microseconds(timeout.total_microseconds())));
+  // Compare microsecond counts before conversion to the finer steady-clock duration.
+  const auto microseconds = timeout.total_microseconds();
+  const auto maximum = std::chrono::duration_cast<std::chrono::microseconds>(
+    steady_timer::duration::max()).count();
+  const auto minimum = std::chrono::duration_cast<std::chrono::microseconds>(
+    steady_timer::duration::min()).count();
+  if (microseconds > maximum)
+  {
+    timer.expires_at(steady_timer::time_point::max());
+  }
+  else if (microseconds < minimum)
+  {
+    timer.expires_at(steady_timer::time_point::min());
+  }
+  else
+  {
+    timer.expires_after(std::chrono::duration_cast<steady_timer::duration>(
+      std::chrono::microseconds(microseconds)));
+  }
 }
 
 } // namespace
