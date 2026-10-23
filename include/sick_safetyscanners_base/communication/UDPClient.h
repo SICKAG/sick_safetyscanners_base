@@ -40,7 +40,7 @@
 #include <iostream>
 
 #include <boost/asio.hpp>
-#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/steady_timer.hpp>
 
 #include "sick_safetyscanners_base/Types.h"
 #include "sick_safetyscanners_base/datastructure/PacketBuffer.h"
