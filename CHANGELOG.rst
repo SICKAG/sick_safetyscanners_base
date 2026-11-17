@@ -1,9 +1,9 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package sick_safetyscanners_base
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.0 (2026-11-17)
+------------------
 * Added compatibility with Boost 1.90:
   * Migrated Asio usage from ``io_service`` to ``io_context`` and replaced
     the removed work object with ``executor_work_guard``. Preserved the
@@ -19,7 +19,7 @@ Forthcoming
 * Removed legacy Gitlab CI config.
 * NOTICE: New minimum required CMake version is 3.10
 * NOTICE: Downstream binaries must be rebuilt because class layouts changed.
-* Contributors: Barron Rulon, Christian Eichmann
+* Contributors: Alexander Moriarty, Barron Rulon, Christian Eichmann
 
 1.0.5 (2026-10-06)
 ------------------

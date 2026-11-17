@@ -61,6 +61,18 @@ To get the driver up and running you need first to choose between the synchronou
 
 In the latter case you can also pass an instance of boost::asio::io_context to the constructor of the AsyncSickSafetyScanner.
 
+## ROS 2
+
+This package is distributed through the ROS 2 APT repositories.
+
+Releases **1.x** are maintenance releases for ROS 2 distributions up to and including Kilted.  
+Releases **2.x** are releases for Lyrical and newer distributions.
+
+Version 2.0.0 introduces an ABI break with the 1.x releases.
+Bug fixes and compatible improvements may be backported to 1.x as needed.
+
+Version 2.0.0 is compatible with ROS 2 Humble and Jazzy.
+It requires downstream packages to be rebuilt against this driver and matching Boost version if upgrading from 1.x.
 
 ## API
 
