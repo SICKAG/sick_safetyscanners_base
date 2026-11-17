@@ -2,6 +2,25 @@
 Changelog for package sick_safetyscanners_base
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added compatibility with Boost 1.90:
+  * Migrated Asio usage from ``io_service`` to ``io_context`` and replaced
+    the removed work object with ``executor_work_guard``. Preserved the
+    ``sick::io_service_ptr`` alias and protected ``m_io_service`` member
+    for source compatibility.
+  * Migrated deadline handling to ``steady_timer`` while preserving the
+    public Boost.PosixTime timeout API. Clipping timeouts outside the 
+    steady-clock range to new valid range to prevent integer overflow.
+  * Updated IPv4 address conversions and Boost/CMake dependency handling.
+  * Updated the installed CMake package and dependency metadata for header-only
+    Boost.System.
+  * CMake CMP0167 support
+* Removed legacy Gitlab CI config.
+* NOTICE: New minimum required CMake version is 3.10
+* NOTICE: Downstream binaries must be rebuilt because class layouts changed.
+* Contributors: Barron Rulon, Christian Eichmann
+
 1.0.5 (2026-10-06)
 ------------------
 * Added check for correct Header size in UDP and TCP communication

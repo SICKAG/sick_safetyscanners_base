@@ -36,6 +36,7 @@
 #define SICK_SAFETYSCANNERS_BASE_COMMUNICATION_SYNCTCPCLIENT_H
 
 #include <boost/asio.hpp>
+#include <boost/asio/steady_timer.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <cstdint>
 #include <vector>
@@ -104,12 +105,12 @@ public:
   receive(sick::types::time_duration_t timeout = boost::posix_time::seconds(5));
 
 private:
-  boost::asio::io_service m_io_service;
+  boost::asio::io_context m_io_context;
   sick::datastructure::PacketBuffer::ArrayBuffer m_recv_buffer;
   boost::asio::ip::tcp::socket m_socket;
   sick::types::ip_address_t m_server_ip;
   sick::types::port_t m_server_port;
-  boost::asio::deadline_timer m_deadline;
+  boost::asio::steady_timer m_deadline;
 
   /*!
    * \brief A function to check internal deadline constraints on connect, receive and send
